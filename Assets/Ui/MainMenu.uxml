@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ui/MainMenu.uss?fileID=7433441132597879392&amp;guid=c21d3ccdd72180b0abb890575d5a3f31&amp;type=3#MainMenu" />
+    <ui:VisualElement name="Panel" class="panel" style="flex-grow: 1; align-items: center; align-self: auto; justify-content: center;">
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; align-items: flex-start; justify-content: flex-end; align-self: center; width: 100%; height: 30%;">
+            <ui:Button text="Sair" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; width: 50%; background-color: rgba(98, 79, 63, 0.92); padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; height: 35%;">
+            <ui:Label tabindex="-1" text="Lendas do Sertão" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 32px; -unity-text-align: middle-center; color: rgb(14, 14, 14);" />
+            <ui:VisualElement style="flex-grow: 1;" />
+            <ui:TextField picking-mode="Ignore" value="Nome de usuario" />
+            <ui:Button text="Conectar a partida" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+            <ui:VisualElement style="flex-grow: 1;" />
+            <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: column; height: 10px;">
+                <ui:Toggle label="Musica" name="Toggle" style="flex-direction: row;" />
+                <ui:SliderInt label="Volume" high-value="100" />
+            </ui:VisualElement>
+            <ui:Label tabindex="-1" text="Contato: inova@somosicev.com" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; height: 5%; width: 100%;" />
+    </ui:VisualElement>
+</ui:UXML>
