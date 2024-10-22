@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEgine.SceneManagement;
+using UnityEngine.SceneManagement;
+
 public class MenuPrincipalManager : MonoBehaviour
 {
      [SerializeField] private string SelecaoPersonagem;
