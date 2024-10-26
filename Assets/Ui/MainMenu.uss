@@ -1,0 +1,3 @@
+.panel {
+    background-image: url("project://database/Assets/Ui/Media/MainMenu.png?fileID=2800000&guid=184d8943f6389dec4a43befca2602dd1&type=3#MainMenu");
+}
