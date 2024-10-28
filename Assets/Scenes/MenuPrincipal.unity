@@ -1159,16 +1159,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1738219640}
-        m_TargetAssemblyTypeName: MenuPrincipalManager, Assembly-CSharp
-        m_MethodName: Jogar
-        m_Mode: 1
+      - m_Target: {fileID: 1738219641}
+        m_TargetAssemblyTypeName: CarregarCena, Assembly-CSharp
+        m_MethodName: CarregaCena
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Lobby-menu
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1292531920
@@ -2143,6 +2143,7 @@ GameObject:
   - component: {fileID: 1738219638}
   - component: {fileID: 1738219637}
   - component: {fileID: 1738219640}
+  - component: {fileID: 1738219641}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2236,9 +2237,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 745a59089a6e1e94c943694b4f1d82f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SelecaoPersonagem: 
   painelMenuInicial: {fileID: 167350871}
   painelOpcoes: {fileID: 1933666483}
+--- !u!114 &1738219641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738219636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90d3700bc1731754db25b03f82aadbfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1815151569
 GameObject:
   m_ObjectHideFlags: 0

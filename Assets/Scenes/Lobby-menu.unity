@@ -375,6 +375,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 506117060}
+        m_TargetAssemblyTypeName: CarregarCena, Assembly-CSharp
+        m_MethodName: CarregaCena
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SelecaoPersonagem
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &299334494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -504,6 +516,7 @@ GameObject:
   - component: {fileID: 506117057}
   - component: {fileID: 506117056}
   - component: {fileID: 506117059}
+  - component: {fileID: 506117060}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -553,7 +566,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -602,6 +615,19 @@ MonoBehaviour:
   nickName: {fileID: 1449806727}
   nomeSala: {fileID: 1892864353}
   txtNick: {fileID: 619057832}
+  txtSala: {fileID: 1764170299}
+--- !u!114 &506117060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506117055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90d3700bc1731754db25b03f82aadbfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &619057830
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,10 +660,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 992636168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.019630333, y: 0.9034039}
+  m_AnchorMin: {x: 0.019630333, y: 0.9154039}
   m_AnchorMax: {x: 0.21000001, y: 0.9754039}
-  m_AnchoredPosition: {x: 0.4000244, y: -0.3999939}
-  m_SizeDelta: {x: -1, y: 0}
+  m_AnchoredPosition: {x: 0.4500122, y: -0.31629944}
+  m_SizeDelta: {x: -0.90001, y: -0.16739988}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &619057832
 MonoBehaviour:
@@ -935,6 +961,7 @@ RectTransform:
   m_Children:
   - {fileID: 2021034772}
   - {fileID: 619057831}
+  - {fileID: 1764170298}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1697,6 +1724,85 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1526030781}
   m_CullTransparentMesh: 1
+--- !u!1 &1764170297
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1764170298}
+  - component: {fileID: 1764170300}
+  - component: {fileID: 1764170299}
+  m_Layer: 5
+  m_Name: sala-tela-Text (Legacy)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1764170298
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764170297}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 992636168}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.022000002, y: 0.8364039}
+  m_AnchorMax: {x: 0.21000001, y: 0.9154039}
+  m_AnchoredPosition: {x: -0.49996948, y: -0.03239441}
+  m_SizeDelta: {x: 1, y: -0.41630006}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1764170299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764170297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 
+--- !u!222 &1764170300
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764170297}
+  m_CullTransparentMesh: 1
 --- !u!1 &1823434772
 GameObject:
   m_ObjectHideFlags: 0
@@ -1934,7 +2040,7 @@ GameObject:
   - component: {fileID: 2021034774}
   - component: {fileID: 2021034773}
   m_Layer: 5
-  m_Name: backgrounnd-image
+  m_Name: Panels-backgrounnd-image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
