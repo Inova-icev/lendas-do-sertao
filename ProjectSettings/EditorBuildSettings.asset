@@ -9,9 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuPrincipal.unity
     guid: cf12f1a124a950e45b80e615fa85ba5c
   - enabled: 1
-    path: Assets/Scenes/Loby-menu.unity
+    path: Assets/Scenes/Lobby-menu.unity
     guid: 1f20f72af71c4fa4e827c433eabdadad
   - enabled: 1
     path: Assets/Scenes/SelecaoPersonagem.unity
     guid: 618015ef897378b44ab67e81c1fd60d5
+  - enabled: 1
+    path: Assets/Scenes/CenaTesteGerarPersonagem.unity
+    guid: c15da254af861d0448d00a809f569313
   m_configObjects: {}
