@@ -14,17 +14,21 @@ public class Conn : MonoBehaviourPunCallbacks
     [SerializeField]
     private InputField nickName, nomeSala;
     [SerializeField]
-    private Text txtNick;
-
+    private Text txtNick, txtSala;
     // Start is called before the first frame update
     void Start()
     {
         painelS.SetActive(false);
     }
+    void Update()
+    {
+      
+    }
 
     public void Login()
     {
         PhotonNetwork.NickName = nickName.text;
+        txtNick.text = PhotonNetwork.NickName;
         PhotonNetwork.ConnectUsingSettings();
         painelL.SetActive(false);
         painelS.SetActive(true);
@@ -35,10 +39,6 @@ public class Conn : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinOrCreateRoom(nomeSala.text, new RoomOptions(), TypedLobby.Default);
     }
     // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public override void OnConnectedToMaster()
     {
@@ -64,10 +64,11 @@ public class Conn : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("Entrou na sala!");
-        print(PhotonNetwork.CurrentRoom.Name);
-        print(PhotonNetwork.CurrentRoom.PlayerCount);
-        print(PhotonNetwork.NickName);
-        txtNick.text = PhotonNetwork.NickName;
+        Debug.Log("Entrou na sala!" + PhotonNetwork.CurrentRoom.Name);
+        txtSala.text = "Sala: " + PhotonNetwork.CurrentRoom.Name;
+        print("Jogador atual:" + PhotonNetwork.NickName);
+        print("Sala atual: " + PhotonNetwork.CurrentRoom.Name);
+        print("Numero de jogadores na sala: "+PhotonNetwork.CurrentRoom.PlayerCount);
+        
     }
 }
