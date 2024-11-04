@@ -5,7 +5,7 @@ public class TriggerMandacaru : MonoBehaviour
     public float buffDuration = 5f;  // Duração do buff em segundos
     public Color buffColor = Color.yellow; // Cor do jogador com o buff ativo
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Trigger detected with: " + other.name);
 
@@ -53,4 +53,5 @@ public class TriggerMandacaru : MonoBehaviour
 
         Debug.Log("Buff removido do jogador."); // Log para confirmar que o buff foi removido
     }
+
 }
