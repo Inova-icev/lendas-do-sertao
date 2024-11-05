@@ -5,15 +5,18 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviourPunCallbacks
+namespace ManagmentScripts
 {
-
-    [SerializeField]
-    private GameObject player;
-
-    public override void OnJoinedRoom()
+    public class GameManager : MonoBehaviourPunCallbacks
     {
-        PhotonNetwork.Instantiate(PhotonNetwork.NickName,
-        new Vector3(-22.37f, -1.43f,0),Quaternion.identity);
+
+        [SerializeField]
+        private GameObject player;
+
+        public void SpawnPalyer()
+        {
+            PhotonNetwork.Instantiate("Saci",
+            new Vector3(-22.37f, -1.43f, 0), Quaternion.identity);
+        }
     }
 }
