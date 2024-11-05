@@ -5,6 +5,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Threading.Tasks;
 using Unity.Mathematics;
+using System;
+using Photon.Pun.Demo.Cockpit;
 
 namespace ManagmentScripts
 {
@@ -13,11 +15,21 @@ namespace ManagmentScripts
         [SerializeField]
         private GameObject painelMenu, painelOptions, painelLogin, painelLobby, painelPersonagens, background;
 
-        GameManager gameManager = new GameManager();
+        [SerializeField]
+        private Boolean isOffline = false;
+
+        [SerializeField]
+        private String roomName = "ICEV-Match";
+
+        [SerializeField]
+        private Boolean overrideRoomDefaultRules = false; // Não sendo utilizado ainda
+
+        GameManager gameManager = new GameManager();        
 
         // Start is called before the first frame update
         void Start()
         {
+            painelMenu.SetActive(true);
             painelOptions.SetActive(false);
             painelLogin.SetActive(false);
             painelLobby.SetActive(false);
@@ -43,7 +55,15 @@ namespace ManagmentScripts
 
         public void GoToLobby()
         {
-            PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.OfflineMode = isOffline;
+            if (isOffline)
+            {
+                PhotonNetwork.CreateRoom("Offline-ICEV-Match", new RoomOptions());
+            }
+            else
+            {
+                PhotonNetwork.ConnectUsingSettings();
+            }
         }
 
         public override void OnConnectedToMaster()
@@ -56,7 +76,7 @@ namespace ManagmentScripts
 
         public void GoToPersonagens()
         {
-            PhotonNetwork.JoinOrCreateRoom("ICEV-Match", new RoomOptions(), TypedLobby.Default);
+            PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions(), TypedLobby.Default);
         }
 
         public override void OnJoinRandomFailed(short returnCode, string message)
@@ -78,5 +98,6 @@ namespace ManagmentScripts
             painelPersonagens.SetActive(false);
             background.SetActive(false);
         }
+
     }
 }
