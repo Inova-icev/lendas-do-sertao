@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 using Unity.Mathematics;
 using System;
 using Photon.Pun.Demo.Cockpit;
+using UnityEngine.UI;
+using System.Linq.Expressions;
 
 namespace ManagmentScripts
 {
     public class PanelManager : MonoBehaviourPunCallbacks
     {
         [SerializeField]
-        private GameObject painelMenu, painelOptions, painelLogin, painelLobby, painelPersonagens, background;
+        private GameObject painelMenu, painelOptions, painelLogin, painelLobby, painelTeam, painelPersonagens, background;
 
         [SerializeField]
         private Boolean isOffline = false;
@@ -24,7 +26,12 @@ namespace ManagmentScripts
         [SerializeField]
         private Boolean overrideRoomDefaultRules = false; // Não sendo utilizado ainda
 
-        GameManager gameManager = new GameManager();        
+        [SerializeField]
+        private Button teamBlue, teamRed;
+
+        public int teamChoice;
+
+        GameManager gameManager = new GameManager();
 
         // Start is called before the first frame update
         void Start()
@@ -33,7 +40,11 @@ namespace ManagmentScripts
             painelOptions.SetActive(false);
             painelLogin.SetActive(false);
             painelLobby.SetActive(false);
+            painelTeam.SetActive(false);
             painelPersonagens.SetActive(false);
+
+            teamBlue.onClick.AddListener(() => ChooseTeam(1));
+            teamRed.onClick.AddListener(() => ChooseTeam(2));
         }
 
         //fluxo menu(options)>login>lobby>nomesala
@@ -74,9 +85,22 @@ namespace ManagmentScripts
             painelLobby.SetActive(true);
         }
 
-        public void GoToPersonagens()
+        public void GoToTeamChoice()
         {
             PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions(), TypedLobby.Default);
+        }
+
+        private void ChooseTeam(int team)
+        {
+            teamChoice = team;
+            Debug.Log($"Time escolhido: {(team == 1 ? "Azul" : "Vermelho")}");
+            GoToPersonagens(); // Chama a próxima etapa
+        }
+
+        public void GoToPersonagens()
+        {
+            painelTeam.SetActive(false);
+            painelPersonagens.SetActive(true);
         }
 
         public override void OnJoinRandomFailed(short returnCode, string message)
@@ -84,13 +108,13 @@ namespace ManagmentScripts
             Debug.Log("Falha ao entrar na sala!");
             PhotonNetwork.CreateRoom("ICEV-Match", new RoomOptions());
             painelLobby.SetActive(false);
-            painelPersonagens.SetActive(true);
+            painelTeam.SetActive(true);
         }
 
         public override void OnJoinedRoom()
         {
             painelLobby.SetActive(false);
-            painelPersonagens.SetActive(true);
+            painelTeam.SetActive(true);
         }
         public void SelectedPersonagem()
         {
