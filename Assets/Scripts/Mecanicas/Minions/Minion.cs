@@ -18,6 +18,8 @@ public class Minions : MonoBehaviour
     private bool isMovingToWaypoint = true; // Indica se o minion está se movendo para o waypoint
     private Rigidbody2D rb;
     private Vida vidaComponent; // Referência ao componente Vida para o próprio minion
+    private float goldRewardRadius = 5f;
+    private int goldReward = 50;
 
     void Start()
     {
@@ -182,5 +184,24 @@ public class Minions : MonoBehaviour
         {
             vidaComponent.TakeDamage(damage);
         }
+    }
+
+    public void OnDeath()
+    {
+        // Encontre todos os jogadores inimigos em um raio
+        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, goldRewardRadius);
+        foreach (Collider2D enemy in enemiesInRange)
+        {
+            // Verifica se o objeto é um jogador inimigo
+            Player player = enemy.GetComponent<Player>();
+            if (player != null && enemy.CompareTag(enemyTag))
+            {
+                player.GainGold(goldReward); // Distribui ouro ao jogador inimigo
+                Debug.Log($"Jogador {player.name} ganhou {goldReward} de ouro pela morte do {gameObject.name}.");
+            }
+        }
+
+        // Destroi o minion
+        Destroy(gameObject);
     }
 }

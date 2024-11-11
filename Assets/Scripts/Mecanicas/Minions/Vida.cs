@@ -4,6 +4,7 @@ public class Vida : MonoBehaviour
 {
     public int maxHealth = 100; // Saúde máxima
     private int currentHealth;  // Saúde atual
+    
 
     void Start()
     {
@@ -25,7 +26,10 @@ public class Vida : MonoBehaviour
     // Função para lidar com a morte do objeto
     void Die()
     {
+        Minions minionComponent = GetComponent<Minions>();
+
         Debug.Log(gameObject.name + " morreu.");
+        minionComponent.OnDeath(); // Chama a lógica de recompensa em ouro dos inimigos
         Destroy(gameObject); // Destroi o objeto
     }
 }
