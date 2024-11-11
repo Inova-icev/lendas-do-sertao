@@ -19,6 +19,7 @@ public class Torre : MonoBehaviour
         Collider2D enemy = DetectEnemyInRange();
         if (enemy != null && Time.time >= lastAttackTime + attackCooldown)
         {
+            Debug.Log($"Inimigo detectado: {enemy.gameObject.name} dentro do alcance."); // Log para detecção de inimigo
             Attack(enemy.gameObject);
             lastAttackTime = Time.time;
         }
@@ -47,6 +48,11 @@ public class Torre : MonoBehaviour
             }
         }
 
+        if (closestEnemy != null)
+        {
+            Debug.Log($"Inimigo mais próximo encontrado: {closestEnemy.gameObject.name} a {closestDistance} unidades de distância.");
+        }
+
         return closestEnemy; // Retorna o inimigo mais próximo no alcance
     }
 
@@ -57,7 +63,12 @@ public class Torre : MonoBehaviour
         var vidaComponent = enemy.GetComponent<Vida>(); // Modifique 'Vida' para o componente apropriado em seu projeto
         if (vidaComponent != null)
         {
+            Debug.Log($"Atacando inimigo: {enemy.name} com {damage} de dano.");
             vidaComponent.TakeDamage(damage); // Aplica dano ao inimigo
+        }
+        else
+        {
+            Debug.Log($"O inimigo {enemy.name} não possui um componente Vida.");
         }
     }
 
@@ -65,6 +76,8 @@ public class Torre : MonoBehaviour
     public void TakeDamage(int amount)
     {
         health -= amount; // Reduz a vida da torre
+        Debug.Log($"Torre recebeu {amount} de dano. Vida restante: {health}");
+
         if (health <= 0)
         {
             DestroyTower(); // Destrói a torre se a vida chegar a zero
@@ -75,6 +88,7 @@ public class Torre : MonoBehaviour
     void DestroyTower()
     {
         // Aqui você pode adicionar uma animação ou som de destruição
+        Debug.Log("Torre destruída!");
         Destroy(gameObject); // Remove a torre da cena
     }
 
