@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Animator anim;
+    public int gold = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,5 +30,11 @@ public class Player : MonoBehaviour
         if(Input.GetKeyUp(KeyCode.Mouse0)){
             anim.SetBool("Atacando", false);
         }
+    }
+
+    public void GainGold(int amount)
+    {
+        gold += amount;
+        Debug.Log($"Jogador ganhou {amount} de ouro. Total: {gold}");
     }
 }
