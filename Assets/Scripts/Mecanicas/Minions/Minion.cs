@@ -98,7 +98,11 @@ public class Minions : MonoBehaviour
         // Verifica se deve descer ao sair de um obstáculo
         if (!IsGroundBelow())
         {
-            rb.velocity = new Vector2(rb.velocity.x, -fallSpeed);
+            rb.velocity = new Vector2(rb.velocity.x, -fallSpeed); // Aplicação da queda
+        }
+        else
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0); // Fixa no chão quando detectado
         }
     }
 
@@ -106,9 +110,8 @@ public class Minions : MonoBehaviour
     {
         if (waypoint != null)
         {
-            Vector2 direction = (waypoint.position - transform.position).normalized;
-            rb.velocity = new Vector2(direction.x * speed, rb.velocity.y);
-            Debug.Log($"{gameObject.name} movendo-se para o waypoint em {waypoint.position}");
+            Vector2 position = Vector2.MoveTowards(transform.position, waypoint.position, speed * Time.fixedDeltaTime);
+            rb.MovePosition(position); // Move o Rigidbody2D em direção ao waypoint
         }
     }
 
@@ -120,6 +123,7 @@ public class Minions : MonoBehaviour
             rb.velocity = new Vector2(direction.x * speed, rb.velocity.y);
         }
     }
+
 
     void Attack()
     {
@@ -166,8 +170,10 @@ public class Minions : MonoBehaviour
     private bool IsGroundBelow()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
+        Debug.DrawRay(transform.position, Vector2.down * groundCheckDistance, Color.red); // Visualize o Raycast para depuração
         return hit.collider != null;
     }
+
 
     // Função para receber dano
     public void TakeDamage(int damage)
