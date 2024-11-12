@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-<<<<<<< HEAD
     public float speed = 5f; // Velocidade de movimento
     public float jumpForce = 7f; // Força do pulo
     public LayerMask groundLayer; // Camada do chão
@@ -15,31 +14,20 @@ public class Player : MonoBehaviour
 
     private bool controlEnabled = true; // Controle se o jogador pode se mover
 
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        vida = GetComponent<Vida>(); // Inicializa a referência ao componente Vida
-=======
-    public Animator anim;
-    public int gold = 0;
-    public float speed = 5f; // Velocidade base do jogador
     private float currentSpeed;
-    private Vida vidaComponent; // Referência ao componente Vida
     private float damageMultiplier = 1f; // Multiplicador de dano inicial
 
     public int baseDamage = 10; // Dano base do jogador
 
     void Start()
     {
-        anim = GetComponent<Animator>();
         currentSpeed = speed; // Inicialize com a velocidade base
-        vidaComponent = GetComponent<Vida>(); // Obtém o componente Vida
->>>>>>> 70ded898909b97da8024a840adf3b9af57b21863
+        vida = GetComponent<Vida>(); // Obtém o componente Vida
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-<<<<<<< HEAD
         if (controlEnabled)
         {
             Move();
@@ -50,24 +38,9 @@ public class Player : MonoBehaviour
             {
                 Jump();
             }
-=======
-        // Movimento simples de exemplo
-        float move = Input.GetAxis("Horizontal") * currentSpeed * Time.deltaTime;
-        transform.Translate(move, 0, 0);
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            anim.SetBool("Correndo", true);
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            anim.SetBool("Correndo", false);
->>>>>>> 70ded898909b97da8024a840adf3b9af57b21863
         }
     }
 
-<<<<<<< HEAD
     void Move()
     {
         float moveInput = Input.GetAxis("Horizontal");
@@ -84,18 +57,6 @@ public class Player : MonoBehaviour
         // Lança um raio para baixo para verificar se há chão abaixo
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
         isGrounded = hit.collider != null;
-=======
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            anim.SetBool("Atacando", true);
-            Attack(); // Exemplo de ataque
-        }
-
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            anim.SetBool("Atacando", false);
-        }
->>>>>>> 70ded898909b97da8024a840adf3b9af57b21863
     }
 
     // Método para calcular o dano causado com o buff
@@ -134,9 +95,9 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int damageAmount)
     {
-        if (vidaComponent != null)
+        if (vida != null)
         {
-            vidaComponent.TakeDamage(damageAmount); // Passa o dano para o componente Vida
+            vida.TakeDamage(damageAmount); // Passa o dano para o componente Vida
         }
     }
 
@@ -144,13 +105,5 @@ public class Player : MonoBehaviour
     {
         gold += amount;
         Debug.Log($"Jogador ganhou {amount} de ouro. Total: {gold}");
-    }
-
-    public void TakeDamage(int damageAmount)
-    {
-        if (vida != null)
-        {
-            vida.TakeDamage(damageAmount); // Usa o método do componente Vida
-        }
     }
 }
