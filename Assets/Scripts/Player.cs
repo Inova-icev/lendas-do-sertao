@@ -4,6 +4,8 @@ public class Player : MonoBehaviour
 {
     public float speed = 5f; // Velocidade base do jogador
     public float jumpForce = 7f; // Força do pulo
+    public float fallMultiplier = 2.5f; // Multiplicador para aumentar a velocidade de queda
+    public float lowJumpMultiplier = 2f; // Multiplicador para uma queda mais suave ao soltar o botão de pulo
     public LayerMask groundLayer; // Camada do chão
     private Rigidbody2D rb;
     private bool isGrounded;
@@ -25,7 +27,6 @@ public class Player : MonoBehaviour
         vida = GetComponent<Vida>(); // Obtém o componente Vida
         rb = GetComponent<Rigidbody2D>();
     }
-public float fallMultiplier = 2.5f; // Multiplicador para aumentar a velocidade de queda
 
     void Update()
     {
@@ -36,22 +37,26 @@ public float fallMultiplier = 2.5f; // Multiplicador para aumentar a velocidade 
 
             if (isGrounded && Input.GetKeyDown(KeyCode.Space))
             {
+                Debug.Log("Pulo detectado!"); // Verificação
                 Jump();
             }
 
-            // Aplica um multiplicador de queda para tornar a descida mais rápida
+            // Aplica multiplicador de queda para tornar a descida mais rápida
             if (rb.velocity.y < 0)
             {
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
             }
+            // Aplica um multiplicador mais leve para pular se o jogador liberar a tecla de pulo
+            else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space))
+            {
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+            }
         }
     }
-
 
     void Move()
     {
         float moveX = 0f;
-        float moveY = 0f;
 
         // Movimentação horizontal com A e D ou setas esquerda/direita
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
@@ -63,20 +68,9 @@ public float fallMultiplier = 2.5f; // Multiplicador para aumentar a velocidade 
             moveX = 1f;
         }
 
-        // Movimentação vertical com W e S ou setas cima/baixo
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-        {
-            moveY = 1f;
-        }
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-        {
-            moveY = -1f;
-        }
-
-        // Aplica a velocidade ao Rigidbody2D para movimento em 2D
-        rb.velocity = new Vector2(moveX * currentSpeed, moveY * currentSpeed);
+        // Aplica a velocidade ao Rigidbody2D para movimento horizontal
+        rb.velocity = new Vector2(moveX * currentSpeed, rb.velocity.y);
     }
-
 
     void Jump()
     {
@@ -85,9 +79,12 @@ public float fallMultiplier = 2.5f; // Multiplicador para aumentar a velocidade 
 
     void CheckGround()
     {
-        // Lança um raio para baixo para verificar se há chão abaixo
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
+        Vector2 origin = new Vector2(transform.position.x, transform.position.y - 0.5f); // Ajuste o valor para baixo conforme necessário
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, 1f, groundLayer);
         isGrounded = hit.collider != null;
+
+        // Debug para visualizar o Raycast no Editor
+        Debug.DrawRay(origin, Vector2.down * 1f, Color.red);
     }
 
     // Método para calcular o dano causado com o buff

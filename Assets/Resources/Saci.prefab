@@ -202,13 +202,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  jumpForce: 50
+  jumpForce: 8
+  fallMultiplier: 3.5
+  lowJumpMultiplier: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
   gold: 0
   baseDamage: 10
-  fallMultiplier: 2.5
 --- !u!70 &-4009853936557538225
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
