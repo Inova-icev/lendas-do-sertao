@@ -13,15 +13,33 @@ public class Torre : MonoBehaviour
     // Tag do inimigo para detectar apenas inimigos com a tag correspondente
     public string enemyTag; // Mudança feita aqui para usar uma tag ao invés de layer
 
+    private Transform target;
+    private float attackTimer = 0f;
+
     void Update()
     {
-        // Verifica se há algum inimigo no alcance e ataca
-        Collider2D enemy = DetectEnemyInRange();
-        if (enemy != null && Time.time >= lastAttackTime + attackCooldown)
+        // Verifica se há um inimigo no alcance
+        if (target != null && attackTimer <= 0f)
         {
-            Debug.Log($"Inimigo detectado: {enemy.gameObject.name} dentro do alcance."); // Log para detecção de inimigo
-            Attack(enemy.gameObject);
-            lastAttackTime = Time.time;
+            Attack(); // Chama o método de ataque
+            attackTimer = attackCooldown; // Reinicia o cooldown do ataque
+        }
+
+        // Reduz o tempo do temporizador de ataque
+        if (attackTimer > 0f)
+        {
+            attackTimer -= Time.deltaTime;
+        }
+
+        // Código para detectar o inimigo (mantido simples)
+        Collider2D detectedEnemy = DetectEnemyInRange();
+        if (detectedEnemy != null)
+        {
+            target = detectedEnemy.transform; // Atribui o alvo detectado
+        }
+        else
+        {
+            target = null; // Se nenhum inimigo for encontrado
         }
     }
 
@@ -34,7 +52,8 @@ public class Torre : MonoBehaviour
         Collider2D closestEnemy = null;
 
         foreach (Collider2D hit in hits)
-        {
+        {   
+            Debug.Log($"Objeto detectado: {hit.gameObject.name}");
             // Filtra os inimigos pela tag com base na tag da torre
             if ((CompareTag("Right") && hit.CompareTag("Left")) || (CompareTag("Left") && hit.CompareTag("Right")))
             {
@@ -57,18 +76,20 @@ public class Torre : MonoBehaviour
     }
 
     // Método de ataque que causa dano ao inimigo
-    void Attack(GameObject enemy)
+    void Attack()
     {
-        // Procura um componente de vida genérico no inimigo e aplica dano
-        var vidaComponent = enemy.GetComponent<Vida>(); // Modifique 'Vida' para o componente apropriado em seu projeto
-        if (vidaComponent != null)
+        if (target != null)
         {
-            Debug.Log($"Atacando inimigo: {enemy.name} com {damage} de dano.");
-            vidaComponent.TakeDamage(damage); // Aplica dano ao inimigo
-        }
-        else
-        {
-            Debug.Log($"O inimigo {enemy.name} não possui um componente Vida.");
+            Vida targetVida = target.GetComponent<Vida>();
+            if (targetVida != null)
+            {
+                targetVida.TakeDamage(damage); // Aplica o dano
+                Debug.Log($"{gameObject.name} atacou {target.name} e causou {damage} de dano.");
+            }
+            else
+            {
+                Debug.Log($"O alvo {target.name} não possui um componente Vida.");
+            }
         }
     }
 
