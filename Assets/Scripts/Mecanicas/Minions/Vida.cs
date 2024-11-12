@@ -2,20 +2,19 @@ using UnityEngine;
 
 public class Vida : MonoBehaviour
 {
-    public int maxHealth = 100; // Saúde máxima
-    private int currentHealth;  // Saúde atual
-    
+    public int currentHealth; // Saúde atual (atribua individualmente no Inspector)
 
     void Start()
     {
-        currentHealth = maxHealth; // Define a saúde inicial
+        // currentHealth será definido individualmente para cada GameObject no Inspector,
+        // então não é necessário inicializá-lo com um valor padrão aqui.
     }
 
     // Função para aplicar dano ao objeto
     public void TakeDamage(int damage)
     {
         currentHealth -= damage; // Reduz a saúde pelo valor de dano
-        Debug.Log(gameObject.name + " tomou " + damage + " de dano.");
+        Debug.Log(gameObject.name + " tomou " + damage + " de dano. Saúde restante: " + currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -26,10 +25,14 @@ public class Vida : MonoBehaviour
     // Função para lidar com a morte do objeto
     void Die()
     {
+        // Exemplo de lógica adicional para o que acontece quando o objeto morre
         Minions minionComponent = GetComponent<Minions>();
-
+        if (minionComponent != null)
+        {
+            minionComponent.OnDeath(); // Chama a lógica de recompensa em ouro dos inimigos, se aplicável
+        }
+        
         Debug.Log(gameObject.name + " morreu.");
-        minionComponent.OnDeath(); // Chama a lógica de recompensa em ouro dos inimigos
         Destroy(gameObject); // Destroi o objeto
     }
 }

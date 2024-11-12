@@ -1,40 +1,69 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Animator anim;
-    public int gold = 0;
-    // Start is called before the first frame update
+    public float speed = 5f; // Velocidade de movimento
+    public float jumpForce = 7f; // Força do pulo
+    public LayerMask groundLayer; // Camada do chão
+    private Rigidbody2D rb;
+    private bool isGrounded;
+
+    public int gold = 0; // Quantidade de ouro do jogador
+
+    private Vida vida; // Referência ao componente Vida
+
+    private bool controlEnabled = true; // Controle se o jogador pode se mover
+
     void Start()
     {
-        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        vida = GetComponent<Vida>(); // Inicializa a referência ao componente Vida
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space)){
-            anim.SetBool("Correndo", true);
-        }
+        if (controlEnabled)
+        {
+            Move();
+            CheckGround();
 
-        if(Input.GetKeyDown(KeyCode.S)){
-            anim.SetBool("Correndo", false);
+            // Pular com a tecla Espaço
+            if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+            {
+                Jump();
+            }
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0)){
-            anim.SetBool("Atacando", true);
-        }
+    void Move()
+    {
+        float moveInput = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
+    }
 
-        if(Input.GetKeyUp(KeyCode.Mouse0)){
-            anim.SetBool("Atacando", false);
-        }
+    void Jump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+    }
+
+    void CheckGround()
+    {
+        // Lança um raio para baixo para verificar se há chão abaixo
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
+        isGrounded = hit.collider != null;
     }
 
     public void GainGold(int amount)
     {
         gold += amount;
         Debug.Log($"Jogador ganhou {amount} de ouro. Total: {gold}");
+    }
+
+    public void TakeDamage(int damageAmount)
+    {
+        if (vida != null)
+        {
+            vida.TakeDamage(damageAmount); // Usa o método do componente Vida
+        }
     }
 }

@@ -5,16 +5,19 @@ using UnityEngine;
 public class Torre : MonoBehaviour
 {
     public float range = 5f; // Alcance da torre
-    public int health = 500; // Vida da torre
     public int damage = 10; // Dano causado por ataque da torre
     public float attackCooldown = 1f; // Tempo entre os ataques
     private float lastAttackTime;
 
-    // Tag do inimigo para detectar apenas inimigos com a tag correspondente
-    public string enemyTag; // Mudança feita aqui para usar uma tag ao invés de layer
-
     private Transform target;
     private float attackTimer = 0f;
+
+    private Vida vida; // Referência ao componente Vida
+
+    void Start()
+    {
+        vida = GetComponent<Vida>(); // Inicializa a referência ao componente Vida
+    }
 
     void Update()
     {
@@ -52,10 +55,9 @@ public class Torre : MonoBehaviour
         Collider2D closestEnemy = null;
 
         foreach (Collider2D hit in hits)
-        {   
-            Debug.Log($"Objeto detectado: {hit.gameObject.name}");
+        {
             // Filtra os inimigos pela tag com base na tag da torre
-            if ((CompareTag("Right") && hit.CompareTag("Left")) || (CompareTag("Left") && hit.CompareTag("Right")))
+            if ((CompareTag("Left") && hit.CompareTag("Right")) || (CompareTag("Right") && hit.CompareTag("Left")))
             {
                 // Calcula a distância do inimigo até a torre
                 float distance = Vector2.Distance(transform.position, hit.transform.position);
@@ -66,12 +68,6 @@ public class Torre : MonoBehaviour
                 }
             }
         }
-
-        if (closestEnemy != null)
-        {
-            Debug.Log($"Inimigo mais próximo encontrado: {closestEnemy.gameObject.name} a {closestDistance} unidades de distância.");
-        }
-
         return closestEnemy; // Retorna o inimigo mais próximo no alcance
     }
 
@@ -96,21 +92,11 @@ public class Torre : MonoBehaviour
     // Método para a torre receber dano
     public void TakeDamage(int amount)
     {
-        health -= amount; // Reduz a vida da torre
-        Debug.Log($"Torre recebeu {amount} de dano. Vida restante: {health}");
-
-        if (health <= 0)
+        if (vida != null)
         {
-            DestroyTower(); // Destrói a torre se a vida chegar a zero
+            vida.TakeDamage(amount); // Usa o componente Vida para gerenciar o dano
+            Debug.Log($"Tomou {amount} de dano.");
         }
-    }
-
-    // Método para destruir a torre
-    void DestroyTower()
-    {
-        // Aqui você pode adicionar uma animação ou som de destruição
-        Debug.Log("Torre destruída!");
-        Destroy(gameObject); // Remove a torre da cena
     }
 
     // Método para desenhar o alcance da torre no editor

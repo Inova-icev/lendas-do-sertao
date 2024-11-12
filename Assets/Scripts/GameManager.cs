@@ -16,7 +16,7 @@ namespace ManagmentScripts
         public void SpawnPalyer()
         {
             PhotonNetwork.Instantiate("Saci",
-            new Vector3(-22.37f, -1.43f, 0), Quaternion.identity);
+            new Vector3(-128.3f, 43.5f, 0), Quaternion.identity);
         }
     }
 }

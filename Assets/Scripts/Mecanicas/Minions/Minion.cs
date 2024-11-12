@@ -18,6 +18,7 @@ public class Minions : MonoBehaviour
     private bool isMovingToWaypoint = true; // Indica se o minion está se movendo para o waypoint
     private Rigidbody2D rb;
     private Vida vidaComponent; // Referência ao componente Vida para o próprio minion
+
     private float goldRewardRadius = 5f;
     private int goldReward = 50;
 
@@ -26,6 +27,18 @@ public class Minions : MonoBehaviour
         rb = GetComponent<Rigidbody2D>(); // Inicializa o Rigidbody2D
         vidaComponent = GetComponent<Vida>(); // Inicializa o componente Vida
 
+        if (CompareTag("Left"))
+        {
+            enemyTag = "Right";
+        }
+        else if (CompareTag("Right"))
+        {
+            enemyTag = "Left";
+        }
+        else
+        {
+            Debug.LogWarning($"{gameObject.name} tem uma tag desconhecida. enemyTag não pode ser configurado corretamente.");
+        }
         // Configura o waypoint inicial
         if (CompareTag("Left"))
         {
@@ -138,35 +151,45 @@ public class Minions : MonoBehaviour
                 {
                     targetVida.TakeDamage(attackDamage);
                     Debug.Log($"{gameObject.name} atacou {target.name} e causou {attackDamage} de dano.");
+                    attackTimer = attackCooldown; // Reinicia o cooldown do ataque
                 }
-                attackTimer = attackCooldown; // Reinicia o cooldown do ataque
+                else
+                {
+                    Debug.LogWarning($"{target.name} não possui um componente Vida.");}
+
             }
         }
     }
-
     void FindTarget()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
-        float shortestDistance = Mathf.Infinity;
-        GameObject nearestEnemy = null;
+        Collider2D[] potentialTargets = Physics2D.OverlapCircleAll(transform.position, attackRange);
+        float closestDistance = Mathf.Infinity;
+        Collider2D closestTarget = null;
 
-        foreach (GameObject enemy in enemies)
+        foreach (Collider2D potentialTarget in potentialTargets)
         {
-            float distanceToEnemy = Vector2.Distance(transform.position, enemy.transform.position);
-            if (distanceToEnemy < shortestDistance)
+            if ((CompareTag("Left") && potentialTarget.CompareTag("Right")) || 
+                (CompareTag("Right") && potentialTarget.CompareTag("Left")))
             {
-                shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy;
+                Vida vidaComponent = potentialTarget.GetComponent<Vida>();
+                if (vidaComponent != null)
+                {
+                    float distanceToTarget = Vector2.Distance(transform.position, potentialTarget.transform.position);
+                    if (distanceToTarget < closestDistance)
+                    {
+                        closestDistance = distanceToTarget;
+                        closestTarget = potentialTarget;
+                    }
+                }
             }
         }
-
-        if (nearestEnemy != null && shortestDistance <= attackRange)
+        if (closestTarget != null)
         {
-            target = nearestEnemy.transform;
-            isMovingToWaypoint = false;
-            Debug.Log($"{gameObject.name} encontrou o inimigo {nearestEnemy.name} a uma distância de {shortestDistance}");
+            target = closestTarget.transform;
+            Debug.Log($"{gameObject.name} encontrou o alvo {closestTarget.name} a uma distância de {closestDistance}");
         }
     }
+
 
     // Verifica se há chão abaixo do minion
     private bool IsGroundBelow()

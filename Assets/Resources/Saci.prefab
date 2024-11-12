@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2515003114493855935}
   - component: {fileID: 6696557345719903630}
   - component: {fileID: 821817477388837575}
+  - component: {fileID: 8242301731310215607}
   m_Layer: 0
   m_Name: Saci
   m_TagString: Untagged
@@ -32,8 +33,8 @@ Transform:
   m_GameObject: {fileID: 3375314747158299155}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.0000000018428238, w: 1}
-  m_LocalPosition: {x: -22.370007, y: -1.6065799, z: 0}
-  m_LocalScale: {x: 8.61, y: 8.61, z: 8.61}
+  m_LocalPosition: {x: -70, y: 40, z: 0}
+  m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -156,7 +157,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.32, y: 0.32}
+  m_Size: {x: 0.15, y: 0.15}
   m_EdgeRadius: 0
 --- !u!50 &3193068972600345706
 Rigidbody2D:
@@ -183,8 +184,8 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!114 &2515003114493855935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,3 +234,21 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &8242301731310215607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3375314747158299155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32cd0c753d0c9bf458191af5b02c2bac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
+  jumpForce: 50
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  gold: 0
