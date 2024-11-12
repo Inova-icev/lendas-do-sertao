@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 5f; // Velocidade de movimento
+    public float speed = 5f; // Velocidade base do jogador
     public float jumpForce = 7f; // Força do pulo
     public LayerMask groundLayer; // Camada do chão
     private Rigidbody2D rb;
@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
         vida = GetComponent<Vida>(); // Obtém o componente Vida
         rb = GetComponent<Rigidbody2D>();
     }
+public float fallMultiplier = 2.5f; // Multiplicador para aumentar a velocidade de queda
 
     void Update()
     {
@@ -33,23 +34,53 @@ public class Player : MonoBehaviour
             Move();
             CheckGround();
 
-            // Pular com a tecla Espaço
             if (isGrounded && Input.GetKeyDown(KeyCode.Space))
             {
                 Jump();
             }
+
+            // Aplica um multiplicador de queda para tornar a descida mais rápida
+            if (rb.velocity.y < 0)
+            {
+                rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+            }
         }
     }
 
+
     void Move()
     {
-        float moveInput = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
+        float moveX = 0f;
+        float moveY = 0f;
+
+        // Movimentação horizontal com A e D ou setas esquerda/direita
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            moveX = -1f;
+        }
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            moveX = 1f;
+        }
+
+        // Movimentação vertical com W e S ou setas cima/baixo
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        {
+            moveY = 1f;
+        }
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            moveY = -1f;
+        }
+
+        // Aplica a velocidade ao Rigidbody2D para movimento em 2D
+        rb.velocity = new Vector2(moveX * currentSpeed, moveY * currentSpeed);
     }
+
 
     void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce); 
     }
 
     void CheckGround()
@@ -69,13 +100,13 @@ public class Player : MonoBehaviour
 
     public void ApplyBuff(float multiplier)
     {
-        currentSpeed *= multiplier;
+        currentSpeed = speed * multiplier; // Aplica o multiplicador ao valor base
         Debug.Log($"Buff de velocidade aplicado! Nova velocidade: {currentSpeed}");
     }
 
     public void RemoveBuff(float multiplier)
     {
-        currentSpeed /= multiplier;
+        currentSpeed = speed; // Reverte para o valor base
         Debug.Log($"Buff de velocidade removido. Velocidade de volta ao normal: {currentSpeed}");
     }
 
