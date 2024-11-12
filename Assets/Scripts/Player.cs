@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class Player : MonoBehaviour
     private float damageMultiplier = 1f; // Multiplicador de dano inicial
 
     public int baseDamage = 10; // Dano base do jogador
+
+    public List<Item> items; // Itens que o jogador possui
 
     void Start()
     {
@@ -134,4 +137,36 @@ public class Player : MonoBehaviour
         gold += amount;
         Debug.Log($"Jogador ganhou {amount} de ouro. Total: {gold}");
     }
+
+    public void BuyItem(Item item)
+    {
+        if (gold >= item.price)
+        {
+            gold -= item.price;  
+            items.Add(item);     
+            ApplyItemEffect(item);  
+            Debug.Log($"Você comprou {item.name}! Ouro restante: {gold}");
+        }
+        else
+        {
+            Debug.Log("Você não tem ouro suficiente para comprar este item.");
+        }
+    }
+
+    public void ApplyItemEffect(Item item)
+    {
+        switch (item.type)
+        {
+            case ItemType.SpeedBuff:
+                ApplyBuff(item.effectValue);
+                break;
+            case ItemType.DamageBuff:
+                ApplyDamageBuff(item.effectValue);
+                break;
+            default:
+                Debug.Log("Item sem efeito aplicável.");
+                break;
+        }
+    }
+
 }

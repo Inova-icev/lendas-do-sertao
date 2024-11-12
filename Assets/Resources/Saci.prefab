@@ -210,6 +210,7 @@ MonoBehaviour:
     m_Bits: 8
   gold: 0
   baseDamage: 10
+  items: []
 --- !u!70 &-4009853936557538225
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
