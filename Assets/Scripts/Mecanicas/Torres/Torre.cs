@@ -8,9 +8,13 @@ public class Torre : MonoBehaviour
     public int damage = 10; // Dano causado por ataque da torre
     public float attackCooldown = 1f; // Tempo entre os ataques
     private float lastAttackTime;
+    public string enemyTag;
 
     private Transform target;
     private float attackTimer = 0f;
+
+    public float destructionRadius = 10f; // Raio para distribuir ouro ao destruir
+    public int goldReward = 100; // Quantidade de ouro dada aos inimigos
 
     private Vida vida; // Referência ao componente Vida
 
@@ -88,6 +92,23 @@ public class Torre : MonoBehaviour
             }
         }
     }
+
+
+    // Método para conceder ouro aos inimigos próximos
+    public void GrantGoldToNearbyEnemies()
+    {
+        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, destructionRadius);
+        foreach (Collider2D enemy in enemiesInRange)
+        {
+            Player player = enemy.GetComponent<Player>();
+            if (player != null && enemy.CompareTag(enemyTag))
+            {
+                player.GainGold(goldReward);
+                Debug.Log($"{enemy.name} recebeu {goldReward} de ouro pela destruição da torre.");
+            }
+        }
+    }
+
 
     // Método para a torre receber dano
     public void TakeDamage(int amount)

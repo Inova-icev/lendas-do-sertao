@@ -27,9 +27,17 @@ public class Vida : MonoBehaviour
     {
         // Exemplo de lógica adicional para o que acontece quando o objeto morre
         Minions minionComponent = GetComponent<Minions>();
+
+        Torre torreComponent = GetComponent<Torre>();
+
         if (minionComponent != null)
         {
             minionComponent.OnDeath(); // Chama a lógica de recompensa em ouro dos inimigos, se aplicável
+        }
+
+        if (torreComponent != null)
+        {
+            torreComponent.GrantGoldToNearbyEnemies();
         }
         
         Debug.Log(gameObject.name + " morreu.");
