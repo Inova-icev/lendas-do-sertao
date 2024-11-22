@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     float speed = 6f;
     float inputX;
-
      
      //flip
      bool faceRight;
@@ -23,7 +22,6 @@ public class PlayerMovement : MonoBehaviour
 
      void Start(){
         rb= GetComponent<Rigidbody2D>();
-        
      }
      void Update(){
         CheckGrounded();

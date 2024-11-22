@@ -44,21 +44,39 @@ public class AtaquePlayer : MonoBehaviour
 
         foreach (Collider2D inimigo in hitInimigos)
         {
-            inimigo.GetComponent<MorteDoInimigo>().DanoNoinimigo(statusBase.dano);
-            Debug.Log("O inimigo recebeu " + statusBase.dano + " de dano");
-            AplicarRouboDeVida(statusBase.dano);
+            if (CalcularAcerto())
+            {
+                DefesaSistema defesaInimigo = inimigo.GetComponent<DefesaSistema>();
+                if (defesaInimigo != null)
+                {
+                    defesaInimigo.ReceberDano(statusBase.dano, 0);
+                    Debug.Log($"Inimigo atingido com {statusBase.dano} de dano físico!");
+                }
+
+                AplicarRouboDeVida(statusBase.dano);
+            }
+            else
+            {
+                Debug.Log("O ataque errou!");
+            }
         }
     }
+
 
     void AplicarRouboDeVida(float danoCausado)
     {
         float vidaRoubada = danoCausado * (statusBase.rouboDeVida / 100);
         statusBase.vidaAtual = Mathf.Min(statusBase.vidaAtual + vidaRoubada, statusBase.vidaMaxima);
-        Debug.Log("Cabeça de Cuia recuperou " + vidaRoubada + " de vida com roubo de vida.");
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(ataquePoint.position, ataqueRange);
+    }
+
+    bool CalcularAcerto()
+    {
+        float chance = Random.Range(0f, 100f);
+        return chance <= statusBase.precisao;  
     }
 }

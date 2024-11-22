@@ -26,6 +26,7 @@ public class TipoPersonagem : StatusBase
         {
             case ClassePersonagem.Mago:
                 vidaMaxima = 70f;
+                vidaAtual = 70f;
                 dano = 15f;
                 velocidadeAtaque = 1.2f;
                 manaMaxima = 100f;
@@ -37,6 +38,7 @@ public class TipoPersonagem : StatusBase
 
             case ClassePersonagem.Tanque:
                 vidaMaxima = 150f;
+                vidaAtual = 150f;
                 dano = 10f;
                 velocidadeAtaque = 0.8f;
                 manaMaxima = 50f;
@@ -48,6 +50,7 @@ public class TipoPersonagem : StatusBase
 
             case ClassePersonagem.Assassino:
                 vidaMaxima = 90f;
+                vidaAtual = 90f;
                 dano = 20f;
                 velocidadeAtaque = 1.5f;
                 manaMaxima = 60f;
@@ -59,6 +62,7 @@ public class TipoPersonagem : StatusBase
 
             case ClassePersonagem.Suporte:
                 vidaMaxima = 80f;
+                vidaAtual = 80f;
                 dano = 8f;
                 velocidadeAtaque = 1f;
                 manaMaxima = 80f;
@@ -70,6 +74,7 @@ public class TipoPersonagem : StatusBase
 
             case ClassePersonagem.Atirador:
                 vidaMaxima = 100f;
+                vidaAtual = 100f;
                 dano = 12f;
                 velocidadeAtaque = 1.3f;
                 manaMaxima = 40f;
