@@ -49,7 +49,7 @@ public class TipoPersonagem : StatusBase
                 break;
 
             case ClassePersonagem.Assassino:
-                vidaMaxima = 90f;
+                vidaMaxima = 90f;~
                 vidaAtual = 90f;
                 dano = 20f;
                 velocidadeAtaque = 1.5f;

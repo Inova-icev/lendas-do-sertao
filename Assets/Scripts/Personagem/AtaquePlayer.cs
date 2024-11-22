@@ -62,21 +62,21 @@ public class AtaquePlayer : MonoBehaviour
         }
     }
 
-
     void AplicarRouboDeVida(float danoCausado)
     {
         float vidaRoubada = danoCausado * (statusBase.rouboDeVida / 100);
         statusBase.vidaAtual = Mathf.Min(statusBase.vidaAtual + vidaRoubada, statusBase.vidaMaxima);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireSphere(ataquePoint.position, ataqueRange);
+        Debug.Log("Cabeça de Cuia recuperou " + vidaRoubada + " de vida com roubo de vida.");
     }
 
     bool CalcularAcerto()
     {
         float chance = Random.Range(0f, 100f);
         return chance <= statusBase.precisao;  
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(ataquePoint.position, ataqueRange);
     }
 }
