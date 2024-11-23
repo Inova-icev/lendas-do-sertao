@@ -17,9 +17,9 @@ GameObject:
   - component: {fileID: 821817477388837575}
   - component: {fileID: 8242301731310215607}
   - component: {fileID: -4009853936557538225}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Saci
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -207,8 +207,8 @@ MonoBehaviour:
   lowJumpMultiplier: 2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
-  gold: 0
+    m_Bits: 72
+  gold: 5000
   baseDamage: 10
   items: []
 --- !u!70 &-4009853936557538225

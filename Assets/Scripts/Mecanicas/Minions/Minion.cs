@@ -139,7 +139,6 @@ public class Minions : MonoBehaviour
         }
     }
 
-
     void Attack()
     {
         if (attackTimer <= 0f)

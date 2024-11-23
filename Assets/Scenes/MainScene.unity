@@ -976,6 +976,7 @@ GameObject:
   - component: {fileID: 174697397}
   - component: {fileID: 174697396}
   - component: {fileID: 174697395}
+  - component: {fileID: 174697398}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -1026,7 +1027,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 25.407215
+  orthographic size: 6.1111736
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -1057,6 +1058,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &174697398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174697394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66211d3cf9db7a48b8c90d62f66efbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 0, z: -10}
+  smoothness: 0.1
 --- !u!1 &212478226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1105,7 +1120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc771602acf79e545a97036a60e20223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buffMultiplier: 4
+  buffMultiplier: 2
 --- !u!114 &212478229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3190,6 +3205,9 @@ MonoBehaviour:
   range: 5
   damage: 30
   attackCooldown: 1
+  enemyTag: 
+  destructionRadius: 10
+  goldReward: 100
 --- !u!212 &500579870
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3290,6 +3308,9 @@ MonoBehaviour:
   range: 5
   damage: 30
   attackCooldown: 1
+  enemyTag: 
+  destructionRadius: 10
+  goldReward: 100
 --- !u!212 &514331885
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3442,6 +3463,9 @@ MonoBehaviour:
   range: 5
   damage: 30
   attackCooldown: 1
+  enemyTag: 
+  destructionRadius: 10
+  goldReward: 100
 --- !u!1 &549783931
 GameObject:
   m_ObjectHideFlags: 0
@@ -3693,6 +3717,9 @@ MonoBehaviour:
   range: 5
   damage: 30
   attackCooldown: 1
+  enemyTag: 
+  destructionRadius: 10
+  goldReward: 100
 --- !u!212 &632283942
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4472,6 +4499,9 @@ MonoBehaviour:
   range: 5
   damage: 30
   attackCooldown: 1
+  enemyTag: 
+  destructionRadius: 10
+  goldReward: 100
 --- !u!212 &766097471
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6325,7 +6355,7 @@ GameObject:
   - component: {fileID: 1148831106}
   - component: {fileID: 1148831105}
   - component: {fileID: 1148831107}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Plataform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8031,7 +8061,7 @@ MonoBehaviour:
   minionPrefab: {fileID: 260322519212941984, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
   spawnInterval: 30
   spawnPoint: {fileID: 762055807}
-  minionsPerWave: 0
+  minionsPerWave: 3
   spawnTag: Left
   enemyTag: Right
   minionSpacing: 1
@@ -8152,7 +8182,7 @@ MonoBehaviour:
   minionPrefab: {fileID: 260322519212941984, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
   spawnInterval: 30
   spawnPoint: {fileID: 1974239649}
-  minionsPerWave: 0
+  minionsPerWave: 3
   spawnTag: Right
   enemyTag: Left
   minionSpacing: 1
@@ -8274,6 +8304,9 @@ MonoBehaviour:
   range: 5
   damage: 30
   attackCooldown: 1
+  enemyTag: 
+  destructionRadius: 10
+  goldReward: 100
 --- !u!212 &1544939640
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8511,6 +8544,9 @@ MonoBehaviour:
   range: 5
   damage: 30
   attackCooldown: 1
+  enemyTag: 
+  destructionRadius: 10
+  goldReward: 100
 --- !u!212 &1616128894
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8994,6 +9030,9 @@ MonoBehaviour:
   range: 5
   damage: 30
   attackCooldown: 1
+  enemyTag: 
+  destructionRadius: 10
+  goldReward: 100
 --- !u!1001 &1891743949
 PrefabInstance:
   m_ObjectHideFlags: 0

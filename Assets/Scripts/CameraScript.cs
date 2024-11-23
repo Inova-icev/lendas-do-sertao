@@ -1,25 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraScript : MonoBehaviour
+public class CameraFollow : MonoBehaviour
 {
-    public Transform follow;
-    public Transform lookAt;
+    private Transform player; // Jogador que a câmera seguirá
+    public Vector3 offset; // Deslocamento da câmera
+    public float smoothness = 0.1f; // Suavidade do movimento da câmera
 
-    public float smoothness;
-
-    // Start is called before the first frame update
-    void Start()
+    private void Update()
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        // Se o jogador ainda não foi encontrado, tenta encontrá-lo
+        if (player == null)
+        {
+            GameObject playerObject = GameObject.FindWithTag("Player");
+            if (playerObject != null)
+            {
+                player = playerObject.transform;
+                Debug.Log("Jogador encontrado pela câmera!");
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void LateUpdate()
     {
-        transform.position = Vector3.Lerp(transform.position, follow.position, smoothness * Time.deltaTime);
-        transform.LookAt(lookAt);
+        if (player != null)
+        {
+            // Calcula a posição desejada
+            Vector3 desiredPosition = player.position + offset;
+
+            // Suaviza a transição
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothness);
+        }
     }
 }
