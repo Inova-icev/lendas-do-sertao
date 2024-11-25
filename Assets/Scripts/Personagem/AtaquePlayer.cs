@@ -11,8 +11,6 @@ public class AtaquePlayer : MonoBehaviour
     private StatusBase statusBase;
 
     public LayerMask inimigoLayers;
-
-    // Evento para notificar a passiva de que um ataque foi realizado
     public delegate void AtaqueRealizadoHandler();
     public static event AtaqueRealizadoHandler OnAtaqueRealizado;
 
@@ -72,7 +70,8 @@ public class AtaquePlayer : MonoBehaviour
     bool CalcularAcerto()
     {
         float chance = Random.Range(0f, 100f);
-        return chance <= statusBase.precisao;  
+        Debug.Log($"Chance sorteada: {chance}, Precisão: {statusBase.precisao}");
+        return chance < statusBase.precisao;
     }
 
     private void OnDrawGizmosSelected()

@@ -1,41 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SaciPassiva : MonoBehaviour
 {
-    public float[] precisaoReduzida = { 5f, 10f, 15f, 20f };
-    public float[] danoAdicional = { 5f, 10f, 15f, 20f };  
+    public float[] reducaoPrecisao = { 5f, 10f, 15f, 20f };
+    public float[] aumentoDanoHabilidades = { 5f, 10f, 15f, 20f };
+    public float duracaoMarca = 3f;
 
-    public int nivelHabilidade = 1;
+    private StatusBase statusBase;
 
-    private void OnEnable()
+    void Start()
     {
-        AtaquePlayer.OnAtaqueRealizado += AplicarMarcaConfusao;
-    }
-
-    private void OnDisable()
-    {
-        AtaquePlayer.OnAtaqueRealizado -= AplicarMarcaConfusao;
-    }
-
-    private void AplicarMarcaConfusao()
-    {
-        Collider2D[] inimigosAfetados = Physics2D.OverlapCircleAll(ataquePoint.position, ataqueRange, inimigoLayers);
-        
-        foreach (Collider2D inimigo in inimigosAfetados)
+        statusBase = GetComponent<StatusBase>();
+        if (statusBase == null)
         {
-            EfeitoMarcaConfusao efeito = inimigo.GetComponent<EfeitoMarcaConfusao>();
-            
-            if (efeito == null)  
-            {
-                efeito = inimigo.gameObject.AddComponent<EfeitoMarcaConfusao>();
-            }
+            Debug.LogError("StatusBase não encontrado no Saci!");
+        }
+    }
 
-            efeito.precisaoReducaoPercentual = precisaoReduzida[nivelHabilidade - 1];
-            efeito.aumentoDanoPercentual = danoAdicional[nivelHabilidade - 1];
+    public void AplicarMarca(GameObject inimigo)
+    {
+        DefesaSistema defesaInimigo = inimigo.GetComponent<DefesaSistema>();
+        if (defesaInimigo != null)
+        {
+            int nivel = Mathf.Clamp(statusBase.level, 1, reducaoPrecisao.Length) - 1;
 
-            efeito.AplicarEfeitos();
+            defesaInimigo.AplicarReducaoPrecisao(reducaoPrecisao[nivel], duracaoMarca);
+            defesaInimigo.AplicarAumentoDanoHabilidades(aumentoDanoHabilidades[nivel], duracaoMarca);
         }
     }
 }

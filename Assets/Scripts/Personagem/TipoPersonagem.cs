@@ -14,7 +14,6 @@ public class TipoPersonagem : StatusBase
     [Header("Classe do Personagem")]
     public ClassePersonagem classeSelecionada;
 
-    // Método chamado automaticamente no Inspector da Unity ao modificar valores
     private void OnValidate()
     {
         AplicarAtributosDaClasse();
@@ -30,8 +29,10 @@ public class TipoPersonagem : StatusBase
                 dano = 15f;
                 velocidadeAtaque = 1.2f;
                 manaMaxima = 100f;
+                manaAtual = 100f;
                 regeneracaoVida = 1.5f;
                 regeneracaoMana = 3f;
+                precisao = 100f;
                 velocidadeMovimento = 4f;
                 jumpForce = 8f;
                 break;
@@ -42,20 +43,24 @@ public class TipoPersonagem : StatusBase
                 dano = 10f;
                 velocidadeAtaque = 0.8f;
                 manaMaxima = 50f;
+                manaAtual = 50f;
                 regeneracaoVida = 3f;
                 regeneracaoMana = 1f;
+                precisao = 100f;
                 velocidadeMovimento = 3f;
                 jumpForce = 6f;
                 break;
 
             case ClassePersonagem.Assassino:
-                vidaMaxima = 90f;~
+                vidaMaxima = 90f;
                 vidaAtual = 90f;
                 dano = 20f;
                 velocidadeAtaque = 1.5f;
                 manaMaxima = 60f;
+                manaAtual = 60f;
                 regeneracaoVida = 1f;
                 regeneracaoMana = 1.5f;
+                precisao = 100f;
                 velocidadeMovimento = 6f;
                 jumpForce = 10f;
                 break;
@@ -66,8 +71,10 @@ public class TipoPersonagem : StatusBase
                 dano = 8f;
                 velocidadeAtaque = 1f;
                 manaMaxima = 80f;
+                manaAtual = 80f;
                 regeneracaoVida = 2f;
                 regeneracaoMana = 2.5f;
+                precisao = 100f;
                 velocidadeMovimento = 4.5f;
                 jumpForce = 7f;
                 break;
@@ -78,8 +85,10 @@ public class TipoPersonagem : StatusBase
                 dano = 12f;
                 velocidadeAtaque = 1.3f;
                 manaMaxima = 40f;
+                manaAtual = 40f;
                 regeneracaoVida = 1.2f;
                 regeneracaoMana = 1f;
+                precisao = 100f;
                 velocidadeMovimento = 5f;
                 jumpForce = 8f;
                 break;
