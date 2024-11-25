@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuffMandacaru : MonoBehaviour
 {
-    public float buffMultiplier = 1.5f; // Multiplicador para o buff
+    public float buffMultiplier = 1.5f;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -20,7 +20,7 @@ public class BuffMandacaru : MonoBehaviour
         Player player = other.GetComponent<Player>();
         if (player != null)
         {
-            player.RemoveBuff(buffMultiplier);
+            player.RemoveBuff(); // Atualizado para não passar o multiplicador
         }
     }
 }

@@ -208,6 +208,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 72
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 64
   gold: 5000
   baseDamage: 10
   items: []

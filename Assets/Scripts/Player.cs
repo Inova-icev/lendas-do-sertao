@@ -3,31 +3,35 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 5f; // Velocidade base do jogador
-    public float jumpForce = 7f; // Força do pulo
-    public float fallMultiplier = 2.5f; // Multiplicador para aumentar a velocidade de queda
-    public float lowJumpMultiplier = 2f; // Multiplicador para uma queda mais suave ao soltar o botão de pulo
-    public LayerMask groundLayer; // Camada do chão
+    public float speed = 5f;
+    public float jumpForce = 7f;
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
+    public LayerMask groundLayer;
+    public LayerMask platformLayer; // Nova camada para as plataformas que podem ser atravessadas
     private Rigidbody2D rb;
     private bool isGrounded;
 
-    public int gold = 0; // Quantidade de ouro do jogador
+    public int gold = 0;
 
-    private Vida vida; // Referência ao componente Vida
+    private Vida vida;
 
-    private bool controlEnabled = true; // Controle se o jogador pode se mover
+    private bool controlEnabled = true;
 
     private float currentSpeed;
-    private float damageMultiplier = 1f; // Multiplicador de dano inicial
+    private float damageMultiplier = 1f;
 
-    public int baseDamage = 10; // Dano base do jogador
+    public int baseDamage = 10;
 
-    public List<Item> items; // Itens que o jogador possui
+    public List<Item> items;
+
+    private bool isSpeedBuffed = false;
+    private bool isDamageBuffed = false;
 
     void Start()
     {
-        currentSpeed = speed; // Inicialize com a velocidade base
-        vida = GetComponent<Vida>(); // Obtém o componente Vida
+        currentSpeed = speed;
+        vida = GetComponent<Vida>();
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -40,19 +44,25 @@ public class Player : MonoBehaviour
 
             if (isGrounded && Input.GetKeyDown(KeyCode.Space))
             {
-                Debug.Log("Pulo detectado!"); // Verificação
+                Debug.Log("Pulo detectado!");
                 Jump();
+                TryJumpThroughPlatform();
             }
 
-            // Aplica multiplicador de queda para tornar a descida mais rápida
+            HandleFalling();
+
             if (rb.velocity.y < 0)
             {
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
             }
-            // Aplica um multiplicador mais leve para pular se o jogador liberar a tecla de pulo
             else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space))
             {
                 rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+            }
+
+            if (Input.GetKey(KeyCode.S))
+            {
+                DropThroughPlatform();
             }
         }
     }
@@ -61,7 +71,6 @@ public class Player : MonoBehaviour
     {
         float moveX = 0f;
 
-        // Movimentação horizontal com A e D ou setas esquerda/direita
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             moveX = -1f;
@@ -71,25 +80,79 @@ public class Player : MonoBehaviour
             moveX = 1f;
         }
 
-        // Aplica a velocidade ao Rigidbody2D para movimento horizontal
         rb.velocity = new Vector2(moveX * currentSpeed, rb.velocity.y);
     }
 
     void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce); 
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
     void CheckGround()
     {
-        Vector2 origin = new Vector2(transform.position.x, transform.position.y - 0.5f); // Ajuste o valor para baixo conforme necessário
+        Vector2 origin = new Vector2(transform.position.x, transform.position.y - 0.5f);
         RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, 1f, groundLayer);
         isGrounded = hit.collider != null;
 
-        // Debug para visualizar o Raycast no Editor
         Debug.DrawRay(origin, Vector2.down * 1f, Color.red);
+        Debug.DrawRay(origin, Vector2.up * 3f, Color.green);
     }
 
+    void HandleFalling()
+    {
+        if (rb.velocity.y < 0)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space))
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+    }
+
+    void TryJumpThroughPlatform()
+    {
+        // Ajustar a posição de origem para ser um pouco acima do topo do colisor do personagem
+        Vector2 origin = new Vector2(transform.position.x, transform.position.y - GetComponent<Collider2D>().bounds.extents.y / 2);
+
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.up, 3.5f, platformLayer);
+        if (hit.collider != null)
+        {
+            Collider2D collider = GetComponent<Collider2D>();
+            collider.enabled = false;
+            Invoke("ReactivateCollider", 0.8f); // Reativa o colisor rapidamente
+        }
+        else
+        {
+            Debug.Log("Nenhuma plataforma detectada acima para subir");
+        }
+    }
+
+
+    void DropThroughPlatform()
+    {
+        // Obtém a posição ligeiramente abaixo do centro do jogador para detectar plataformas
+        Vector2 feetPosition = new Vector2(transform.position.x, transform.position.y - 0.5f);
+        RaycastHit2D hit = Physics2D.Raycast(feetPosition, Vector2.down, 1f, platformLayer);
+
+        // Verifica se o jogador está sobre uma plataforma que é da camada 6
+        if (hit.collider != null && hit.collider.gameObject.layer == 6)
+        {
+            Collider2D collider = GetComponent<Collider2D>();
+            // Desativa temporariamente o colisor do personagem
+            collider.enabled = false;
+            Invoke("ReactivateCollider", 0.2f); // Reativa o colisor após 0.5 segundos
+        }
+        else
+        {
+            Debug.Log("Não está em uma plataforma que permite descer.");
+        }
+    }
+
+    void ReactivateCollider()
+    {
+        GetComponent<Collider2D>().enabled = true;
+    }
     // Método para calcular o dano causado com o buff
     private void Attack()
     {
@@ -100,28 +163,52 @@ public class Player : MonoBehaviour
 
     public void ApplyBuff(float multiplier)
     {
-        currentSpeed = speed * multiplier; // Aplica o multiplicador ao valor base
-        Debug.Log($"Buff de velocidade aplicado! Nova velocidade: {currentSpeed}");
+        Debug.Log($"Tentando aplicar buff: Atualmente Buffed = {isSpeedBuffed}");
+        if (!isSpeedBuffed)
+        {
+            currentSpeed = speed * multiplier;
+            isSpeedBuffed = true;
+            Debug.Log($"Buff aplicado com sucesso: Velocidade Atual = {currentSpeed}");
+        }
+        else
+        {
+            Debug.Log("Buff não aplicado porque já está buffed.");
+        }
     }
 
-    public void RemoveBuff(float multiplier)
+    public void RemoveBuff()
     {
-        currentSpeed = speed; // Reverte para o valor base
-        Debug.Log($"Buff de velocidade removido. Velocidade de volta ao normal: {currentSpeed}");
+        Debug.Log($"Tentando remover buff: Atualmente Buffed = {isSpeedBuffed}");
+        if (isSpeedBuffed)
+        {
+            currentSpeed = speed;
+            isSpeedBuffed = false;
+            Debug.Log("Buff removido com sucesso.");
+        }
+        else
+        {
+            Debug.Log("Buff não removido porque não estava buffed.");
+        }
     }
 
-    // Aplicar um buff de dano
     public void ApplyDamageBuff(float multiplier)
     {
-        damageMultiplier *= multiplier;
-        Debug.Log($"Buff de dano aplicado! Multiplicador de dano atual: {damageMultiplier}");
+        if (!isDamageBuffed)
+        {
+            damageMultiplier *= multiplier;
+            isDamageBuffed = true;
+            Debug.Log($"Buff de dano aplicado! Multiplicador de dano atual: {damageMultiplier}");
+        }
     }
 
-    // Remover o buff de dano
     public void RemoveDamageBuff(float multiplier)
     {
-        damageMultiplier /= multiplier;
-        Debug.Log($"Buff de dano removido. Multiplicador de dano de volta ao normal: {damageMultiplier}");
+        if (isDamageBuffed)
+        {
+            damageMultiplier /= multiplier;
+            isDamageBuffed = false;
+            Debug.Log($"Buff de dano removido. Multiplicador de dano de volta ao normal: {damageMultiplier}");
+        }
     }
 
     public void TakeDamage(int damageAmount)
@@ -168,5 +255,4 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-
 }

@@ -734,7 +734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc771602acf79e545a97036a60e20223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buffMultiplier: 50
+  buffMultiplier: 2.5
 --- !u!114 &83276340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1120,7 +1120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc771602acf79e545a97036a60e20223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buffMultiplier: 2
+  buffMultiplier: 1
 --- !u!114 &212478229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8061,7 +8061,7 @@ MonoBehaviour:
   minionPrefab: {fileID: 260322519212941984, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
   spawnInterval: 30
   spawnPoint: {fileID: 762055807}
-  minionsPerWave: 3
+  minionsPerWave: 0
   spawnTag: Left
   enemyTag: Right
   minionSpacing: 1
@@ -8182,7 +8182,7 @@ MonoBehaviour:
   minionPrefab: {fileID: 260322519212941984, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
   spawnInterval: 30
   spawnPoint: {fileID: 1974239649}
-  minionsPerWave: 3
+  minionsPerWave: 0
   spawnTag: Right
   enemyTag: Left
   minionSpacing: 1
