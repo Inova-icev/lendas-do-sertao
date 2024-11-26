@@ -52,7 +52,7 @@ MonoBehaviour:
   fallSpeed: 5
   groundCheckDistance: 1
   attackRange: 1.5
-  attackDamage: 20
+  attackDamage: 200
   attackCooldown: 2
   enemyTag: Left
   groundLayer:
@@ -185,4 +185,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 150
+  currentHealth: 2000

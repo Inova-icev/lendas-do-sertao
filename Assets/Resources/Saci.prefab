@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6009636200470402902}
   - component: {fileID: 4372903921554863086}
+  - component: {fileID: 8242301731310215607}
   - component: {fileID: 6202342088335736759}
   - component: {fileID: 3193068972600345706}
   - component: {fileID: 2515003114493855935}
   - component: {fileID: 6696557345719903630}
   - component: {fileID: 821817477388837575}
-  - component: {fileID: 8242301731310215607}
   - component: {fileID: -4009853936557538225}
   m_Layer: 7
   m_Name: Saci
@@ -91,6 +91,33 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8242301731310215607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3375314747158299155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32cd0c753d0c9bf458191af5b02c2bac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
+  jumpForce: 8
+  fallMultiplier: 3.5
+  lowJumpMultiplier: 2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 72
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  gold: 5000
+  baseDamage: 100
+  items: []
+  attackRange: 5
+  attackCooldown: 0.5
 --- !u!114 &6202342088335736759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,31 +216,6 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &8242301731310215607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3375314747158299155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32cd0c753d0c9bf458191af5b02c2bac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 5
-  jumpForce: 8
-  fallMultiplier: 3.5
-  lowJumpMultiplier: 2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 72
-  platformLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  gold: 5000
-  baseDamage: 10
-  items: []
 --- !u!70 &-4009853936557538225
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

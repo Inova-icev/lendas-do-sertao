@@ -52,7 +52,7 @@ MonoBehaviour:
   fallSpeed: 5
   groundCheckDistance: 1
   attackRange: 1.5
-  attackDamage: 20
+  attackDamage: 200
   attackCooldown: 2
   enemyTag: Right
   groundLayer:

@@ -18,6 +18,9 @@ public class Torre : MonoBehaviour
 
     private Vida vida; // Referência ao componente Vida
 
+    private float findTargetCooldown = 0.5f; // Intervalo para procurar alvos
+    private float findTargetTimer = 0f;
+
     void Start()
     {
         vida = GetComponent<Vida>(); // Inicializa a referência ao componente Vida
@@ -25,28 +28,27 @@ public class Torre : MonoBehaviour
 
     void Update()
     {
-        // Verifica se há um inimigo no alcance
-        if (target != null && attackTimer <= 0f)
-        {
-            Attack(); // Chama o método de ataque
-            attackTimer = attackCooldown; // Reinicia o cooldown do ataque
-        }
+        // Atualiza o temporizador de busca
+        findTargetTimer -= Time.deltaTime;
 
-        // Reduz o tempo do temporizador de ataque
+        // Reduz o temporizador de ataque
         if (attackTimer > 0f)
         {
             attackTimer -= Time.deltaTime;
         }
 
-        // Código para detectar o inimigo (mantido simples)
-        Collider2D detectedEnemy = DetectEnemyInRange();
-        if (detectedEnemy != null)
+        // Busca novos alvos periodicamente
+        if (findTargetTimer <= 0f)
         {
-            target = detectedEnemy.transform; // Atribui o alvo detectado
+            target = DetectEnemyInRange()?.transform;
+            findTargetTimer = findTargetCooldown;
         }
-        else
+
+        // Ataca se houver um alvo e o cooldown de ataque tiver terminado
+        if (target != null && attackTimer <= 0f)
         {
-            target = null; // Se nenhum inimigo for encontrado
+            Attack();
+            attackTimer = attackCooldown;
         }
     }
 

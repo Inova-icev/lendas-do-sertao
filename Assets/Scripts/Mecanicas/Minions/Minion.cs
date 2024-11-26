@@ -14,19 +14,21 @@ public class Minions : MonoBehaviour
 
     private Transform target; // Alvo atual do minion
     private float attackTimer = 0f; // Temporizador de ataque
-    private float findTargetTimer = 0f; // Temporizador de busca de alvo
-    private bool isMovingToWaypoint = true; // Indica se o minion está se movendo para o waypoint
     private Rigidbody2D rb;
     private Vida vidaComponent; // Referência ao componente Vida para o próprio minion
 
     private float goldRewardRadius = 5f;
     private int goldReward = 50;
 
+    private float findTargetCooldown = 1f; // Tempo entre buscas
+    private float findTargetTimer = 0f;
+
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>(); // Inicializa o Rigidbody2D
-        vidaComponent = GetComponent<Vida>(); // Inicializa o componente Vida
+        rb = GetComponent<Rigidbody2D>();
+        vidaComponent = GetComponent<Vida>();
 
+        // Configurar o enemyTag com base na tag do minion
         if (CompareTag("Left"))
         {
             enemyTag = "Right";
@@ -37,7 +39,7 @@ public class Minions : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"{gameObject.name} tem uma tag desconhecida. enemyTag não pode ser configurado corretamente.");
+            Debug.LogWarning($"{gameObject.name} tem uma tag desconhecida. enemyTag não foi configurado.");
         }
         // Configura o waypoint inicial
         if (CompareTag("Left"))
@@ -57,67 +59,44 @@ public class Minions : MonoBehaviour
             }
         }
 
-        if (waypoint != null)
-        {
-            Debug.Log($"{gameObject.name} está se movendo em direção ao waypoint {waypoint.name}");
-            MoveTowardsWaypoint(); // Move para o waypoint no início
-        }
-
         FindTarget(); // Encontra o alvo inicial ao começar
     }
 
     void Update()
     {
-        // Movimentação e ataque
-        if (target == null)
-        {
-            if (findTargetTimer <= 0f)
-            {
-                FindTarget();
-                findTargetTimer = 1f;
-            }
-            else
-            {
-                findTargetTimer -= Time.deltaTime;
-            }
-
-            if (isMovingToWaypoint)
-            {
-                MoveTowardsWaypoint();
-                if (waypoint != null && Vector2.Distance(transform.position, waypoint.position) < 0.1f)
-                {
-                    isMovingToWaypoint = false;
-                    rb.velocity = Vector2.zero; // Parar movimento ao chegar no waypoint
-                }
-            }
-        }
-        else
-        {
-            // Checa a distância até o alvo
-            float distance = Vector2.Distance(transform.position, target.position);
-            if (distance > attackRange)
-            {
-                MoveTowardsTarget(); // Aproxima-se do alvo
-            }
-            else
-            {
-                Attack(); // Ataca o alvo quando está no alcance
-            }
-        }
-
+        // Atualiza temporizador de ataque
         if (attackTimer > 0)
         {
             attackTimer -= Time.deltaTime;
         }
 
-        // Verifica se deve descer ao sair de um obstáculo
-        if (!IsGroundBelow())
+        // Se não houver um alvo, procure um
+        if (target == null)
         {
-            rb.velocity = new Vector2(rb.velocity.x, -fallSpeed); // Aplicação da queda
+            FindTarget();
+            if (waypoint != null)
+            {
+                MoveTowardsWaypoint();
+            }
         }
         else
         {
-            rb.velocity = new Vector2(rb.velocity.x, 0); // Fixa no chão quando detectado
+            // Se o alvo estiver fora do alcance, mova-se em direção a ele
+            if (Vector2.Distance(transform.position, target.position) > attackRange)
+            {
+                MoveTowardsTarget();
+            }
+            else
+            {
+                // Ataque o alvo se estiver no alcance
+                Attack();
+            }
+        }
+
+        // Verifica se o minion deve cair
+        if (!IsGroundBelow())
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -fallSpeed);
         }
     }
 
@@ -125,7 +104,7 @@ public class Minions : MonoBehaviour
     {
         if (waypoint != null)
         {
-            Vector2 position = Vector2.MoveTowards(transform.position, waypoint.position, speed * Time.fixedDeltaTime);
+            Vector2 position = Vector2.MoveTowards(transform.position, waypoint.position, speed * Time.deltaTime);
             rb.MovePosition(position); // Move o Rigidbody2D em direção ao waypoint
         }
     }
@@ -139,26 +118,8 @@ public class Minions : MonoBehaviour
         }
     }
 
-    void Attack()
-    {
-        if (attackTimer <= 0f)
-        {
-            if (target != null)
-            {
-                Vida targetVida = target.GetComponent<Vida>();
-                if (targetVida != null)
-                {
-                    targetVida.TakeDamage(attackDamage);
-                    Debug.Log($"{gameObject.name} atacou {target.name} e causou {attackDamage} de dano.");
-                    attackTimer = attackCooldown; // Reinicia o cooldown do ataque
-                }
-                else
-                {
-                    Debug.LogWarning($"{target.name} não possui um componente Vida.");}
-
-            }
-        }
-    }
+    
+    // Procurar o alvo mais próximo (minion ou torre inimiga)
     void FindTarget()
     {
         Collider2D[] potentialTargets = Physics2D.OverlapCircleAll(transform.position, attackRange);
@@ -167,7 +128,8 @@ public class Minions : MonoBehaviour
 
         foreach (Collider2D potentialTarget in potentialTargets)
         {
-            if ((CompareTag("Left") && potentialTarget.CompareTag("Right")) || 
+            // Verifica se o alvo é inimigo (minion ou torre)
+            if ((CompareTag("Left") && potentialTarget.CompareTag("Right")) ||
                 (CompareTag("Right") && potentialTarget.CompareTag("Left")))
             {
                 Vida vidaComponent = potentialTarget.GetComponent<Vida>();
@@ -182,13 +144,30 @@ public class Minions : MonoBehaviour
                 }
             }
         }
+
+        // Define o alvo se encontrado
         if (closestTarget != null)
         {
             target = closestTarget.transform;
-            Debug.Log($"{gameObject.name} encontrou o alvo {closestTarget.name} a uma distância de {closestDistance}");
+            Debug.Log($"{gameObject.name} encontrou o alvo {closestTarget.name}");
         }
     }
 
+    // Método de ataque
+    private void Attack()
+    {
+        // Verifica se o cooldown acabou
+        if (attackTimer <= 0f && target != null)
+        {
+            Vida targetVida = target.GetComponent<Vida>();
+            if (targetVida != null)
+            {
+                targetVida.TakeDamage(attackDamage); // Aplica o dano
+                Debug.Log($"{gameObject.name} atacou {target.name} causando {attackDamage} de dano.");
+                attackTimer = attackCooldown; // Reinicia o cooldown
+            }
+        }
+    }
 
     // Verifica se há chão abaixo do minion
     private bool IsGroundBelow()
@@ -197,7 +176,6 @@ public class Minions : MonoBehaviour
         Debug.DrawRay(transform.position, Vector2.down * groundCheckDistance, Color.red); // Visualize o Raycast para depuração
         return hit.collider != null;
     }
-
 
     // Função para receber dano
     public void TakeDamage(int damage)

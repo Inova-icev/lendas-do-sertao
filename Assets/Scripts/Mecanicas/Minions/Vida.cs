@@ -14,7 +14,6 @@ public class Vida : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage; // Reduz a saúde pelo valor de dano
-        Debug.Log(gameObject.name + " tomou " + damage + " de dano. Saúde restante: " + currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -25,7 +24,6 @@ public class Vida : MonoBehaviour
     // Função para lidar com a morte do objeto
     void Die()
     {
-        // Exemplo de lógica adicional para o que acontece quando o objeto morre
         Minions minionComponent = GetComponent<Minions>();
 
         Torre torreComponent = GetComponent<Torre>();

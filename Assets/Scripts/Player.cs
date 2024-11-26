@@ -28,6 +28,11 @@ public class Player : MonoBehaviour
     private bool isSpeedBuffed = false;
     private bool isDamageBuffed = false;
 
+    public float attackRange = 1f;
+    public float attackCooldown = 0.5f; // Intervalo entre os ataques
+
+    private float lastAttackTime = 0f;
+
     void Start()
     {
         currentSpeed = speed;
@@ -63,6 +68,10 @@ public class Player : MonoBehaviour
             if (Input.GetKey(KeyCode.S))
             {
                 DropThroughPlatform();
+            }
+            if (Input.GetMouseButtonDown(0)) // Botão direito do mouse
+            {
+                Attack();
             }
         }
     }
@@ -154,12 +163,6 @@ public class Player : MonoBehaviour
         GetComponent<Collider2D>().enabled = true;
     }
     // Método para calcular o dano causado com o buff
-    private void Attack()
-    {
-        int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
-        Debug.Log($"Dano causado: {damageToDeal}");
-        // Aqui você pode implementar lógica para encontrar inimigos próximos e aplicar dano a eles
-    }
 
     public void ApplyBuff(float multiplier)
     {
@@ -253,6 +256,62 @@ public class Player : MonoBehaviour
             default:
                 Debug.Log("Item sem efeito aplicável.");
                 break;
+        }
+    }
+
+    private void Attack()
+    {
+        // Verifica se o tempo de recarga entre os ataques passou
+        if (Time.time >= lastAttackTime + attackCooldown)
+        {
+            lastAttackTime = Time.time; // Atualiza o tempo do último ataque
+
+            int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
+            Debug.Log($"Dano causado: {damageToDeal}");
+
+            // Encontrar e atacar o inimigo mais próximo (ou qualquer lógica de ataque que você tenha)
+            FindTargetAndAttack();
+        }
+        else
+        {
+            Debug.Log("Aguardando recarga do ataque...");
+        }
+    }
+
+        private void FindTargetAndAttack()
+    {
+        Collider2D[] potentialTargets = Physics2D.OverlapCircleAll(transform.position, attackRange);
+        float closestDistance = Mathf.Infinity;
+        Collider2D closestTarget = null;
+
+        foreach (Collider2D potentialTarget in potentialTargets)
+        {
+            if ((CompareTag("Left") && potentialTarget.CompareTag("Right")) ||
+                (CompareTag("Right") && potentialTarget.CompareTag("Left")))
+            {
+                Vida vidaComponent = potentialTarget.GetComponent<Vida>();
+                if (vidaComponent != null)
+                {
+                    float distanceToTarget = Vector2.Distance(transform.position, potentialTarget.transform.position);
+                    if (distanceToTarget < closestDistance)
+                    {
+                        closestDistance = distanceToTarget;
+                        closestTarget = potentialTarget;
+                    }
+                }
+            }
+        }
+
+        if (closestTarget != null)
+        {
+            // Aplica o dano no alvo
+            Vida targetVida = closestTarget.GetComponent<Vida>();
+            if (targetVida != null)
+            {
+                int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
+                targetVida.TakeDamage(damageToDeal);
+                Debug.Log($"{gameObject.name} atacou {closestTarget.name} causando {damageToDeal} de dano");
+            }
         }
     }
 }
