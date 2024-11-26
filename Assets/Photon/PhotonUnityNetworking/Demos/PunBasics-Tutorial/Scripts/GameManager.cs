@@ -30,11 +30,18 @@ namespace Photon.Pun.Demo.PunBasics
 
 		static public GameManager Instance;
 
-		#endregion
+        [SerializeField]
+        private GameObject gameOverUI; 
 
-		#region Private Fields
+        [SerializeField]
+        private string mainMenuScene = "PunBasics-Launcher";
 
-		private GameObject instance;
+
+        #endregion
+
+        #region Private Fields
+
+        private GameObject instance;
 
         [Tooltip("The prefab to use for representing the player")]
         [SerializeField]
@@ -51,8 +58,13 @@ namespace Photon.Pun.Demo.PunBasics
 		{
 			Instance = this;
 
-			// in case we started this demo with the wrong scene being active, simply load the menu scene
-			if (!PhotonNetwork.IsConnected)
+            if (gameOverUI != null)
+            {
+                gameOverUI.SetActive(false);
+            }
+
+            // in case we started this demo with the wrong scene being active, simply load the menu scene
+            if (!PhotonNetwork.IsConnected)
 			{
 				SceneManager.LoadScene("PunBasics-Launcher");
 
@@ -164,11 +176,41 @@ namespace Photon.Pun.Demo.PunBasics
 			Application.Quit();
 		}
 
-		#endregion
+        [PunRPC]
+        public void EndGame(string winningTeam)
+        {
+            Debug.Log($"Fim de jogo! Vencedor: {winningTeam}");
 
-		#region Private Methods
+            if (gameOverUI != null)
+            {
+                gameOverUI.SetActive(true);
+            }
 
-		void LoadArena()
+            var winnerText = gameOverUI.GetComponentInChildren<UnityEngine.UI.Text>();
+            if (winnerText != null)
+            {
+                winnerText.text = $"Vencedor: {winningTeam}";
+            }
+
+            Time.timeScale = 0f;
+        }
+
+        [PunRPC]
+        public void NexusDestroyed(string teamName)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                photonView.RPC("EndGame", RpcTarget.All, teamName);
+            }
+        }
+
+
+
+        #endregion
+
+        #region Private Methods
+
+        void LoadArena()
 		{
 			if ( ! PhotonNetwork.IsMasterClient )
 			{
