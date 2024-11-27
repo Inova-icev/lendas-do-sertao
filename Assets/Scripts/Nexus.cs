@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class Nexus : MonoBehaviour
+
+public class Nexus : MonoBehaviourPunCallbacks
 {
     public int health = 100; 
     public string teamName; 
 
-    private GameManager gameManager;
+    private GameManager gameManager; // aqui é onde a referência para o GameManager será armazenada
 
     void Start()
     {
