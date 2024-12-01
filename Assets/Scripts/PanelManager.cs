@@ -118,7 +118,7 @@ namespace ManagmentScripts
         }
         public void SelectedPersonagem()
         {
-            gameManager.SpawnPalyer();
+            gameManager.SpawnPlayer();
             painelPersonagens.SetActive(false);
             background.SetActive(false);
         }
