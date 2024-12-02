@@ -32,6 +32,11 @@ public class Player : MonoBehaviour
     public float attackCooldown = 0.5f; // Intervalo entre os ataques
 
     private float lastAttackTime = 0f;
+    public float acceleration = 20f; // Aceleração ao mover
+    public float deceleration = 10f; // Desaceleração ao parar
+
+    public float jumpHoldTime = 0.5f; // Tempo máximo de sustentação do pulo
+    private float jumpHoldTimer = 0f;
 
     void Start()
     {
@@ -89,23 +94,44 @@ public class Player : MonoBehaviour
             moveX = 1f;
         }
 
-        rb.velocity = new Vector2(moveX * currentSpeed, rb.velocity.y);
+        // Acelera ou desacelera com base na direção
+        if (moveX != 0)
+        {
+            // Aceleração suave ao mover
+            rb.velocity = new Vector2(Mathf.MoveTowards(rb.velocity.x, moveX * currentSpeed, acceleration * Time.deltaTime), rb.velocity.y);
+        }
+        else
+        {
+            // Desaceleração suave ao parar
+            rb.velocity = new Vector2(Mathf.MoveTowards(rb.velocity.x, 0f, deceleration * Time.deltaTime), rb.velocity.y);
+        }
     }
 
     void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        if (jumpHoldTimer < jumpHoldTime)  // Verifica se o jogador está pressionando o botão de pulo
+        {
+            jumpHoldTimer += Time.deltaTime;
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+        else
+        {
+            jumpHoldTimer = jumpHoldTime;  // Limita o tempo máximo de pulo
+        }
     }
 
     void CheckGround()
     {
         Vector2 origin = new Vector2(transform.position.x, transform.position.y - 0.5f);
         RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, 1f, groundLayer);
-        isGrounded = hit.collider != null;
 
-        Debug.DrawRay(origin, Vector2.down * 1f, Color.red);
-        Debug.DrawRay(origin, Vector2.up * 3f, Color.green);
+        // Raycasts extras podem ajudar a garantir a detecção correta
+        RaycastHit2D hitLeft = Physics2D.Raycast(new Vector2(transform.position.x - 0.25f, transform.position.y - 0.5f), Vector2.down, 0.5f, groundLayer);
+        RaycastHit2D hitRight = Physics2D.Raycast(new Vector2(transform.position.x + 0.25f, transform.position.y - 0.5f), Vector2.down, 0.5f, groundLayer);
+
+        isGrounded = hit.collider != null || hitLeft.collider != null || hitRight.collider != null;
     }
+
 
     void HandleFalling()
     {
@@ -118,6 +144,7 @@ public class Player : MonoBehaviour
             rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
     }
+
 
     void TryJumpThroughPlatform()
     {
@@ -232,9 +259,9 @@ public class Player : MonoBehaviour
     {
         if (gold >= item.price)
         {
-            gold -= item.price;  
-            items.Add(item);     
-            ApplyItemEffect(item);  
+            gold -= item.price;
+            items.Add(item);
+            ApplyItemEffect(item);
             Debug.Log($"Você comprou {item.name}! Ouro restante: {gold}");
         }
         else
@@ -278,7 +305,7 @@ public class Player : MonoBehaviour
         }
     }
 
-        private void FindTargetAndAttack()
+    private void FindTargetAndAttack()
     {
         Collider2D[] potentialTargets = Physics2D.OverlapCircleAll(transform.position, attackRange);
         float closestDistance = Mathf.Infinity;
