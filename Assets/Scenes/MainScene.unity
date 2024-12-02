@@ -268,7 +268,6 @@ GameObject:
   - component: {fileID: 83276335}
   - component: {fileID: 83276334}
   - component: {fileID: 83276338}
-  - component: {fileID: 83276340}
   - component: {fileID: 83276339}
   m_Layer: 0
   m_Name: Mandacaru
@@ -731,22 +730,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 83276332}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc771602acf79e545a97036a60e20223, type: 3}
+  m_Script: {fileID: 11500000, guid: b689ad7e493a0aa4fbef9c4721034f9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buffMultiplier: 2.5
---- !u!114 &83276340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 83276332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd29860c8e2bf1a48894f59fc99ebf59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  captureSpeed: 10
+  teamLeftTag: Left
+  teamRightTag: Right
+  buffMultiplier: 1.5
   damageMultiplier: 2
 --- !u!1 &107972966
 GameObject:
