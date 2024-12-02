@@ -112,7 +112,7 @@ public class Minions : MonoBehaviour
             }
             else
             {
-                // Ataque o alvo se estiver no alcance
+                rb.velocity = Vector2.zero;
                 Attack();
             }
         }

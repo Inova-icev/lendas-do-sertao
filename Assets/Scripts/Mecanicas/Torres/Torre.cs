@@ -28,6 +28,20 @@ public class Torre : MonoBehaviour
 
     void Update()
     {
+        if (CompareTag("Left"))
+        {
+            int leftLayer = LayerMask.NameToLayer("Left");
+            Physics2D.IgnoreLayerCollision(leftLayer, leftLayer, true); // Minions da Left ignoram uns aos outros
+        }
+        else if (CompareTag("Right"))
+        {
+            int rightLayer = LayerMask.NameToLayer("Right");
+            Physics2D.IgnoreLayerCollision(rightLayer, rightLayer, true); // Minions da Right ignoram uns aos outros
+        }
+        else
+        {
+            Debug.LogWarning($"{gameObject.name} tem uma tag desconhecida. Nenhuma colisão configurada.");
+        }
         // Atualiza o temporizador de busca
         findTargetTimer -= Time.deltaTime;
 
