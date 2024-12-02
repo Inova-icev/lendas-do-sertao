@@ -52,12 +52,12 @@ MonoBehaviour:
   fallSpeed: 5
   groundCheckDistance: 1
   attackRange: 1.5
-  attackDamage: 20
+  attackDamage: 2000
   attackCooldown: 2
   enemyTag: Left
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
   waypoint: {fileID: 0}
   obstacleCheckDistance: 1
   climbHeight: 1
@@ -188,4 +188,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 100
+  currentHealth: 100000
