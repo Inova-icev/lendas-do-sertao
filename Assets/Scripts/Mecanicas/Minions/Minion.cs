@@ -19,15 +19,31 @@ public class Minions : MonoBehaviour
 
     private float goldRewardRadius = 5f;
     private int goldReward = 50;
-
-    private float findTargetCooldown = 1f; // Tempo entre buscas
-    private float findTargetTimer = 0f;
+    private bool isGrounded; // Verifica se o minion está no chão
+    public float obstacleCheckDistance = 1f; // Distância para checar obstáculos à frente
+    private bool isClimbing; // Indica se o minion está subindo um obstáculo
+    public float climbHeight = 1f; // Altura que o minion deve alcançar ao subir
+    public float climbSpeed = 5f; // Velocidade para subir
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         vidaComponent = GetComponent<Vida>();
 
+        if (CompareTag("Left"))
+        {
+            int leftLayer = LayerMask.NameToLayer("Left");
+            Physics2D.IgnoreLayerCollision(leftLayer, leftLayer, true); // Minions da Left ignoram uns aos outros
+        }
+        else if (CompareTag("Right"))
+        {
+            int rightLayer = LayerMask.NameToLayer("Right");
+            Physics2D.IgnoreLayerCollision(rightLayer, rightLayer, true); // Minions da Right ignoram uns aos outros
+        }
+        else
+        {
+            Debug.LogWarning($"{gameObject.name} tem uma tag desconhecida. Nenhuma colisão configurada.");
+        }
         // Configurar o enemyTag com base na tag do minion
         if (CompareTag("Left"))
         {
@@ -70,6 +86,14 @@ public class Minions : MonoBehaviour
             attackTimer -= Time.deltaTime;
         }
 
+        // Verifica se está no chão
+        isGrounded = IsGroundBelow();
+        if (!isGrounded)
+        {
+            // Aplica gravidade se estiver no ar
+            rb.velocity = new Vector2(rb.velocity.x, -fallSpeed);
+            return; // Evita movimentação horizontal enquanto está no ar
+        }
         // Se não houver um alvo, procure um
         if (target == null)
         {
@@ -93,21 +117,43 @@ public class Minions : MonoBehaviour
             }
         }
 
-        // Verifica se o minion deve cair
-        if (!IsGroundBelow())
+        if (!isClimbing) // Não realizar movimento padrão enquanto está subindo
         {
-            rb.velocity = new Vector2(rb.velocity.x, -fallSpeed);
+            MoveForward();
+
+            // Checa se há um obstáculo para subir
+            if (IsObstacleAhead() && CanClimb())
+            {
+                StartCoroutine(Climb());
+            }
         }
     }
 
+    void MoveForward()
+    {
+        rb.velocity = new Vector2(speed, rb.velocity.y);
+    }
+
+
     void MoveTowardsWaypoint()
     {
-        if (waypoint != null)
+        if (waypoint != null && !isClimbing)
         {
-            Vector2 position = Vector2.MoveTowards(transform.position, waypoint.position, speed * Time.deltaTime);
-            rb.MovePosition(position); // Move o Rigidbody2D em direção ao waypoint
+            // Verifica se há chão abaixo ou à frente
+            if (IsGroundBelow())
+            {
+                Vector2 position = Vector2.MoveTowards(transform.position, waypoint.position, speed * Time.deltaTime);
+                rb.MovePosition(position);
+            }
+            else
+            {
+                // Aplica movimento vertical para descer
+                rb.velocity = new Vector2(rb.velocity.x, -fallSpeed);
+            }
         }
     }
+
+
 
     void MoveTowardsTarget()
     {
@@ -116,6 +162,75 @@ public class Minions : MonoBehaviour
             Vector2 direction = (target.position - transform.position).normalized;
             rb.velocity = new Vector2(direction.x * speed, rb.velocity.y);
         }
+    }
+
+        // Método para detectar obstáculos
+    private bool IsObstacleAhead()
+    {
+        float extendedObstacleCheckDistance = 1f; // Define o comprimento do raio
+        Vector2 direction = Vector2.right * (CompareTag("Left") ? 1 : -1); // Direção baseada na tag
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, extendedObstacleCheckDistance, groundLayer);
+
+        Debug.DrawRay(transform.position, direction * extendedObstacleCheckDistance, Color.red); // Visualiza o Raycast
+
+        return hit.collider != null;
+    }
+
+
+    // Verifica se há espaço acima do obstáculo para subir
+    private bool CanClimb()
+    {
+        Vector2 direction = new Vector2(0, climbHeight); // Verifica acima
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(0, climbHeight, 0), Vector2.up, climbHeight, groundLayer);
+        Debug.DrawRay(transform.position + new Vector3(0, climbHeight, 0), Vector2.up * climbHeight, Color.blue);
+        return hit.collider == null; // Espaço livre
+    }
+
+    // Simula a subida no obstáculo
+    private System.Collections.IEnumerator Climb()
+    {
+        isClimbing = true;
+
+        // Desativa gravidade temporariamente
+        rb.gravityScale = 0;
+
+        // Ignorar colisões com a camada 6 (obstáculo)
+        Physics2D.IgnoreLayerCollision(gameObject.layer, 6, true);
+
+        // Calcula a posição-alvo para subir
+        Vector2 targetPosition = new Vector2(
+            transform.position.x + (obstacleCheckDistance * (CompareTag("Left") ? 1 : -1)),
+            transform.position.y + climbHeight
+        );
+
+        // Movimenta o minion até o alvo verticalmente
+        while (transform.position.y < targetPosition.y - 0.1f)
+        {
+            rb.velocity = new Vector2(0, climbSpeed); // Apenas sobe verticalmente
+            yield return null;
+        }
+
+        // Garante que o movimento vertical seja interrompido antes do movimento horizontal
+        rb.velocity = Vector2.zero;
+
+        // Movimenta o minion horizontalmente para completar a subida
+        while (Mathf.Abs(transform.position.x - targetPosition.x) > 0.1f)
+        {
+            rb.velocity = new Vector2(speed * (CompareTag("Left") ? 1 : -1), 0);
+            yield return null;
+        }
+
+        // Garante que o minion fique exatamente na posição-alvo
+        transform.position = targetPosition;
+
+        // Restaura a gravidade após a subida
+        rb.gravityScale = 10;
+
+        // Reativa as colisões com a camada 6 (obstáculo)
+        Physics2D.IgnoreLayerCollision(gameObject.layer, 6, false);
+
+        isClimbing = false;
+        rb.gravityScale = 6;
     }
 
     
@@ -170,12 +285,23 @@ public class Minions : MonoBehaviour
     }
 
     // Verifica se há chão abaixo do minion
+
     private bool IsGroundBelow()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
-        Debug.DrawRay(transform.position, Vector2.down * groundCheckDistance, Color.red); // Visualize o Raycast para depuração
-        return hit.collider != null;
+        Vector2 origin = transform.position;
+        float extendedGroundCheckDistance = 5f; // Define o comprimento do raio
+        RaycastHit2D hitCenter = Physics2D.Raycast(origin, Vector2.down, extendedGroundCheckDistance, groundLayer);
+
+        Vector2 forwardOrigin = origin + new Vector2(CompareTag("Left") ? 0.5f : -0.5f, 0); // Ponto à frente
+        RaycastHit2D hitForward = Physics2D.Raycast(forwardOrigin, Vector2.down, extendedGroundCheckDistance, groundLayer);
+
+        Debug.DrawRay(origin, Vector2.down * extendedGroundCheckDistance, Color.green); // Raio central
+        Debug.DrawRay(forwardOrigin, Vector2.down * extendedGroundCheckDistance, Color.blue); // Raio à frente
+
+        // Retorna true se qualquer um dos Raycasts detectar o chão
+        return hitCenter.collider != null || hitForward.collider != null;
     }
+
 
     // Função para receber dano
     public void TakeDamage(int damage)
