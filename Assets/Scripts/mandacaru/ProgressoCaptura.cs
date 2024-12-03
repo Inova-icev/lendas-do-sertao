@@ -74,12 +74,14 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
             isCaptured = true;
             Debug.Log("Time Left capturou o objetivo!");
             GrantBuffToTeam(teamLeftTag);
+            StartCoroutine(ResetAfterCapture(120f));
         }
         else if (teamRightProgress >= 100f)
         {
             isCaptured = true;
             Debug.Log("Time Right capturou o objetivo!");
             GrantBuffToTeam(teamRightTag);
+            StartCoroutine(ResetAfterCapture(120f));
         }
     }
 
@@ -130,5 +132,19 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
             rightTeamInZone.Remove(other.gameObject);
             Debug.Log($"{other.gameObject.name} saiu da zona. Time: Right");
         }
+    }
+
+    private IEnumerator ResetAfterCapture(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        teamLeftProgress = 0f;
+        teamRightProgress = 0f;
+
+        isCaptured = false;
+
+        leftTeamInZone.Clear();
+        rightTeamInZone.Clear();
+
+        Debug.Log("Progresso de captura resetado. O objetivo pode ser capturado novamente.");
     }
 }
