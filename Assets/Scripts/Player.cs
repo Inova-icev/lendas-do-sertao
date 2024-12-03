@@ -38,6 +38,10 @@ public class Player : MonoBehaviour
     public float jumpHoldTime = 0.5f; // Tempo máximo de sustentação do pulo
     private float jumpHoldTimer = 0f;
 
+    private float buffStartTimeDamage = 0f;
+    private float buffStartTimeSpeed = 0f;
+    private float buffDuration= 10f;
+
     void Start()
     {
         currentSpeed = speed;
@@ -77,6 +81,16 @@ public class Player : MonoBehaviour
             if (Input.GetMouseButtonDown(0)) // Botão direito do mouse
             {
                 Attack();
+            }
+
+            if (isDamageBuffed && Time.time - buffStartTimeDamage >= buffDuration)
+            {
+                RemoveDamageBuff(2f);
+            }
+
+            if (isSpeedBuffed && Time.time - buffStartTimeSpeed >= buffDuration)
+            {
+                RemoveBuff();
             }
         }
     }
@@ -198,6 +212,7 @@ public class Player : MonoBehaviour
         {
             currentSpeed = speed * multiplier;
             isSpeedBuffed = true;
+            buffStartTimeSpeed = Time.time;
             Debug.Log($"Buff aplicado com sucesso: Velocidade Atual = {currentSpeed}");
         }
         else
@@ -227,6 +242,7 @@ public class Player : MonoBehaviour
         {
             damageMultiplier *= multiplier;
             isDamageBuffed = true;
+            buffStartTimeDamage = Time.time;
             Debug.Log($"Buff de dano aplicado! Multiplicador de dano atual: {damageMultiplier}");
         }
     }
