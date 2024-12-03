@@ -561,90 +561,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1668999282}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1377396835
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1377396836}
-  - component: {fileID: 1377396837}
-  m_Layer: 3
-  m_Name: EscudoInimigo
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1377396836
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377396835}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1630727914}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1377396837
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377396835}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b3f6b7c8ff8692e4ba41805d31ff0d0c, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 2.69, y: 2.69}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!1 &1444293130
 GameObject:
   m_ObjectHideFlags: 0
@@ -871,8 +787,10 @@ GameObject:
   - component: {fileID: 1630727917}
   - component: {fileID: 1630727916}
   - component: {fileID: 1630727915}
-  - component: {fileID: 1630727918}
   - component: {fileID: 1630727919}
+  - component: {fileID: 1630727920}
+  - component: {fileID: 1630727921}
+  - component: {fileID: 1630727922}
   m_Layer: 3
   m_Name: Inimigo
   m_TagString: Untagged
@@ -889,12 +807,11 @@ Transform:
   m_GameObject: {fileID: 1630727913}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.11, y: -2.14, z: 10}
+  m_LocalPosition: {x: 2.14, y: -1.82, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1285294576}
-  - {fileID: 1377396836}
   m_Father: {fileID: 1765914879}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1630727915
@@ -1021,18 +938,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1630727918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1630727913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd64776897450a748a90e5b83af0a0ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1630727919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1045,28 +950,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80b674cdcecdfae4aa1307c4744be3cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vidaMaxima: 100
-  vidaAtual: 100
+  vidaMaxima: 500
+  vidaAtual: 500
   dano: 0
-  velocidadeAtaque: 0
+  velocidadeAtaque: 100
   manaMaxima: 0
+  manaAtual: 0
   regeneracaoVida: 0
   regeneracaoMana: 0
   rouboDeVida: 0
   chanceDeCritico: 0
-  desvio: 0
+  precisao: 0
   danoMagico: 0
-  resmMagica: 0
-  resFisica: 0
   vidaEscudoMaxima: 100
   vidaAtualEscudo: 0
+  armadura: 100
+  resistenciaMagica: 100
   velocidadeMovimento: 0
   jumpForce: 0
   level: 1
   barraVidaverde: {fileID: 2124327100}
   barravidaPai: {fileID: 1285294575}
   temEscudo: 0
-  EscudoPai: {fileID: 1377396835}
+  EscudoPai: {fileID: 0}
+--- !u!114 &1630727920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630727913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b193f56ab6b0d640aa0b4ebb4c6dc51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1630727921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630727913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd64776897450a748a90e5b83af0a0ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1630727922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630727913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9765eab5eb6e10499d044e8f76d8db1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  areaDeEfeito: 3
+  danoBase: 15
+  danoMaximo: 45
+  intervaloDano: 1
+  inimigoLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &1668999281
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,8 +1032,13 @@ GameObject:
   - component: {fileID: 1668999287}
   - component: {fileID: 1668999288}
   - component: {fileID: 1668999289}
+  - component: {fileID: 1668999291}
   - component: {fileID: 1668999290}
-  m_Layer: 0
+  - component: {fileID: 1668999292}
+  - component: {fileID: 1668999293}
+  - component: {fileID: 1668999294}
+  - component: {fileID: 1668999295}
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1100,7 +1054,7 @@ Transform:
   m_GameObject: {fileID: 1668999281}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.69, y: -2.65, z: 10}
+  m_LocalPosition: {x: -4.12, y: -2.26, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1309,16 +1263,17 @@ MonoBehaviour:
   dano: 12
   velocidadeAtaque: 1.3
   manaMaxima: 40
+  manaAtual: 40
   regeneracaoVida: 1.2
   regeneracaoMana: 1
   rouboDeVida: 0
   chanceDeCritico: 0
-  desvio: 0
+  precisao: 100
   danoMagico: 0
-  resmMagica: 0
-  resFisica: 0
   vidaEscudoMaxima: 0
   vidaAtualEscudo: 0
+  armadura: 0
+  resistenciaMagica: 0
   velocidadeMovimento: 5
   jumpForce: 8
   level: 1
@@ -1336,14 +1291,113 @@ MonoBehaviour:
   m_GameObject: {fileID: 1668999281}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ced6ad9b3e56b584daf9e5a26e300e6c, type: 3}
+  m_Script: {fileID: 11500000, guid: e6dcc042f6b03054e94cef08e4c25e56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alcanceHabilidade: 4
+  inimigoLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  reducaoVelocidadeAtaque: 0.1
+  reducaoResistencia: 0.2
+  duracaoEfeito: 5
+  cooldown: 60
+  level: 0
+  teclaHabilidade: 113
+--- !u!114 &1668999291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668999281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 370d31ca5ec57594587ee54c228a6ec9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inimigoLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  distanciaDeteccao: 4
+--- !u!114 &1668999292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668999281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2af3b780d897fe249ae18e330b464c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   inimigoLayer:
     serializedVersion: 2
-    m_Bits: 64
-  ataquePoint: {fileID: 1344392652}
-  ataqueRange: 0.45
+    m_Bits: 8
+  teclaAtivacao: 101
+  cooldown: 90
+  danoAtaque: 50
+  danoFinal: 200
+  alcance: 6
+  anguloCone: 45
+  numeroAtaques: 4
+--- !u!114 &1668999293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668999281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd64776897450a748a90e5b83af0a0ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1668999294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668999281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3c07e04e97392d4db9420cfaecd9b2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inimigoLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  teclaAtivacao: 304
+  aumentoDano: 20
+  aumentoDefesa: 20
+  aumentoEstatisticas: 30
+  duracaoBuff: 60
+  duracaoMarca: 10
+  cooldown: 90
+  alcanceArea: 8
+--- !u!114 &1668999295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668999281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa6d1a1428940c42ba31913ffd14ed2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inimigoLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  teclaAtivacao: 102
+  cooldown: 90
+  duracao: 15
+  alcanceAura: 5
+  porcentagemDrenada: 0.04
+  intervaloDeDano: 1
 --- !u!1 &1765914876
 GameObject:
   m_ObjectHideFlags: 0
