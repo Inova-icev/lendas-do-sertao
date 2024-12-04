@@ -14,6 +14,8 @@ public class AtaquePlayer : MonoBehaviour
     public delegate void AtaqueRealizadoHandler();
     public static event AtaqueRealizadoHandler OnAtaqueRealizado;
 
+    private float proximoAtaquePermitido = 0f; // Tempo em que o próximo ataque será permitido
+
     void Start()
     {
         statusBase = GetComponent<StatusBase>();
@@ -26,14 +28,22 @@ public class AtaquePlayer : MonoBehaviour
     void Update()
     {
         atacando = Input.GetButtonDown("Fire1");
-        if (atacando)
+        if (atacando && PodeAtacar())
         {
             Ataque();
         }
     }
 
+    bool PodeAtacar()
+    {
+        return Time.time >= proximoAtaquePermitido; // Verifica se o cooldown terminou
+    }
+
     void Ataque()
     {
+        // Define o próximo tempo permitido para atacar
+        proximoAtaquePermitido = Time.time + (1f / statusBase.velocidadeAtaque);
+
         animator.SetTrigger("ataque");
 
         OnAtaqueRealizado?.Invoke();

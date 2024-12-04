@@ -1,4 +1,4 @@
-// Classe base que contém os atributos gerais de status
+using System.Collections;
 using UnityEngine;
 
 public class StatusBase : MonoBehaviour
@@ -31,62 +31,80 @@ public class StatusBase : MonoBehaviour
     [Header("Level")]
     public int level = 1;
 
-
-
-     [Header("Barra vida")]
+    [Header("Barra vida")]
     public Transform barraVidaverde;
-
     public GameObject barravidaPai;
 
     private Vector3 barravidaScala;
 
-
     [Header("Escudo")]
-     public bool temEscudo;
-
-     public GameObject EscudoPai;
-
+    public bool temEscudo;
+    public GameObject EscudoPai;
 
     private float perceBarravida;
 
+    [Header("Atordoamento")]
+    public bool estaAtordoado = false; // Indica se o personagem está atordoado
+    public float duracaoAtordoamento = 0f; // Duração do atordoamento
 
-
-     void Start(){ 
-          barravidaScala =barraVidaverde.localScale;
-          perceBarravida=barravidaScala.x/vidaMaxima;
-         
-          
+    void Start()
+    {
+        barravidaScala = barraVidaverde.localScale;
+        perceBarravida = barravidaScala.x / vidaMaxima;
     }
 
-     public void UpdateBarraVida(){
-        barravidaScala.x =perceBarravida*vidaAtual;
+    public void UpdateBarraVida()
+    {
+        barravidaScala.x = perceBarravida * vidaAtual;
         barraVidaverde.localScale = barravidaScala;
     }
 
-    public void AtivarEscudo(){
+    public void AtivarEscudo()
+    {
         EscudoPai.SetActive(true);
-        temEscudo =true;
+        temEscudo = true;
     }
 
-        private void Update()
+    public void Atordoar(float duracao)
     {
-        if (vidaAtual < vidaMaxima)
+        if (!estaAtordoado) // Previne múltiplos atordoamentos simultâneos
         {
-            vidaAtual += regeneracaoVida * Time.deltaTime;
-            if (vidaAtual > vidaMaxima)
-            {
-                vidaAtual = vidaMaxima;
-            }
+            estaAtordoado = true;
+            duracaoAtordoamento = duracao;
+            Debug.Log($"Personagem atordoado por {duracao} segundos!");
+            StartCoroutine(RemoverAtordoamento());
         }
+    }
 
-        if (manaAtual < manaMaxima)
+    private IEnumerator RemoverAtordoamento()
+    {
+        yield return new WaitForSeconds(duracaoAtordoamento);
+        estaAtordoado = false;
+        duracaoAtordoamento = 0f;
+        Debug.Log("Personagem não está mais atordoado.");
+    }
+
+    private void Update()
+    {
+        if (!estaAtordoado) // Permite regenerar apenas quando não está atordoado
         {
-            manaAtual += regeneracaoMana * Time.deltaTime;
-            if (manaAtual > manaMaxima)
+            if (vidaAtual < vidaMaxima)
             {
-                manaAtual = manaMaxima;
+                vidaAtual += regeneracaoVida * Time.deltaTime;
+                if (vidaAtual > vidaMaxima)
+                {
+                    vidaAtual = vidaMaxima;
+                }
+            }
+
+            if (manaAtual < manaMaxima)
+            {
+                manaAtual += regeneracaoMana * Time.deltaTime;
+                if (manaAtual > manaMaxima)
+                {
+                    manaAtual = manaMaxima;
+                }
             }
         }
     }
 }
-
