@@ -118,6 +118,9 @@ MonoBehaviour:
   items: []
   attackRange: 5
   attackCooldown: 0.5
+  acceleration: 20
+  deceleration: 10
+  jumpHoldTime: 0.5
 --- !u!114 &6202342088335736759
 MonoBehaviour:
   m_ObjectHideFlags: 0
