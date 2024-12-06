@@ -4,6 +4,7 @@ using UnityEngine;
 public class AtaquePlayer : MonoBehaviour
 {
     public bool atacando;
+    public bool estaAtordoado; 
     public Animator animator;
 
     public Transform ataquePoint;
@@ -25,10 +26,17 @@ public class AtaquePlayer : MonoBehaviour
 
     void Update()
     {
-        atacando = Input.GetButtonDown("Fire1");
-        if (atacando)
+        if (!estaAtordoado)
         {
-            Ataque();
+            atacando = Input.GetButtonDown("Fire1");
+            if (atacando)
+            {
+                Ataque();
+            }
+        }
+        else
+        {
+            Debug.Log("Personagem está atordoado e não pode atacar.");
         }
     }
 
@@ -64,13 +72,11 @@ public class AtaquePlayer : MonoBehaviour
     {
         float vidaRoubada = danoCausado * (statusBase.rouboDeVida / 100);
         statusBase.vidaAtual = Mathf.Min(statusBase.vidaAtual + vidaRoubada, statusBase.vidaMaxima);
-        Debug.Log("Cabeça de Cuia recuperou " + vidaRoubada + " de vida com roubo de vida.");
     }
 
     bool CalcularAcerto()
     {
         float chance = Random.Range(0f, 100f);
-        Debug.Log($"Chance sorteada: {chance}, Precisão: {statusBase.precisao}");
         return chance < statusBase.precisao;
     }
 
