@@ -2,22 +2,59 @@ using UnityEngine;
 
 public class Vida : MonoBehaviour
 {
-    public int currentHealth; // Saúde atual (atribua individualmente no Inspector)
+    public int currentHealth;
+    public Transform healthBar; // Referência à barra verde (preenchimento)
+    public GameObject healthBarObject; // Objeto completo da barra de vida
+
+    private Vector3 healthBarScale; // Escala original da barra de preenchimento
+    private float healthPercent;
 
     void Start()
     {
-        // currentHealth será definido individualmente para cada GameObject no Inspector,
-        // então não é necessário inicializá-lo com um valor padrão aqui.
+        if (healthBar == null)
+        {
+            // Procura pela barra de preenchimento automaticamente
+            healthBar = transform.Find("BarraVida/Verde");
+        }
+
+        if (healthBarObject == null)
+        {
+            // Procura pelo objeto completo da barra de vida
+            healthBarObject = transform.Find("BarraVida").gameObject;
+        }
+
+        if (healthBar == null || healthBarObject == null)
+        {
+            Debug.LogError("A configuração da barra de vida está incompleta!", this);
+        }
+
+        healthBarScale = healthBar.localScale;
+        healthPercent = healthBarScale.x / currentHealth;
     }
 
-    // Função para aplicar dano ao objeto
+
+    void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            // Atualiza a escala no eixo X proporcional à saúde
+            healthBarScale.x = healthPercent * currentHealth;
+            healthBar.localScale = healthBarScale;
+        }
+    }
+
     public void TakeDamage(int damage)
     {
-        currentHealth -= damage; // Reduz a saúde pelo valor de dano
+        currentHealth -= damage;
+
+        if (currentHealth < 0)
+            currentHealth = 0;
+
+        UpdateHealthBar();
 
         if (currentHealth <= 0)
         {
-            Die(); // Chama a função de morte se a saúde for zero ou menos
+            Die();
         }
     }
 
@@ -30,15 +67,14 @@ public class Vida : MonoBehaviour
 
         if (minionComponent != null)
         {
-            minionComponent.OnDeath(); // Chama a lógica de recompensa em ouro dos inimigos, se aplicável
+            minionComponent.OnDeath();
         }
 
         if (torreComponent != null)
         {
             torreComponent.GrantGoldToNearbyEnemies();
         }
-        
-        Debug.Log(gameObject.name + " morreu.");
-        Destroy(gameObject); // Destroi o objeto
+        Destroy(healthBarObject);
+        Destroy(gameObject);
     }
 }
