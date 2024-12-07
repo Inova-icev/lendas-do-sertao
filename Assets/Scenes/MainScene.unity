@@ -1173,12 +1173,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 174697394}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -80.63, y: 41.68, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 649421286}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &174697398
 MonoBehaviour:
@@ -3292,7 +3292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 400
+  currentHealth: 500
   healthBar: {fileID: 930074393}
   healthBarObject: {fileID: 986870592}
 --- !u!1 &528048452
@@ -3494,7 +3494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 400
+  currentHealth: 500
   healthBar: {fileID: 1431852565}
   healthBarObject: {fileID: 1103243887}
 --- !u!1 &531367806 stripped
@@ -3510,6 +3510,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4283406686562480678, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 260322519212941984, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
       propertyPath: m_Name
       value: MinionRight
@@ -3572,7 +3576,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7420712846918363120, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7420712846918363120, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3621,6 +3625,10 @@ PrefabInstance:
     - target: {fileID: 7510567606748172066, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877102861525429627, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
+      propertyPath: attackRange
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8658919159670611645, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
       propertyPath: m_LocalScale.x
@@ -3689,7 +3697,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1952209383383489410, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 1952209383383489410, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3749,7 +3757,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6700341277304311434, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
       propertyPath: m_LocalScale.x
-      value: 4.5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6700341277304311434, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
       propertyPath: m_LocalScale.y
@@ -3810,6 +3818,10 @@ PrefabInstance:
     - target: {fileID: 7411676114039294650, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877102861525429627, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
+      propertyPath: attackRange
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4015,7 +4027,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 400
+  currentHealth: 500
   healthBar: {fileID: 673426143}
   healthBarObject: {fileID: 1229701043}
 --- !u!1 &549783931
@@ -4451,7 +4463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 400
+  currentHealth: 500
   healthBar: {fileID: 1439074785}
   healthBarObject: {fileID: 479759183}
 --- !u!1 &649421284
@@ -4503,6 +4515,7 @@ Transform:
   - {fileID: 943378358}
   - {fileID: 1755521155}
   - {fileID: 901597966}
+  - {fileID: 174697397}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &651651974
@@ -9130,7 +9143,7 @@ MonoBehaviour:
   minionPrefab: {fileID: 1835565372}
   spawnInterval: 30
   spawnPoint: {fileID: 762055807}
-  minionsPerWave: 1
+  minionsPerWave: 3
   spawnTag: Left
   enemyTag: Right
   minionSpacing: 1
@@ -9452,7 +9465,7 @@ MonoBehaviour:
   minionPrefab: {fileID: 531367806}
   spawnInterval: 30
   spawnPoint: {fileID: 1974239649}
-  minionsPerWave: 0
+  minionsPerWave: 3
   spawnTag: Right
   enemyTag: Left
   minionSpacing: 1
@@ -9639,7 +9652,7 @@ Transform:
   m_GameObject: {fileID: 1544939637}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.48, y: -8.79, z: -2.7943406}
+  m_LocalPosition: {x: 6.495, y: -8.782, z: -2.7943406}
   m_LocalScale: {x: 1.9, y: 6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9808,7 +9821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 400
+  currentHealth: 500
   healthBar: {fileID: 1093693144}
   healthBarObject: {fileID: 1448048659}
 --- !u!1 &1552915077
@@ -10145,7 +10158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 400
+  currentHealth: 500
   healthBar: {fileID: 1522340138}
   healthBarObject: {fileID: 1720675739}
 --- !u!1 &1623489915
@@ -11324,7 +11337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 400
+  currentHealth: 500
   healthBar: {fileID: 1766832169}
   healthBarObject: {fileID: 1552915077}
 --- !u!1 &1835565372 stripped
@@ -11531,7 +11544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 400
+  currentHealth: 500
   healthBar: {fileID: 111243840}
   healthBarObject: {fileID: 883363739}
 --- !u!1001 &1891743949
@@ -36850,7 +36863,6 @@ SceneRoots:
   - {fileID: 1892375763}
   - {fileID: 222624417}
   - {fileID: 649421286}
-  - {fileID: 174697397}
   - {fileID: 1307104403}
   - {fileID: 325007352}
   - {fileID: 1465159551}
