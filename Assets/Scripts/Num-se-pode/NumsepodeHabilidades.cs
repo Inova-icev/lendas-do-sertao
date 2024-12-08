@@ -12,7 +12,7 @@ public class NumsepodeHabilidade : MonoBehaviour
     public float tempoEfeito = 5f; // Tempo de duração do efeito de cura e velocidade de ataque
     public float alcance = 5f; // Alcance das habilidades
     public float duracaoAtordoamento = 1f; // Duração do atordoamento em segundos
-    public float cooldown = 15f; // Cooldown inicial das habilidades
+    public float cooldown = 0f; // Cooldown inicial das habilidades
     private float cooldownRestante = 0f; // Tempo restante para usar a habilidade novamente
     public float alcanceAssobio = 6f; // Alcance do Assobio Assustador
     public float reducaoVelocidade = 0.2f; // Redução base da velocidade de movimento
@@ -26,6 +26,19 @@ public class NumsepodeHabilidade : MonoBehaviour
     public float aumentoEsquiva = 0.2f; // Aumento na esquiva do personagem
     public float duracaoFumaca = 8f; // Duração do Domínio Fumacento
 
+     public float visibleDuration = 3f;
+
+      public Animator animator;
+
+    public GameObject Poste;
+
+    
+    public GameObject Assobiu;
+
+
+     public GameObject fumaca;
+     
+     
     void Start()
     {
         statusBase = GetComponent<StatusBase>();
@@ -52,12 +65,13 @@ public class NumsepodeHabilidade : MonoBehaviour
         // Habilidade Poste Protetor
         if (Input.GetKeyDown(KeyCode.K) && cooldownRestante <= 0)
         {
+           
             UsarHabilidadePosteProtetor();
         }
 
         // Habilidade Assobio Assustador
         if (Input.GetKeyDown(KeyCode.L) && cooldownRestante <= 0)
-        {
+        {   Poste.SetActive(true);
             UsarAssobioAssustador();
         }
          if (Input.GetKeyDown(KeyCode.H) && cooldownRestante <= 0)
@@ -71,7 +85,7 @@ public class NumsepodeHabilidade : MonoBehaviour
     {
         cooldownRestante = cooldown - (statusBase.level - 1) * 2f; // Escala o cooldown com o nível
         Collider2D[] inimigos = Physics2D.OverlapCircleAll(ataquePoint.position, alcance, inimigoLayers);
-
+       animator.SetTrigger("HabilidadeQ");
         if (inimigos.Length > 0)
         {
             Collider2D inimigo = inimigos[0]; // Ataca o primeiro inimigo encontrado
@@ -84,6 +98,7 @@ public class NumsepodeHabilidade : MonoBehaviour
                 StartCoroutine(PuxarInimigo(inimigo.transform)); // Puxa o inimigo para o personagem
             }
         }
+        
         else
         {
             Debug.Log("Nenhum inimigo encontrado no alcance.");
@@ -106,34 +121,40 @@ public class NumsepodeHabilidade : MonoBehaviour
 
         inimigoTransform.position = posicaoFinal; // Garante o reposicionamento final
         Debug.Log("Inimigo puxado para a posição de Num-se-pode.");
+    
     }
 
     // Poste Protetor
-    void UsarHabilidadePosteProtetor()
+   public IEnumerator UsarHabilidadePosteProtetor()
+{
+    cooldownRestante = cooldown - (statusBase.level - 1) * 2f; // Escala o cooldown com o nível
+   // animator.SetTrigger("WHabilit");
+ // Ativa o objeto
+
+    // Lógica de cura (se necessário)
+    Collider2D[] aliados = Physics2D.OverlapCircleAll(curaPoint.position, alcance, aliadoLayers);
+    if (aliados.Length > 0)
     {
-        cooldownRestante = cooldown - (statusBase.level - 1) * 2f; // Escala o cooldown com o nível
-        Collider2D[] aliados = Physics2D.OverlapCircleAll(curaPoint.position, alcance, aliadoLayers);
-
-        if (aliados.Length > 0)
+        foreach (Collider2D aliado in aliados)
         {
-            foreach (Collider2D aliado in aliados)
+            StatusBase statusAliado = aliado.GetComponent<StatusBase>();
+            if (statusAliado != null)
             {
-                StatusBase statusAliado = aliado.GetComponent<StatusBase>();
-                if (statusAliado != null)
-                {
-                    float cura = statusBase.danoMagico * 0.5f; // Calcula a cura baseada no dano mágico
-                    statusAliado.vidaAtual = Mathf.Min(statusAliado.vidaAtual + cura, statusAliado.vidaMaxima);
-                    Debug.Log($"Aliado curado por {cura} de vida!");
-
-                    StartCoroutine(AumentarVelocidadeAtaque(statusAliado));
-                }
+                float cura = statusBase.danoMagico * 0.5f;
+                statusAliado.vidaAtual = Mathf.Min(statusAliado.vidaAtual + cura, statusAliado.vidaMaxima);
+                Debug.Log($"Aliado curado por {cura} de vida!");
+                StartCoroutine(AumentarVelocidadeAtaque(statusAliado));
             }
         }
-        else
-        {
-            Debug.Log("Nenhum aliado encontrado no alcance.");
-        }
     }
+    else
+    {
+        Debug.Log("Nenhum aliado encontrado no alcance.");
+    }
+
+    yield return new WaitForSeconds(3f); // Espera 3 segundos
+    Poste.SetActive(false); // Desativa o objeto
+}
 
     private IEnumerator AumentarVelocidadeAtaque(StatusBase aliadoStatus)
     {
@@ -148,29 +169,40 @@ public class NumsepodeHabilidade : MonoBehaviour
     }
 
     // Assobio Assustador
-    void UsarAssobioAssustador()
-    {
-        cooldownRestante = 12f - (statusBase.level - 1); // Cooldown escala com o nível
-        Collider2D[] inimigos = Physics2D.OverlapCircleAll(transform.position, alcanceAssobio, inimigoLayers);
+   void UsarAssobioAssustador()
+{
+    cooldownRestante = 12f - (statusBase.level - 1); // Cooldown escala com o nível
+    animator.SetTrigger("Assobio");
+    Assobiu.SetActive(true); // Ativa o objeto
 
-        if (inimigos.Length > 0)
+    // Afeta inimigos dentro do alcance
+    Collider2D[] inimigos = Physics2D.OverlapCircleAll(transform.position, alcanceAssobio, inimigoLayers);
+    if (inimigos.Length > 0)
+    {
+        foreach (Collider2D inimigo in inimigos)
         {
-            foreach (Collider2D inimigo in inimigos)
+            StatusBase statusInimigo = inimigo.GetComponent<StatusBase>();
+            if (statusInimigo != null)
             {
-                StatusBase statusInimigo = inimigo.GetComponent<StatusBase>();
-                if (statusInimigo != null)
-                {
-                    StartCoroutine(AplicarMedo(statusInimigo));
-                    StartCoroutine(AplicarReducaoVelocidade(statusInimigo));
-                }
+                StartCoroutine(AplicarMedo(statusInimigo));
+                StartCoroutine(AplicarReducaoVelocidade(statusInimigo));
             }
-            StartCoroutine(AplicarResistencia());
-        }
-        else
-        {
-            Debug.Log("Nenhum inimigo encontrado no alcance do Assobio Assustador.");
         }
     }
+    else
+    {
+        Debug.Log("Nenhum inimigo encontrado no alcance do Assobio Assustador.");
+    }
+
+    StartCoroutine(DesativarAssobioDepoisDeTempo());
+}
+
+private IEnumerator DesativarAssobioDepoisDeTempo()
+{
+    yield return new WaitForSeconds(3f); // Espera 3 segundos
+    Assobiu.SetActive(false); // Desativa o objeto
+}
+
 
     private IEnumerator AplicarMedo(StatusBase inimigoStatus)
     {
@@ -220,30 +252,41 @@ public class NumsepodeHabilidade : MonoBehaviour
         Gizmos.DrawWireSphere(fumacentoPoint.position, alcanceFumaca);
     }
     
-     void UsarDominioFumacento()
+   void UsarDominioFumacento()
+{
+    cooldownRestante = 20f - (statusBase.level * 1f); // Escala o cooldown com o nível
+
+    // Ativar a área de fumaça usando a variável de referência
+    fumaca.SetActive(true);
+    StartCoroutine(DesativarFumaca(areaFumacaPrefab, 3f)); // Duração fixa de 3 segundos
+
+    // Aumenta a esquiva do personagem temporariamente
+    StartCoroutine(AumentarEsquiva());
+
+    // Afeta inimigos dentro da fumaça
+    Collider2D[] inimigos = Physics2D.OverlapCircleAll(fumacentoPoint.position, alcanceFumaca, inimigoLayers);
+    foreach (Collider2D inimigo in inimigos)
     {
-        cooldownRestante = 20f - (statusBase.level * 1f); // Escala o cooldown com o nível
-
-        // Criar a área de fumaça no ponto especificado
-        GameObject areaFumaca = Instantiate(areaFumacaPrefab, fumacentoPoint.position, Quaternion.identity);
-        Destroy(areaFumaca, duracaoFumaca); // Remove a fumaça após o tempo de duração
-
-        // Aumenta a esquiva do personagem temporariamente
-        StartCoroutine(AumentarEsquiva());
-
-        // Afeta inimigos dentro da fumaça
-        Collider2D[] inimigos = Physics2D.OverlapCircleAll(fumacentoPoint.position, alcanceFumaca, inimigoLayers);
-        foreach (Collider2D inimigo in inimigos)
+        StatusBase statusInimigo = inimigo.GetComponent<StatusBase>();
+        if (statusInimigo != null)
         {
-            StatusBase statusInimigo = inimigo.GetComponent<StatusBase>();
-            if (statusInimigo != null)
-            {
-                StartCoroutine(ReduzirPrecisao(statusInimigo));
-            }
+            StartCoroutine(ReduzirPrecisao(statusInimigo));
         }
-
-        Debug.Log("Domínio Fumacento ativado!");
     }
+
+    Debug.Log("Domínio Fumacento ativado!");
+}
+
+private IEnumerator DesativarFumaca(GameObject areaFumaca, float duracao)
+{
+    yield return new WaitForSeconds(duracao); // Espera pelo tempo fixo de 3 segundos
+    if (fumaca != null)
+    {
+        fumaca.SetActive(false); // Desativa o objeto de forma segura
+        Debug.Log("Área de fumaça desativada.");
+    }
+}
+
 
     private IEnumerator AumentarEsquiva()
     {

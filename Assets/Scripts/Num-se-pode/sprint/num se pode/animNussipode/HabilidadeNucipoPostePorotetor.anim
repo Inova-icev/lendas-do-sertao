@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: corridaDireita
+  m_Name: HabilidadeNucipoPostePorotetor
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -20,12 +20,16 @@ AnimationClip:
   m_PPtrCurves:
   - serializedVersion: 2
     curve:
+    - time: 0
+      value: {fileID: 21300000, guid: 76d0e3b6b5da06b498326d987fb8bd3d, type: 3}
+    - time: 0.016666668
+      value: {fileID: 21300000, guid: 2606d84ad82e92345a78466d8ec9b10a, type: 3}
     - time: 0.033333335
-      value: {fileID: 21300000, guid: afc0152ac89d1a641bb9b7a274a655bb, type: 3}
-    - time: 0.083333336
-      value: {fileID: 21300000, guid: 35048f92bf739bb42868af043e6e6fa9, type: 3}
-    - time: 0.13333334
-      value: {fileID: 21300000, guid: 03e94a8f0dcc90747a37fc3bccd3e87f, type: 3}
+      value: {fileID: 21300000, guid: b040b93e45fa0304486eeb75f0fc4c41, type: 3}
+    - time: 0.05
+      value: {fileID: 21300000, guid: e28490e7fe9ad9f49bbaf9c6fcd9b43d, type: 3}
+    - time: 0.06666667
+      value: {fileID: 21300000, guid: b61cfb83511c53f40b574ff1d6b94184, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -48,15 +52,17 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: afc0152ac89d1a641bb9b7a274a655bb, type: 3}
-    - {fileID: 21300000, guid: 35048f92bf739bb42868af043e6e6fa9, type: 3}
-    - {fileID: 21300000, guid: 03e94a8f0dcc90747a37fc3bccd3e87f, type: 3}
+    - {fileID: 21300000, guid: 76d0e3b6b5da06b498326d987fb8bd3d, type: 3}
+    - {fileID: 21300000, guid: 2606d84ad82e92345a78466d8ec9b10a, type: 3}
+    - {fileID: 21300000, guid: b040b93e45fa0304486eeb75f0fc4c41, type: 3}
+    - {fileID: 21300000, guid: e28490e7fe9ad9f49bbaf9c6fcd9b43d, type: 3}
+    - {fileID: 21300000, guid: b61cfb83511c53f40b574ff1d6b94184, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.15
+    m_StopTime: 0.083333336
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0

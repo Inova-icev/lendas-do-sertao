@@ -97,7 +97,9 @@ public class Habilidades : MonoBehaviour
     }
 
     private IEnumerator CooldownEscudo()
+
     {
+        Debug.Log($"Cooldown da habilidade W iniciado: {cooldownEscudoPorNivel[nivelEscudo]} segundos.");
         escudoPronto = false;
         yield return new WaitForSeconds(cooldownEscudoPorNivel[nivelEscudo]);
         escudoPronto = true;
@@ -138,6 +140,7 @@ public class Habilidades : MonoBehaviour
             float porcentagemLentidao = porcentagemLentidaoPorNivel[nivelLentidao];
             inimigo.Velocidade *= (1 - porcentagemLentidao / 100);
         }
+          Debug.Log("Lentidão aplicada nos inimigos.");
     }
 
     private void RemoverLentidao(Inimigo inimigo)
@@ -147,13 +150,16 @@ public class Habilidades : MonoBehaviour
             float porcentagemLentidao = porcentagemLentidaoPorNivel[nivelLentidao];
             inimigo.Velocidade /= (1 - porcentagemLentidao / 100);
         }
+         Debug.Log("Lentidão removida dos inimigos.");
     }
 
     public void MapinguariR(){
+        Debug.Log("MapinguariR ativada. Avançando com Fúria.");
         StartCoroutine(AvancarComFuria());
     }
     private IEnumerator AvancarComFuria()
     {
+         Debug.Log("Iniciando avanço com Fúria...");
         List<Inimigo> inimigosArrastados = new List<Inimigo>();
         float distanciaMaxima = 10f;
         Vector3 direcao = transform.forward;
@@ -169,6 +175,7 @@ public class Habilidades : MonoBehaviour
                 {
                     inimigosArrastados.Add(inimigo);
                     inimigo.Atordoar(duracaoAtordoamentoPorNivel[nivelFuria]);
+                      Debug.Log($"Inimigo {inimigo.name} atordoado.");
                 }
             }
             yield return null;
@@ -176,7 +183,9 @@ public class Habilidades : MonoBehaviour
         foreach (Inimigo inimigo in inimigosArrastados)
         {
             inimigo.ReceberDano(danoFuriaPorNivel[nivelFuria]);
+            Debug.Log($"Inimigo {inimigo.name} recebeu {danoFuriaPorNivel[nivelFuria]} de dano.");
         }
+        
     }
 
     private bool ColisaoComSuperficie()

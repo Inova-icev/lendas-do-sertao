@@ -17,7 +17,7 @@ public class MorteDoInimigo : MonoBehaviour
             Debug.LogError("StatusBase não encontrado no Mapinguari!");
         }
       
-    statusBase.AtivarEscudo();
+    //statusBase.AtivarEscudo();
          
     
     }
