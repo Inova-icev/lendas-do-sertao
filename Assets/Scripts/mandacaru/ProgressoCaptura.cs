@@ -95,10 +95,6 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
             Debug.Log($"Progresso Right: {currentRightProgress}%");
             lastRightProgressLog = currentRightProgress;
         }
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC("SyncProgress", RpcTarget.Others, teamLeftProgress, teamRightProgress);
-        }
     }
 
     private void CheckForCapture()

@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Threading.Tasks;
-using Unity.Mathematics;
-using System;
-using Photon.Pun.Demo.Cockpit;
 using UnityEngine.UI;
-using System.Linq.Expressions;
 
 namespace ManagmentScripts
 {
@@ -18,24 +13,31 @@ namespace ManagmentScripts
         private GameObject painelMenu, painelOptions, painelLogin, painelLobby, painelTeam, painelPersonagens, background;
 
         [SerializeField]
-        private Boolean isOffline = false;
+        private GameObject GameHUDCanvas; // HUD do jogo
 
         [SerializeField]
-        private String roomName = "ICEV-Match";
+        private bool isOffline = false;
 
         [SerializeField]
-        private Boolean overrideRoomDefaultRules = false; // Não sendo utilizado ainda
+        private string roomName = "ICEV-Match";
+
+        [SerializeField]
+        private bool overrideRoomDefaultRules = false; // Não sendo utilizado ainda
 
         [SerializeField]
         private Button teamBlue, teamRed;
 
+        [SerializeField]
+        private MinionSpawner[] minionSpawners; // Array para os spawners de minions (esquerda e direita)
+
         public int teamChoice;
 
-        GameManager gameManager = new GameManager();
+        private GameManager gameManager; // Referência ao GameManager
 
         // Start is called before the first frame update
         void Start()
         {
+            // Inicializa os painéis
             painelMenu.SetActive(true);
             painelOptions.SetActive(false);
             painelLogin.SetActive(false);
@@ -43,11 +45,24 @@ namespace ManagmentScripts
             painelTeam.SetActive(false);
             painelPersonagens.SetActive(false);
 
+            // Certifica-se de que o GameHUDCanvas começa desativado
+            if (GameHUDCanvas != null)
+            {
+                GameHUDCanvas.SetActive(false);
+            }
+
+            // Configura os botões de seleção de time
             teamBlue.onClick.AddListener(() => ChooseTeam(1));
             teamRed.onClick.AddListener(() => ChooseTeam(2));
+
+            // Obtém a referência ao GameManager na cena
+            gameManager = FindObjectOfType<GameManager>();
+            if (gameManager == null)
+            {
+                Debug.LogError("GameManager não foi encontrado na cena!");
+            }
         }
 
-        //fluxo menu(options)>login>lobby>nomesala
         public void OpenOptions()
         {
             painelMenu.SetActive(false);
@@ -79,7 +94,7 @@ namespace ManagmentScripts
 
         public override void OnConnectedToMaster()
         {
-            Debug.Log("Conexão com o serviço bem sucessedida!");
+            Debug.Log("Conexão com o serviço bem-sucedida!");
             PhotonNetwork.JoinLobby();
             painelLogin.SetActive(false);
             painelLobby.SetActive(true);
@@ -116,12 +131,33 @@ namespace ManagmentScripts
             painelLobby.SetActive(false);
             painelTeam.SetActive(true);
         }
+
+        
+
         public void SelectedPersonagem()
         {
             gameManager.SpawnPlayer();
             painelPersonagens.SetActive(false);
             background.SetActive(false);
-        }
 
+            if (GameHUDCanvas != null)
+            {
+                GameHUDCanvas.SetActive(true);
+            }
+
+            // Ativa o spawn de minions
+            foreach (var spawner in minionSpawners)
+            {
+                if (spawner != null)
+                {
+                    StartCoroutine(spawner.SpawnWave());
+                }
+                else
+                {
+                    Debug.LogError("Spawner está faltando no array MinionSpawners!");
+                }
+            }
+        }
     }
 }
+
