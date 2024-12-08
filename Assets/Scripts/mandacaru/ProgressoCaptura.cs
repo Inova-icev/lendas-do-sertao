@@ -22,6 +22,8 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
     public float buffMultiplier = 1.5f; // Multiplicador do buff do Mandacaru
     public float damageMultiplier = 2f; // Multiplicador do dano do buff
     public float buffDuration = 30f; // Duração do buff em segundos
+    public float resetTime = 120f; // Tempo de reset do Mandacaru
+
 
     void Update()
     {
@@ -93,6 +95,10 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
             Debug.Log($"Progresso Right: {currentRightProgress}%");
             lastRightProgressLog = currentRightProgress;
         }
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("SyncProgress", RpcTarget.Others, teamLeftProgress, teamRightProgress);
+        }
     }
 
     private void CheckForCapture()
@@ -102,14 +108,14 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
             isCaptured = true;
             Debug.Log("Time Left capturou o objetivo!");
             GrantBuffToTeam(teamLeftTag);
-            StartCoroutine(ResetAfterCapture(120f));
+            StartCoroutine(ResetAfterCapture(resetTime)); // Usando a variável resetTime
         }
         else if (teamRightProgress >= 100f)
         {
             isCaptured = true;
             Debug.Log("Time Right capturou o objetivo!");
             GrantBuffToTeam(teamRightTag);
-            StartCoroutine(ResetAfterCapture(120f));
+            StartCoroutine(ResetAfterCapture(resetTime)); // Usando a variável resetTime
         }
     }
 
@@ -202,4 +208,10 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
     {
         return teamRightProgress;
     }
+    [PunRPC]
+    private void SyncProgress(float leftProgress, float rightProgress)
+    {
+        teamLeftProgress = leftProgress;
+        teamRightProgress = rightProgress;
+    }   
 }

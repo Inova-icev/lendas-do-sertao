@@ -1,16 +1,19 @@
+using TMPro; // Certifique-se de incluir esta biblioteca para usar TextMeshPro
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CaptureUIManager : MonoBehaviour
 {
-    public Slider TeamLeftProgressBar; // Referência para a barra do Time Left
-    public Slider TeamRightProgressBar; // Referência para a barra do Time Right
+    public Slider teamLeftProgressBar;  // Referência ao Slider do time Left
+    public Slider teamRightProgressBar; // Referência ao Slider do time Right
+    public TMP_Text teamLeftPercentageText; // Referência ao texto da porcentagem do time Left
+    public TMP_Text teamRightPercentageText; // Referência ao texto da porcentagem do time Right
 
     private MandacaruZone mandacaruZone; // Referência ao script MandacaruZone
 
     void Start()
     {
-        // Procura o objeto MandacaruZone na cena
+        // Procura o MandacaruZone na cena
         mandacaruZone = FindObjectOfType<MandacaruZone>();
 
         if (mandacaruZone == null)
@@ -23,9 +26,16 @@ public class CaptureUIManager : MonoBehaviour
     {
         if (mandacaruZone != null)
         {
-            // Atualiza os sliders com o progresso atual do Mandacaru
-            TeamLeftProgressBar.value = mandacaruZone.GetTeamLeftProgress() / 100f;
-            TeamRightProgressBar.value = mandacaruZone.GetTeamRightProgress() / 100f;
+            // Atualiza os sliders com base no progresso atual
+            float leftProgress = mandacaruZone.GetTeamLeftProgress();
+            float rightProgress = mandacaruZone.GetTeamRightProgress();
+
+            teamLeftProgressBar.value = leftProgress / 100f;
+            teamRightProgressBar.value = rightProgress / 100f;
+
+            // Atualiza os textos com a porcentagem
+            teamLeftPercentageText.text = Mathf.FloorToInt(leftProgress) + "%";
+            teamRightPercentageText.text = Mathf.FloorToInt(rightProgress) + "%";
         }
     }
 }
