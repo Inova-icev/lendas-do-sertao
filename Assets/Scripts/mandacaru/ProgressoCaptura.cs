@@ -193,4 +193,13 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
 
         Debug.Log("Progresso de captura resetado. O objetivo pode ser capturado novamente.");
     }
+    public float GetTeamLeftProgress()
+    {
+        return teamLeftProgress;
+    }
+
+    public float GetTeamRightProgress()
+    {
+        return teamRightProgress;
+    }
 }
