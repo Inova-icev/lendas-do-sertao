@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using Photon.Pun;
 using ManagmentScripts; // Namespace do PanelManager
 
-public class Nexus : MonoBehaviourPun
+public class Nexus : MonoBehaviour
 {
     public string nexusTag; // Tag do Nexus (ex: "Left" ou "Right")
 
@@ -20,25 +19,21 @@ public class Nexus : MonoBehaviourPun
 
     void OnDestroy()
     {
-        if (PhotonNetwork.IsMasterClient) 
-        {
-            photonView.RPC("HandleGameEnd", RpcTarget.All, nexusTag); 
-        }
+        HandleGameEnd();
     }
 
-    [PunRPC]
-    private void HandleGameEnd(string destroyedNexusTag)
+    private void HandleGameEnd()
     {
         // Obtém todos os objetos com as tags "Left" e "Right"
         GameObject[] leftTeam = GameObject.FindGameObjectsWithTag("Left");
         GameObject[] rightTeam = GameObject.FindGameObjectsWithTag("Right");
 
         // Processa apenas jogadores com o componente Player
-        ProcessPlayers(leftTeam, destroyedNexusTag);
-        ProcessPlayers(rightTeam, destroyedNexusTag);
+        ProcessPlayers(leftTeam);
+        ProcessPlayers(rightTeam);
     }
 
-    private void ProcessPlayers(GameObject[] team, string destroyedNexusTag)
+    private void ProcessPlayers(GameObject[] team)
     {
         foreach (GameObject obj in team)
         {
@@ -51,7 +46,7 @@ public class Nexus : MonoBehaviourPun
                 // Exibe vitória ou derrota baseado na tag
                 if (panelManager != null)
                 {
-                    panelManager.ShowEndGamePanel(destroyedNexusTag, playerTag);
+                    panelManager.ShowEndGamePanel(nexusTag, playerTag);
                 }
             }
         }

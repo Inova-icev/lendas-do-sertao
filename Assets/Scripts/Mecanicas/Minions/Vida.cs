@@ -9,11 +9,13 @@ public class Vida : MonoBehaviour
     public float maxHealth;
     public Transform healthBar; // Referência à barra verde (preenchimento)
     public GameObject healthBarObject; // Objeto completo da barra de vida
+    public GameObject healthBarPrefab; // Prefab para a barra de vida
 
     private Vector3 healthBarScale; // Escala original da barra de preenchimento
     private float healthPercent;
 
     private GameManager gameManager;
+    private RespawnManager respawnManager; // Gerenciador de respawn
     public string teamName;
 
     public float regeneracaoVida;
@@ -22,29 +24,24 @@ public class Vida : MonoBehaviour
 
     void Start()
     {
-        if (healthBar == null)
-        {
-            // Procura pela barra de preenchimento automaticamente
-            healthBar = transform.Find("BarraVida/Verde");
-        }
-
-        if (healthBarObject == null)
-        {
-            // Procura pelo objeto completo da barra de vida
-            healthBarObject = transform.Find("BarraVida").gameObject;
-        }
-
+        // Detecta ou instancia a barra de vida
         if (healthBar == null || healthBarObject == null)
         {
-            Debug.LogError("A configuração da barra de vida está incompleta!", this);
+            SetupHealthBar();
         }
 
-        // Inicializa a barra de vida
         healthBarScale = healthBar.localScale;
         healthPercent = 1f; // Começa com 100% de vida
-        currentHealth = maxHealth; // Garante que a vida atual seja máxima no início
-        UpdateHealthBar(); // Atualiza a barra de vida visualmente
+        currentHealth = maxHealth;
+        UpdateHealthBar();
+
         gameManager = GameManager.Instance;
+        respawnManager = FindObjectOfType<RespawnManager>();
+
+        if (respawnManager == null)
+        {
+            Debug.LogError("RespawnManager não foi encontrado na cena!");
+        }
     }
 
     private void Update()
@@ -62,13 +59,21 @@ public class Vida : MonoBehaviour
         float danoFinal = tipoDano == 0 ? Mitigacao(dano, armadura) : Mitigacao(dano, defesaMagica);
 
         currentHealth -= danoFinal;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Garante que a vida esteja entre 0 e o máximo
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         UpdateHealthBar();
 
         if (currentHealth <= 0)
         {
-            Die();
+            Player playerComponent = GetComponent<Player>();
+            if (playerComponent != null)
+            {
+                StartCoroutine(HandleRespawn()); // Respawn para jogadores
+            }
+            else
+            {
+                Die(); // Destruição para outros objetos
+            }
         }
 
         Debug.Log($"Dano recebido: {danoFinal} (Tipo: {(tipoDano == 0 ? "Físico" : "Mágico")})");
@@ -89,18 +94,17 @@ public class Vida : MonoBehaviour
     {
         if (healthBar != null && maxHealth > 0)
         {
-            // Calcula o percentual de vida
             healthPercent = currentHealth / maxHealth;
-            healthPercent = Mathf.Clamp01(healthPercent); // Garante que esteja entre 0 e 1
+            healthPercent = Mathf.Clamp01(healthPercent);
 
-            // Atualiza a escala da barra de preenchimento
-            healthBarScale.x = healthPercent * healthBarScale.x;
-            healthBar.localScale = new Vector3(healthBarScale.x, healthBarScale.y, healthBarScale.z);
+            healthBar.localScale = new Vector3(healthPercent, healthBarScale.y, healthBarScale.z);
         }
     }
 
     void Die()
     {
+        Debug.Log($"{gameObject.name} morreu e foi destruído.");
+
         Minions minionComponent = GetComponent<Minions>();
         Torre torreComponent = GetComponent<Torre>();
 
@@ -116,5 +120,61 @@ public class Vida : MonoBehaviour
 
         Destroy(healthBarObject);
         Destroy(gameObject);
+    }
+
+    private System.Collections.IEnumerator HandleRespawn()
+    {
+        Debug.Log($"{gameObject.name} morreu e será respawnado em 5 segundos.");
+
+        // Desativa o jogador
+        gameObject.SetActive(false);
+
+        // Espera 5 segundos antes do respawn
+        yield return new WaitForSeconds(5);
+
+        // Restaura a vida e reposiciona o jogador
+        currentHealth = maxHealth;
+        UpdateHealthBar();
+
+        if (respawnManager != null)
+        {
+            respawnManager.RespawnPlayer(gameObject);
+        }
+        else
+        {
+            Debug.LogError("RespawnManager não configurado.");
+        }
+
+        // Reativa o jogador
+        gameObject.SetActive(true);
+    }
+
+    private void SetupHealthBar()
+    {
+        // Procura pela barra de vida existente
+        if (healthBar == null)
+        {
+            healthBar = transform.Find("BarraVida/Verde");
+        }
+
+        if (healthBarObject == null)
+        {
+            healthBarObject = transform.Find("BarraVida")?.gameObject;
+        }
+
+        // Se não encontrar, instancia a partir de um prefab
+        if (healthBar == null || healthBarObject == null)
+        {
+            if (healthBarPrefab != null)
+            {
+                healthBarObject = Instantiate(healthBarPrefab, transform.position + new Vector3(0, 2, 0), Quaternion.identity);
+                healthBarObject.transform.SetParent(transform); // Faz a barra de vida seguir o objeto
+                healthBar = healthBarObject.transform.Find("Verde"); // Acha a barra de preenchimento
+            }
+            else
+            {
+                Debug.LogError("Prefab de barra de vida não configurado!", this);
+            }
+        }
     }
 }
