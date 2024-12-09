@@ -39,6 +39,7 @@ public class DefesaSistema : MonoBehaviour
         {
             statusBase.vidaAtual = 0;
             Debug.Log("O personagem morreu!");
+            Destroy(this.gameObject);
         }
 
         Debug.Log($"Dano recebido: {danoFinal} (Tipo: {(tipoDano == 0 ? "Físico" : "Mágico")})");

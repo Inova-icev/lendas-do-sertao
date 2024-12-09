@@ -63,10 +63,10 @@ public class StatusBase : MonoBehaviour
         barraVidaverde.localScale = barravidaScala;
     }
 
-    public void AtivarEscudo(){
+    /*public void AtivarEscudo(){
         EscudoPai.SetActive(true);
         temEscudo =true;
-    }
+    }*/
 
         private void Update()
     {
