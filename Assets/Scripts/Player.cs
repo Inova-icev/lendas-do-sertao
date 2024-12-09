@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
 
     public int gold = 0;
 
-    private Vida vida;
+    private Vida_Player vida;
 
     private bool controlEnabled = true;
 
@@ -44,9 +44,26 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        currentSpeed = speed;
-        vida = GetComponent<Vida>();
+        vida = GetComponent<Vida_Player>();
         rb = GetComponent<Rigidbody2D>();
+
+        Vida_Player.OnPlayerDeath += HandleDeath;
+    }
+
+    void OnDestroy()
+    {
+        // Remove a inscrição no evento para evitar erros
+        Vida_Player.OnPlayerDeath -= HandleDeath;
+    }
+
+    private void HandleDeath(GameObject deadPlayer)
+    {
+        // Verifica se o evento é para este jogador
+        if (deadPlayer == gameObject)
+        {
+            Debug.Log($"{gameObject.name} foi derrotado!");
+            controlEnabled = false; // Desativa os controles do jogador
+        }
     }
 
     void Update()
@@ -261,7 +278,7 @@ public class Player : MonoBehaviour
     {
         if (vida != null)
         {
-            vida.TakeDamage(damageAmount); // Passa o dano para o componente Vida
+            vida.TakeDamageP(damageAmount); // Passa o dano para o componente Vida
         }
     }
 
@@ -332,7 +349,7 @@ public class Player : MonoBehaviour
             if ((CompareTag("Left") && potentialTarget.CompareTag("Right")) ||
                 (CompareTag("Right") && potentialTarget.CompareTag("Left")))
             {
-                Vida vidaComponent = potentialTarget.GetComponent<Vida>();
+                Vida_Player vidaComponent = potentialTarget.GetComponent<Vida_Player>();
                 if (vidaComponent != null)
                 {
                     float distanceToTarget = Vector2.Distance(transform.position, potentialTarget.transform.position);
@@ -348,11 +365,11 @@ public class Player : MonoBehaviour
         if (closestTarget != null)
         {
             // Aplica o dano no alvo
-            Vida targetVida = closestTarget.GetComponent<Vida>();
+            Vida_Player targetVida = closestTarget.GetComponent<Vida_Player>();
             if (targetVida != null)
             {
                 int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
-                targetVida.TakeDamage(damageToDeal);
+                targetVida.TakeDamageP(damageToDeal);
                 Debug.Log($"{gameObject.name} atacou {closestTarget.name} causando {damageToDeal} de dano");
             }
         }
