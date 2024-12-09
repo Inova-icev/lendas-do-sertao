@@ -96,18 +96,26 @@ public class Torre : MonoBehaviour
     {
         if (target != null)
         {
-            Vida targetVida = target.GetComponent<Vida>();
-            if (targetVida != null)
+            Vida vida = target.GetComponent<Vida>();
+            Vida_Player vidaPlayer = target.GetComponent<Vida_Player>();
+
+            if (vida != null)
             {
-                targetVida.TakeDamage(damage); // Aplica o dano
+                vida.TakeDamage(damage); // Aplica o dano ao componente Vida
+                Debug.Log($"{gameObject.name} atacou {target.name} e causou {damage} de dano.");
+            }
+            else if (vidaPlayer != null)
+            {
+                vidaPlayer.TakeDamageP(damage); // Aplica o dano ao componente Vida_Player
                 Debug.Log($"{gameObject.name} atacou {target.name} e causou {damage} de dano.");
             }
             else
             {
-                Debug.Log($"O alvo {target.name} não possui um componente Vida.");
+                Debug.Log($"O alvo {target.name} não possui um componente Vida ou Vida_Player.");
             }
         }
     }
+
 
 
     // Método para conceder ouro aos inimigos próximos

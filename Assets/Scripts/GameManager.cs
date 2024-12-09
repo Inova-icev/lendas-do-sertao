@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [SerializeField]
     private GameObject player;
+    private Transform respawnPointTeamLeft;
+    private Transform respawnPointTeamRight;
+    private float respawnTime = 2f;
 
     private void Awake()
     {
@@ -32,7 +35,38 @@ public class GameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.Instantiate("Saci", new Vector3(-128.3f, 43.5f, 0), Quaternion.identity);
     }
 
-    [PunRPC]
+    private void OnEnable()
+    {
+        Vida_Player.OnPlayerDeath += HandlePlayerDeath; // Subscrição no evento
+    }
+
+    private void OnDisable()
+    {
+        Vida_Player.OnPlayerDeath -= HandlePlayerDeath; // Desinscrição no evento
+    }
+
+    private void HandlePlayerDeath(GameObject player)
+    {
+        StartCoroutine(RespawnPlayer(player));
+    }
+
+    private IEnumerator RespawnPlayer(GameObject player)
+    {
+        Debug.Log($"{player.name} vai respawnar em {respawnTime} segundos...");
+        yield return new WaitForSeconds(respawnTime);
+
+        // Determina o ponto de respawn com base na tag
+        Transform respawnPoint = player.CompareTag("Left") ? respawnPointTeamLeft : respawnPointTeamRight;
+
+        // Reposiciona e reativa o jogador
+        player.transform.position = respawnPoint.position;
+        player.GetComponent<Vida_Player>().ResetHealth();
+        player.SetActive(true);
+
+        Debug.Log($"{player.name} respawnou!");
+    }
+
+[PunRPC]
     public void EndGame(string winningTeam)
     {
         Debug.Log($"Fim de jogo! Vencedor: {winningTeam}");
