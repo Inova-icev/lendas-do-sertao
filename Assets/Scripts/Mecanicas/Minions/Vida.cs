@@ -1,23 +1,111 @@
+using UnityEditor;
 using UnityEngine;
 
 public class Vida : MonoBehaviour
 {
-    public int currentHealth; // Saúde atual (atribua individualmente no Inspector)
+    public float currentHealth;
+    public float maxHealth;
+    public Transform healthBar; // Referência à barra verde (preenchimento)
+    public GameObject healthBarObject; // Objeto completo da barra de vida
+
+    private Vector3 healthBarScale; // Escala original da barra de preenchimento
+    private float healthPercent;
+    public float regeneracaoVida;
+    public float armadura;
+    public float defesaMagica;
 
     void Start()
     {
-        // currentHealth será definido individualmente para cada GameObject no Inspector,
-        // então não é necessário inicializá-lo com um valor padrão aqui.
+        if (healthBar == null)
+        {
+            // Procura pela barra de preenchimento automaticamente
+            healthBar = transform.Find("BarraVida/Verde");
+        }
+
+        if (healthBarObject == null)
+        {
+            // Procura pelo objeto completo da barra de vida
+            healthBarObject = transform.Find("BarraVida").gameObject;
+        }
+
+        if (healthBar == null || healthBarObject == null)
+        {
+            Debug.LogError("A configuração da barra de vida está incompleta!", this);
+        }
+
+        healthBarScale = healthBar.localScale;
+        healthPercent = healthBarScale.x / currentHealth;
     }
 
-    // Função para aplicar dano ao objeto
-    public void TakeDamage(int damage)
+    private void Update() {
+        RegenerarAtributos();
+    }
+
+    // Função para calcular a mitigação de dano (aplicada ao dano físico ou mágico)
+    private float Mitigacao(float dano, float mitigacao)
     {
-        currentHealth -= damage; // Reduz a saúde pelo valor de dano
+        return dano / (1 + mitigacao / 100f);
+    }
+
+    // Função modificada para calcular o dano recebido com base na mitigação
+    public void TakeDamage(float dano, int tipoDano = 0) // tipo de dano: 0 = físico, 1 = mágico
+    {
+        float danoFinal = dano;
+
+        // Calcula o dano final com base no tipo de dano
+        if (tipoDano == 0) // Dano Físico
+        {
+            danoFinal = Mitigacao(dano, armadura);
+        }
+        else if (tipoDano == 1) // Dano Mágico
+        {
+            danoFinal = Mitigacao(dano, defesaMagica);
+        }
+
+        // Aplica o dano na vida atual
+        currentHealth -= danoFinal;
+
+        if (currentHealth < 0)
+        {
+            currentHealth = 0;
+        }
+
+        UpdateHealthBar(); // Atualiza a barra de vida
 
         if (currentHealth <= 0)
         {
-            Die(); // Chama a função de morte se a saúde for zero ou menos
+            Die();
+        }
+
+        Debug.Log($"Dano recebido: {danoFinal} (Tipo: {(tipoDano == 0 ? "Físico" : "Mágico")})");
+    }
+
+        private void RegenerarAtributos()
+    {
+        if (currentHealth < maxHealth)
+        {
+            currentHealth += regeneracaoVida * Time.deltaTime;
+            if (currentHealth > maxHealth) currentHealth = maxHealth;
+        }
+
+        /*if (manaAtual < manaMaxima)
+        {
+            manaAtual += regeneracaoMana * Time.deltaTime;
+            if (manaAtual > manaMaxima) manaAtual = manaMaxima;
+        }*/
+
+        UpdateHealthBar();
+    }
+
+
+    // Atualiza a barra de vida visualmente
+    void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            // Atualiza a escala no eixo X proporcional à saúde
+            healthBarScale.x = healthPercent * currentHealth;
+            healthBar.localScale = healthBarScale;
         }
     }
 
@@ -25,20 +113,19 @@ public class Vida : MonoBehaviour
     void Die()
     {
         Minions minionComponent = GetComponent<Minions>();
-
         Torre torreComponent = GetComponent<Torre>();
 
         if (minionComponent != null)
         {
-            minionComponent.OnDeath(); // Chama a lógica de recompensa em ouro dos inimigos, se aplicável
+            minionComponent.OnDeath();
         }
 
         if (torreComponent != null)
         {
             torreComponent.GrantGoldToNearbyEnemies();
         }
-        
-        Debug.Log(gameObject.name + " morreu.");
-        Destroy(gameObject); // Destroi o objeto
+
+        Destroy(healthBarObject);
+        Destroy(gameObject);
     }
 }

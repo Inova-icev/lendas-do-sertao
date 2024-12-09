@@ -131,7 +131,8 @@ public class Minions : MonoBehaviour
 
     void MoveForward()
     {
-        rb.velocity = new Vector2(speed, rb.velocity.y);
+        float directionMultiplier = CompareTag("Right") ? -1 : 1; 
+        rb.velocity = new Vector2(speed * directionMultiplier, rb.velocity.y);
     }
 
 
@@ -153,14 +154,15 @@ public class Minions : MonoBehaviour
         }
     }
 
-
-
     void MoveTowardsTarget()
     {
         if (target != null)
         {
             Vector2 direction = (target.position - transform.position).normalized;
-            rb.velocity = new Vector2(direction.x * speed, rb.velocity.y);
+
+            // Corrige a direção de movimento com base na tag do minion
+            float directionMultiplier = CompareTag("Right") ? -1 : 1; // Minions da Right vão para a esquerda
+            rb.velocity = new Vector2(direction.x * speed * directionMultiplier, rb.velocity.y);
         }
     }
 
@@ -266,6 +268,10 @@ public class Minions : MonoBehaviour
             target = closestTarget.transform;
             Debug.Log($"{gameObject.name} encontrou o alvo {closestTarget.name}");
         }
+            else
+        {
+            target = null; // Nenhum alvo encontrado
+        }
     }
 
     // Método de ataque
@@ -274,12 +280,17 @@ public class Minions : MonoBehaviour
         // Verifica se o cooldown acabou
         if (attackTimer <= 0f && target != null)
         {
-            Vida targetVida = target.GetComponent<Vida>();
-            if (targetVida != null)
+            float distanceToTarget = Vector2.Distance(transform.position, target.position);
+
+            if (distanceToTarget <= attackRange) 
             {
-                targetVida.TakeDamage(attackDamage); // Aplica o dano
-                Debug.Log($"{gameObject.name} atacou {target.name} causando {attackDamage} de dano.");
-                attackTimer = attackCooldown; // Reinicia o cooldown
+                Vida targetVida = target.GetComponent<Vida>();
+                if (targetVida != null)
+                {
+                    targetVida.TakeDamage(attackDamage); 
+                    Debug.Log($"{gameObject.name} atacou {target.name} causando {attackDamage} de dano.");
+                    attackTimer = attackCooldown; 
+                }
             }
         }
     }
@@ -310,6 +321,7 @@ public class Minions : MonoBehaviour
         {
             vidaComponent.TakeDamage(damage);
         }
+        rb.velocity = new Vector2(0, rb.velocity.y);
     }
 
     public void OnDeath()
@@ -329,5 +341,13 @@ public class Minions : MonoBehaviour
 
         // Destroi o minion
         Destroy(gameObject);
+    }
+    void OnDrawGizmosSelected()
+    {
+        // Define a cor do gizmo
+        Gizmos.color = Color.red;
+
+        // Desenha um círculo ao redor do minion com base no alcance de ataque
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

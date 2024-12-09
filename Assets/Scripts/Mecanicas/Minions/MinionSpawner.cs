@@ -13,10 +13,10 @@ public class MinionSpawner : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(SpawnWave());
+ 
     }
 
-    IEnumerator SpawnWave()
+    public IEnumerator SpawnWave()
     {
         while (true)
         {
@@ -42,7 +42,7 @@ public class MinionSpawner : MonoBehaviour
             yield return new WaitForSeconds(spawnInterval);
         }
     }
-    void SpawnMinion()
+    public void SpawnMinion()
     {
         // Instancia o minion na posição de spawn com a rotação padrão
         GameObject minion = Instantiate(minionPrefab, spawnPoint.position, Quaternion.identity);
