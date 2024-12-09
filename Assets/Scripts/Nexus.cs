@@ -1,33 +1,58 @@
 ﻿using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
+using ManagmentScripts; // Namespace do PanelManager
 
-
-public class Nexus : MonoBehaviourPunCallbacks
+public class Nexus : MonoBehaviourPun
 {
-    public int health = 100; 
-    public string teamName; 
+    public string nexusTag; // Tag do Nexus (ex: "Left" ou "Right")
 
-    private GameManager gameManager; // aqui é onde a referência para o GameManager será armazenada
+    private PanelManager panelManager;
 
     void Start()
     {
-        gameManager = GameManager.Instance;
+        // Localiza o PanelManager na cena
+        panelManager = FindObjectOfType<PanelManager>();
+        if (panelManager == null)
+        {
+            Debug.LogError("PanelManager não foi encontrado na cena!");
+        }
     }
 
-    public void TakeDamage(int damage)
+    void OnDestroy()
     {
-        health -= damage;
-        Debug.Log($"Nexus {teamName} recebeu dano! Vida restante: {health}");
-
-        if (health <= 0)
+        if (PhotonNetwork.IsMasterClient) 
         {
-            health = 0;
-            Debug.Log($"Nexus {teamName} destruído!");
+            photonView.RPC("HandleGameEnd", RpcTarget.All, nexusTag); 
+        }
+    }
 
-            if (gameManager != null)
+    [PunRPC]
+    private void HandleGameEnd(string destroyedNexusTag)
+    {
+        // Obtém todos os objetos com as tags "Left" e "Right"
+        GameObject[] leftTeam = GameObject.FindGameObjectsWithTag("Left");
+        GameObject[] rightTeam = GameObject.FindGameObjectsWithTag("Right");
+
+        // Processa apenas jogadores com o componente Player
+        ProcessPlayers(leftTeam, destroyedNexusTag);
+        ProcessPlayers(rightTeam, destroyedNexusTag);
+    }
+
+    private void ProcessPlayers(GameObject[] team, string destroyedNexusTag)
+    {
+        foreach (GameObject obj in team)
+        {
+            // Verifica se o objeto tem o componente Player
+            Player playerComponent = obj.GetComponent<Player>();
+            if (playerComponent != null)
             {
-                gameManager.photonView.RPC("NexusDestroyed", RpcTarget.All, teamName);
+                string playerTag = obj.tag;
+
+                // Exibe vitória ou derrota baseado na tag
+                if (panelManager != null)
+                {
+                    panelManager.ShowEndGamePanel(destroyedNexusTag, playerTag);
+                }
             }
         }
     }

@@ -132,9 +132,7 @@ namespace ManagmentScripts
         {
             painelLobby.SetActive(false);
             painelTeam.SetActive(true);
-        }
-
-        
+        }  
 
         public void SelectedPersonagem()
         {
@@ -158,6 +156,27 @@ namespace ManagmentScripts
                 {
                     Debug.LogError("Spawner está faltando no array MinionSpawners!");
                 }
+            }
+        }
+        public void ShowEndGamePanel(string nexusTag, string playerTag)
+        {
+            if (playerTag == nexusTag)
+            {
+                // Jogador perdeu
+                panelDerrota.SetActive(true);
+                Debug.Log("Derrota para o jogador com tag: " + playerTag);
+            }
+            else
+            {
+                // Jogador venceu
+                panelVitoria.SetActive(true);
+                Debug.Log("Vitória para o jogador com tag: " + playerTag);
+            }
+
+            // Opcional: Desativa a HUD do jogo
+            if (GameHUDCanvas != null)
+            {
+                GameHUDCanvas.SetActive(false);
             }
         }
     }

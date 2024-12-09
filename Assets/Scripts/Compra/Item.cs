@@ -10,12 +10,11 @@ public enum ItemType
 [System.Serializable]
 public class Item
 {
-    public string name;        // Nome do item
-    public ItemType type;      // Tipo do item (ex: buff de velocidade ou dano)
-    public float effectValue;  // Valor do efeito (ex: multiplicador de velocidade ou dano)
-    public int price;          // Preço do item
+    public string name;        
+    public ItemType type;     
+    public float effectValue; 
+    public int price;         
 
-    // Construtor opcional para criar itens no código
     public Item(string name, ItemType type, float effectValue, int price)
     {
         this.name = name;

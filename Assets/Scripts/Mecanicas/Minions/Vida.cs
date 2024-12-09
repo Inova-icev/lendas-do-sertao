@@ -1,5 +1,7 @@
 using UnityEditor;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class Vida : MonoBehaviour
 {
@@ -10,6 +12,10 @@ public class Vida : MonoBehaviour
 
     private Vector3 healthBarScale; // Escala original da barra de preenchimento
     private float healthPercent;
+
+    private GameManager gameManager;
+    public string teamName;
+
     public float regeneracaoVida;
     public float armadura;
     public float defesaMagica;
@@ -33,44 +39,32 @@ public class Vida : MonoBehaviour
             Debug.LogError("A configuração da barra de vida está incompleta!", this);
         }
 
+        // Inicializa a barra de vida
         healthBarScale = healthBar.localScale;
-        healthPercent = healthBarScale.x / currentHealth;
+        healthPercent = 1f; // Começa com 100% de vida
+        currentHealth = maxHealth; // Garante que a vida atual seja máxima no início
+        UpdateHealthBar(); // Atualiza a barra de vida visualmente
+        gameManager = GameManager.Instance;
     }
 
-    private void Update() {
+    private void Update()
+    {
         RegenerarAtributos();
     }
 
-    // Função para calcular a mitigação de dano (aplicada ao dano físico ou mágico)
     private float Mitigacao(float dano, float mitigacao)
     {
         return dano / (1 + mitigacao / 100f);
     }
 
-    // Função modificada para calcular o dano recebido com base na mitigação
-    public void TakeDamage(float dano, int tipoDano = 0) // tipo de dano: 0 = físico, 1 = mágico
+    public void TakeDamage(float dano, int tipoDano = 0)
     {
-        float danoFinal = dano;
+        float danoFinal = tipoDano == 0 ? Mitigacao(dano, armadura) : Mitigacao(dano, defesaMagica);
 
-        // Calcula o dano final com base no tipo de dano
-        if (tipoDano == 0) // Dano Físico
-        {
-            danoFinal = Mitigacao(dano, armadura);
-        }
-        else if (tipoDano == 1) // Dano Mágico
-        {
-            danoFinal = Mitigacao(dano, defesaMagica);
-        }
-
-        // Aplica o dano na vida atual
         currentHealth -= danoFinal;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Garante que a vida esteja entre 0 e o máximo
 
-        if (currentHealth < 0)
-        {
-            currentHealth = 0;
-        }
-
-        UpdateHealthBar(); // Atualiza a barra de vida
+        UpdateHealthBar();
 
         if (currentHealth <= 0)
         {
@@ -80,36 +74,31 @@ public class Vida : MonoBehaviour
         Debug.Log($"Dano recebido: {danoFinal} (Tipo: {(tipoDano == 0 ? "Físico" : "Mágico")})");
     }
 
-        private void RegenerarAtributos()
+    private void RegenerarAtributos()
     {
         if (currentHealth < maxHealth)
         {
             currentHealth += regeneracaoVida * Time.deltaTime;
-            if (currentHealth > maxHealth) currentHealth = maxHealth;
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         }
-
-        /*if (manaAtual < manaMaxima)
-        {
-            manaAtual += regeneracaoMana * Time.deltaTime;
-            if (manaAtual > manaMaxima) manaAtual = manaMaxima;
-        }*/
 
         UpdateHealthBar();
     }
 
-
-    // Atualiza a barra de vida visualmente
     void UpdateHealthBar()
     {
-        if (healthBar != null)
+        if (healthBar != null && maxHealth > 0)
         {
-            // Atualiza a escala no eixo X proporcional à saúde
-            healthBarScale.x = healthPercent * currentHealth;
-            healthBar.localScale = healthBarScale;
+            // Calcula o percentual de vida
+            healthPercent = currentHealth / maxHealth;
+            healthPercent = Mathf.Clamp01(healthPercent); // Garante que esteja entre 0 e 1
+
+            // Atualiza a escala da barra de preenchimento
+            healthBarScale.x = healthPercent * healthBarScale.x;
+            healthBar.localScale = new Vector3(healthBarScale.x, healthBarScale.y, healthBarScale.z);
         }
     }
 
-    // Função para lidar com a morte do objeto
     void Die()
     {
         Minions minionComponent = GetComponent<Minions>();
