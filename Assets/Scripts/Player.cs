@@ -40,7 +40,7 @@ public class Player : MonoBehaviour
 
     private float buffStartTimeDamage = 0f;
     private float buffStartTimeSpeed = 0f;
-    private float buffDuration= 10f;
+    private float buffDuration = 10f;
 
     void Start()
     {
@@ -70,7 +70,22 @@ public class Player : MonoBehaviour
     {
         if (controlEnabled)
         {
-            Move();
+            // Substituí a chamada direta para Move pela lógica integrada no próprio Update
+            float moveX = Input.GetAxisRaw("Horizontal"); // Obtém entrada de movimento horizontal
+            float targetSpeed = moveX * speed;
+
+            // Aceleração e desaceleração suaves
+            if (moveX != 0)
+            {
+                currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, acceleration * Time.deltaTime);
+            }
+            else
+            {
+                currentSpeed = Mathf.MoveTowards(currentSpeed, 0, deceleration * Time.deltaTime);
+            }
+
+            rb.velocity = new Vector2(currentSpeed, rb.velocity.y);
+
             CheckGround();
 
             if (isGrounded && Input.GetKeyDown(KeyCode.Space))
@@ -82,20 +97,12 @@ public class Player : MonoBehaviour
 
             HandleFalling();
 
-            if (rb.velocity.y < 0)
-            {
-                rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
-            }
-            else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space))
-            {
-                rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
-            }
-
             if (Input.GetKey(KeyCode.S))
             {
                 DropThroughPlatform();
             }
-            if (Input.GetMouseButtonDown(0)) // Botão direito do mouse
+
+            if (Input.GetMouseButtonDown(0)) // Botão esquerdo do mouse
             {
                 Attack();
             }
@@ -112,31 +119,31 @@ public class Player : MonoBehaviour
         }
     }
 
+
     void Move()
     {
-        float moveX = 0f;
+        // Determina a direção do movimento com base nas entradas do jogador
+        float moveX = Input.GetAxisRaw("Horizontal"); // -1 para esquerda, 1 para direita, 0 para parado
 
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            moveX = -1f;
-        }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            moveX = 1f;
-        }
+        // Calcula a velocidade alvo com base na entrada do jogador e na velocidade atual
+        float targetSpeed = moveX * speed;
 
-        // Acelera ou desacelera com base na direção
+        // Suaviza a transição entre parada e movimento
         if (moveX != 0)
         {
-            // Aceleração suave ao mover
-            rb.velocity = new Vector2(Mathf.MoveTowards(rb.velocity.x, moveX * currentSpeed, acceleration * Time.deltaTime), rb.velocity.y);
+            // Aceleração para a direção alvo
+            currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, acceleration * Time.deltaTime);
         }
         else
         {
-            // Desaceleração suave ao parar
-            rb.velocity = new Vector2(Mathf.MoveTowards(rb.velocity.x, 0f, deceleration * Time.deltaTime), rb.velocity.y);
+            // Desaceleração para 0 quando não há entrada de movimento
+            currentSpeed = Mathf.MoveTowards(currentSpeed, 0, deceleration * Time.deltaTime);
         }
+
+        // Atualiza a velocidade do rigidbody mantendo a componente Y
+        rb.velocity = new Vector2(currentSpeed, rb.velocity.y);
     }
+
 
     void Jump()
     {
