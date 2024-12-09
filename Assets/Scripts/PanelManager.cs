@@ -10,7 +10,7 @@ namespace ManagmentScripts
     public class PanelManager : MonoBehaviourPunCallbacks
     {
         [SerializeField]
-        private GameObject painelMenu, painelOptions, painelLogin, painelLobby, painelTeam, painelPersonagens, background;
+        private GameObject painelMenu, painelOptions, painelLogin, painelLobby, painelTeam, painelPersonagens, background, panelVitoria, panelDerrota;
 
         [SerializeField]
         private GameObject GameHUDCanvas; // HUD do jogo
@@ -44,6 +44,8 @@ namespace ManagmentScripts
             painelLobby.SetActive(false);
             painelTeam.SetActive(false);
             painelPersonagens.SetActive(false);
+            panelVitoria.SetActive(false);
+            panelDerrota.SetActive(false);
 
             // Certifica-se de que o GameHUDCanvas começa desativado
             if (GameHUDCanvas != null)
