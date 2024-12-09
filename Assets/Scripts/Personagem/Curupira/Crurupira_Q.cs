@@ -4,11 +4,10 @@ using UnityEngine;
 public class CurupiraQ : MonoBehaviour
 {
     public KeyCode teclaAtivacao = KeyCode.Q;
-    public Transform ataquePoint;
     public float alcanceHabilidade = 3f; 
     public float duracaoAtordoamento = 2f;
     public float tempoDeRecarga = 60f; 
-    public LayerMask inimigoLayers; 
+    public string inimigoTag = "Inimigo"; // Tag que o inimigo deve ter
 
     private float tempoRecargaAtual;
     private bool podeUsarHabilidade = true;
@@ -33,7 +32,9 @@ public class CurupiraQ : MonoBehaviour
 
     void UsarHabilidadeQ()
     {
-        Collider2D[] inimigosAfetados = Physics2D.OverlapCircleAll(ataquePoint.position, alcanceHabilidade, inimigoLayers);
+        // Alvo da habilidade será a posição do personagem (centro do personagem)
+        // Agora verificamos os inimigos pela tag e não pela layer
+        Collider2D[] inimigosAfetados = Physics2D.OverlapCircleAll(transform.position, alcanceHabilidade);
 
         if (inimigosAfetados.Length > 0)
         {
@@ -42,11 +43,15 @@ public class CurupiraQ : MonoBehaviour
 
             foreach (Collider2D inimigo in inimigosAfetados)
             {
-                // Puxar o inimigo para o Curupira
-                inimigo.transform.position = transform.position;
+                // Verifica se o inimigo tem a tag especificada
+                if (inimigo.CompareTag(inimigoTag))
+                {
+                    // Puxar o inimigo para o Curupira
+                    inimigo.transform.position = transform.position;
 
-                // Aplicar atordoamento no inimigo
-                StartCoroutine(AtordoarInimigo(inimigo));
+                    // Aplicar atordoamento no inimigo
+                    StartCoroutine(AtordoarInimigo(inimigo));
+                }
             }
         }
         else
@@ -85,9 +90,8 @@ public class CurupiraQ : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (ataquePoint == null) return;
-
+        // Visualização do alcance da habilidade na cena (baseado na posição do personagem)
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(ataquePoint.position, alcanceHabilidade);
+        Gizmos.DrawWireSphere(transform.position, alcanceHabilidade);
     }
 }
