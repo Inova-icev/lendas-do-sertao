@@ -22,8 +22,8 @@ public class Shop : MonoBehaviour
 
     void Update()
     {
-        // Verifica se o jogador está na área da loja e se a tecla "E" foi pressionada
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        // Verifica se o jogador está na área da loja e se a tecla "B" foi pressionada
+        if (playerInRange && Input.GetKeyDown(KeyCode.B))
         {
             InteractWithShop();  // Exibe os itens da loja
         }
@@ -35,7 +35,7 @@ public class Shop : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;  // Marca que o jogador está na área da loja
-            Debug.Log("Pressione 'E' para acessar a loja.");
+            Debug.Log("Pressione 'B' para acessar a loja.");
         }
     }
 
