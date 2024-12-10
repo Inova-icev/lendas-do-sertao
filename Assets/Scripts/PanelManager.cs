@@ -27,10 +27,12 @@ namespace ManagmentScripts
         [SerializeField]
         private Button teamBlue, teamRed;
 
+        private Button curupira, saci;
+
         [SerializeField]
         private MinionSpawner[] minionSpawners; // Array para os spawners de minions (esquerda e direita)
 
-        public string teamChoiceTag;
+        public string teamChoiceTag, characterChoice;
 
         private GameManager gameManager; // Referência ao GameManager
 
@@ -58,6 +60,8 @@ namespace ManagmentScripts
             teamBlue.onClick.AddListener(() =>Debug.Log("equipe azul escolhida"));
             teamRed.onClick.AddListener(() => teamChoiceTag="Left");
             teamRed.onClick.AddListener(() =>Debug.Log("equipe vermelha escolhida"));
+            curupira.onClick.AddListener(() => characterChoice= "caminhada pra frente0");
+            saci.onClick.AddListener(() => characterChoice= "saci parado0");
 
             // Obtém a referência ao GameManager na cena
             gameManager = FindObjectOfType<GameManager>();
@@ -132,7 +136,7 @@ namespace ManagmentScripts
 
         public void SelectedPersonagem()
         {
-            gameManager.SpawnPlayer(teamChoiceTag);
+            gameManager.SpawnPlayer(teamChoiceTag,characterChoice);
             painelPersonagens.SetActive(false);
             background.SetActive(false);
 

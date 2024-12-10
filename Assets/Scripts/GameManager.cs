@@ -49,13 +49,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void SpawnPlayer(string team)
+    public void SpawnPlayer(string team, string seletedCharacter)
     {
         if(team=="Left"){
-        PhotonNetwork.Instantiate("saci parado0", new Vector3(-128.3f, 43.5f, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate(seletedCharacter, new Vector3(-128.3f, 43.5f, 0), Quaternion.identity);
         }
         else{
-        PhotonNetwork.Instantiate("saci parado0", new Vector3(-8.97f, 41.38f, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate(seletedCharacter, new Vector3(-8.97f, 41.38f, 0), Quaternion.identity);
         }
     }
 
