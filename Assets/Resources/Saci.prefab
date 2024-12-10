@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 70125111534482567}
   m_Layer: 7
   m_Name: Saci
-  m_TagString: Player
+  m_TagString: Right
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -272,7 +272,7 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   healthBarObject: {fileID: 0}
   healthBarPrefab: {fileID: 5980718916856335108, guid: fac75ce04d2a2b94f8251acf7cf3127b, type: 3}
-  teamName: 
+  teamName: Right
   regeneracaoVida: 0
   armadura: 0
   defesaMagica: 0

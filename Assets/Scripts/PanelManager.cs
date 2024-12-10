@@ -146,6 +146,7 @@ namespace ManagmentScripts
                 if (spawner != null)
                 {
                     StartCoroutine(spawner.SpawnWave());
+                    Debug.Log("AAAAAAAAAAA");
                 }
                 else
                 {
