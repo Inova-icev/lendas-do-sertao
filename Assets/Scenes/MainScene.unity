@@ -256,6 +256,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1831164}
   m_CullTransparentMesh: 1
+--- !u!4 &4522153 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7411676114039294650, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
+  m_PrefabInstance: {fileID: 533481958}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &9250079
 GameObject:
   m_ObjectHideFlags: 0
@@ -1342,7 +1347,7 @@ Transform:
   m_GameObject: {fileID: 174697394}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -80.63, y: 41.68, z: -5}
+  m_LocalPosition: {x: -123.4, y: 41.68, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1362,6 +1367,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offset: {x: 0, y: 0, z: -10}
   smoothness: 0.1
+  playerTags:
+  - Left
+  - Right
 --- !u!1 &180148529
 GameObject:
   m_ObjectHideFlags: 0
@@ -2654,6 +2662,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &463141079
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 463141080}
+  m_Layer: 0
+  m_Name: RespawnPointRight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &463141080
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 463141079}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 83.77, y: 3.17, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1450456490}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &465771486
 GameObject:
   m_ObjectHideFlags: 0
@@ -4128,6 +4167,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 930074393}
   healthBarObject: {fileID: 986870592}
+  healthBarPrefab: {fileID: 0}
   teamName: 
   regeneracaoVida: 0
   armadura: 0
@@ -4335,6 +4375,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 1431852565}
   healthBarObject: {fileID: 1103243887}
+  healthBarPrefab: {fileID: 0}
   teamName: 
   regeneracaoVida: 0
   armadura: 0
@@ -4399,6 +4440,10 @@ PrefabInstance:
     - target: {fileID: 3307686390348172320, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5368727450566169397, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
+      propertyPath: teamName
+      value: Right
       objectReference: {fileID: 0}
     - target: {fileID: 7420712846918363120, guid: e1222519bbe9d3d4e88a7cdbf3474bf3, type: 3}
       propertyPath: m_LocalScale.x
@@ -4557,6 +4602,18 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3058073976566336148, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
+      propertyPath: teamName
+      value: Left
+      objectReference: {fileID: 0}
+    - target: {fileID: 3058073976566336148, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
+      propertyPath: healthBar
+      value: 
+      objectReference: {fileID: 4522153}
+    - target: {fileID: 3058073976566336148, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
+      propertyPath: healthBarObject
+      value: 
+      objectReference: {fileID: 1159382755}
     - target: {fileID: 3307686390348172320, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4873,6 +4930,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 673426143}
   healthBarObject: {fileID: 1229701043}
+  healthBarPrefab: {fileID: 0}
   teamName: 
   regeneracaoVida: 0
   armadura: 0
@@ -5688,6 +5746,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 1439074785}
   healthBarObject: {fileID: 479759183}
+  healthBarPrefab: {fileID: 0}
   teamName: 
   regeneracaoVida: 0
   armadura: 0
@@ -9204,6 +9263,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 437187153}
   healthBarObject: {fileID: 1650748405}
+  healthBarPrefab: {fileID: 0}
   teamName: Right
   regeneracaoVida: 0
   armadura: 0
@@ -10536,6 +10596,11 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!1 &1159382755 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 853567316048936750, guid: b9f860444ad524244894dd2faff3fb8c, type: 3}
+  m_PrefabInstance: {fileID: 533481958}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1170304913
 GameObject:
   m_ObjectHideFlags: 0
@@ -12432,6 +12497,56 @@ Transform:
   - {fileID: 1631177569}
   m_Father: {fileID: 1544939638}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1450456488
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1450456490}
+  - component: {fileID: 1450456489}
+  m_Layer: 0
+  m_Name: Respawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1450456489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450456488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5628366232d04bc43b23872011fb5f6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnPointsTeamLeft:
+  - {fileID: 1734154981}
+  respawnPointsTeamRight:
+  - {fileID: 463141080}
+--- !u!4 &1450456490
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450456488}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -111.46417, y: 40.583187, z: -0.1266692}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1734154981}
+  - {fileID: 463141080}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1465159549
 GameObject:
   m_ObjectHideFlags: 0
@@ -12995,6 +13110,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 1093693144}
   healthBarObject: {fileID: 1448048659}
+  healthBarPrefab: {fileID: 0}
   teamName: 
   regeneracaoVida: 0
   armadura: 0
@@ -13337,6 +13453,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 1522340138}
   healthBarObject: {fileID: 1720675739}
+  healthBarPrefab: {fileID: 0}
   teamName: 
   regeneracaoVida: 0
   armadura: 0
@@ -14312,6 +14429,37 @@ Transform:
   - {fileID: 1666068360}
   m_Father: {fileID: 1616128892}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1734154980
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1734154981}
+  m_Layer: 0
+  m_Name: RespawnPointLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1734154981
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1734154980}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -17.2, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1450456490}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1755521154
 GameObject:
   m_ObjectHideFlags: 0
@@ -14678,6 +14826,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 659645787}
   healthBarObject: {fileID: 297144021}
+  healthBarPrefab: {fileID: 0}
   teamName: Left
   regeneracaoVida: 0
   armadura: 0
@@ -15313,6 +15462,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 1766832169}
   healthBarObject: {fileID: 1552915077}
+  healthBarPrefab: {fileID: 0}
   teamName: 
   regeneracaoVida: 0
   armadura: 0
@@ -15525,6 +15675,7 @@ MonoBehaviour:
   maxHealth: 0
   healthBar: {fileID: 111243840}
   healthBarObject: {fileID: 883363739}
+  healthBarPrefab: {fileID: 0}
   teamName: 
   regeneracaoVida: 0
   armadura: 0
@@ -15738,7 +15889,11 @@ MonoBehaviour:
   overrideRoomDefaultRules: 0
   teamBlue: {fileID: 1114437666}
   teamRed: {fileID: 1307001737}
-  minionSpawners: []
+  minionSpawners:
+  - {fileID: 1307104401}
+  - {fileID: 325007350}
+  - {fileID: 1465159550}
+  - {fileID: 770396367}
   teamChoice: 0
 --- !u!114 &1892375765
 MonoBehaviour:
@@ -41001,7 +41156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2825871431472753585, guid: 2be5c1aa15598e74297d5defb4f6ea59, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -5.8199005
+      value: -5.819916
       objectReference: {fileID: 0}
     - target: {fileID: 3546523667938074317, guid: 2be5c1aa15598e74297d5defb4f6ea59, type: 3}
       propertyPath: m_Name
@@ -41060,3 +41215,4 @@ SceneRoots:
   - {fileID: 531422491}
   - {fileID: 1806324142}
   - {fileID: 174156931}
+  - {fileID: 1450456490}
