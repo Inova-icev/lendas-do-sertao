@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
+using ManagmentScripts;
 
 public class Player : MonoBehaviour
 {
@@ -42,8 +44,19 @@ public class Player : MonoBehaviour
     private float buffStartTimeSpeed = 0f;
     private float buffDuration = 10f;
 
+    private PanelManager panelManager;
+
     void Start()
     {
+        panelManager = FindAnyObjectByType<PanelManager>();
+        gameObject.tag = panelManager.teamChoiceTag;
+        if(panelManager.teamChoiceTag=="Right"){
+            gameObject.layer = 9;
+        }
+        else{
+            gameObject.layer = 8;
+
+        }
         vida = GetComponent<Vida_Player>();
         rb = GetComponent<Rigidbody2D>();
 

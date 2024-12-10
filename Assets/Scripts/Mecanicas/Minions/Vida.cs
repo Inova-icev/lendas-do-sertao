@@ -16,7 +16,7 @@ public class Vida : MonoBehaviour
 
     private GameManager gameManager;
     private RespawnManager respawnManager; // Gerenciador de respawn
-    public string teamName;
+    
 
     public float regeneracaoVida;
     public float armadura;

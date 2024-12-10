@@ -4,18 +4,41 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using ManagmentScripts;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
     // Singleton Instance
     public static GameManager Instance { get; private set; }
+    private PanelManager panelManager;
 
     [SerializeField]
     private GameObject player;
+    private GameObject nexusRed, nexusBlue;
     private Transform respawnPointTeamLeft;
     private Transform respawnPointTeamRight;
     private float respawnTime = 2f;
 
+    void Start()
+    {
+
+        nexusBlue.tag = "Right";
+        nexusRed.tag = "Left";
+
+        panelManager = FindAnyObjectByType<PanelManager>();
+        if (panelManager.teamChoiceTag == "Right")
+        {
+            player.tag = "Right";
+            player.layer = 9;
+        }
+        else
+        {
+            player.tag = "Left";
+            player.layer = 8;
+        }
+
+    }
     private void Awake()
     {
         // Ensure only one instance of the GameManager exists
@@ -30,9 +53,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void SpawnPlayer()
+    public void SpawnPlayer(string team)
     {
+        if(team=="Left"){
         PhotonNetwork.Instantiate("Saci", new Vector3(-128.3f, 43.5f, 0), Quaternion.identity);
+        }
+        else{
+        PhotonNetwork.Instantiate("Saci", new Vector3(-8.97f, 41.38f, 0), Quaternion.identity);
+        }
     }
 
     private void OnEnable()
@@ -66,7 +94,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log($"{player.name} respawnou!");
     }
 
-[PunRPC]
+    [PunRPC]
     public void EndGame(string winningTeam)
     {
         Debug.Log($"Fim de jogo! Vencedor: {winningTeam}");

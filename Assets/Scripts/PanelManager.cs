@@ -109,6 +109,7 @@ namespace ManagmentScripts
             PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions(), TypedLobby.Default);
         }
 
+
         public void GoToPersonagens()
         {
             painelTeam.SetActive(false);
@@ -131,7 +132,7 @@ namespace ManagmentScripts
 
         public void SelectedPersonagem()
         {
-            gameManager.SpawnPlayer();
+            gameManager.SpawnPlayer(teamChoiceTag);
             painelPersonagens.SetActive(false);
             background.SetActive(false);
 
@@ -146,7 +147,6 @@ namespace ManagmentScripts
                 if (spawner != null)
                 {
                     StartCoroutine(spawner.SpawnWave());
-                    Debug.Log("AAAAAAAAAAA");
                 }
                 else
                 {
