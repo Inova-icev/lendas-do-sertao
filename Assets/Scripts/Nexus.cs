@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using ManagmentScripts; // Namespace do PanelManager
+using ManagmentScripts; 
+// Namespace do PanelManager
 
 public class Nexus : MonoBehaviour
 {
