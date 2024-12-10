@@ -30,7 +30,7 @@ namespace ManagmentScripts
         [SerializeField]
         private MinionSpawner[] minionSpawners; // Array para os spawners de minions (esquerda e direita)
 
-        public int teamChoice;
+        public string teamChoiceTag;
 
         private GameManager gameManager; // Referência ao GameManager
 
@@ -54,8 +54,10 @@ namespace ManagmentScripts
             }
 
             // Configura os botões de seleção de time
-            teamBlue.onClick.AddListener(() => ChooseTeam(1));
-            teamRed.onClick.AddListener(() => ChooseTeam(2));
+            teamBlue.onClick.AddListener(() =>teamChoiceTag="Right");
+            teamBlue.onClick.AddListener(() =>Debug.LogError("equipe azul escolhida"));
+            teamRed.onClick.AddListener(() => teamChoiceTag="Left");
+            teamRed.onClick.AddListener(() =>Debug.LogError("equipe vermelha escolhida"));
 
             // Obtém a referência ao GameManager na cena
             gameManager = FindObjectOfType<GameManager>();
@@ -105,13 +107,6 @@ namespace ManagmentScripts
         public void GoToTeamChoice()
         {
             PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions(), TypedLobby.Default);
-        }
-
-        private void ChooseTeam(int team)
-        {
-            teamChoice = team;
-            Debug.Log($"Time escolhido: {(team == 1 ? "Azul" : "Vermelho")}");
-            GoToPersonagens(); // Chama a próxima etapa
         }
 
         public void GoToPersonagens()
@@ -178,6 +173,11 @@ namespace ManagmentScripts
             {
                 GameHUDCanvas.SetActive(false);
             }
+        }
+         public void SetTag(string newTag)
+        {
+            gameObject.tag = newTag;
+            Debug.Log($"Tag alterada para: {newTag}");
         }
     }
 }
