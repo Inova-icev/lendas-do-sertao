@@ -341,7 +341,6 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        // Verifica se o tempo de recarga entre os ataques passou
         if (Time.time >= lastAttackTime + attackCooldown)
         {
             lastAttackTime = Time.time; // Atualiza o tempo do último ataque
@@ -369,7 +368,7 @@ public class Player : MonoBehaviour
             if ((CompareTag("Left") && potentialTarget.CompareTag("Right")) ||
                 (CompareTag("Right") && potentialTarget.CompareTag("Left")))
             {
-                Vida_Player vidaComponent = potentialTarget.GetComponent<Vida_Player>();
+                Vida vidaComponent = potentialTarget.GetComponent<Vida>();
                 if (vidaComponent != null)
                 {
                     float distanceToTarget = Vector2.Distance(transform.position, potentialTarget.transform.position);
@@ -385,11 +384,11 @@ public class Player : MonoBehaviour
         if (closestTarget != null)
         {
             // Aplica o dano no alvo
-            Vida_Player targetVida = closestTarget.GetComponent<Vida_Player>();
+            Vida targetVida = closestTarget.GetComponent<Vida>();
             if (targetVida != null)
             {
                 int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
-                targetVida.TakeDamageP(damageToDeal);
+                targetVida.TakeDamage(damageToDeal, 1);
                 Debug.Log($"{gameObject.name} atacou {closestTarget.name} causando {damageToDeal} de dano");
             }
         }

@@ -55,15 +55,15 @@ namespace ManagmentScripts
 
             // Configura os botões de seleção de time
             teamBlue.onClick.AddListener(() =>teamChoiceTag="Right");
-            teamBlue.onClick.AddListener(() =>Debug.LogError("equipe azul escolhida"));
+            teamBlue.onClick.AddListener(() =>Debug.Log("equipe azul escolhida"));
             teamRed.onClick.AddListener(() => teamChoiceTag="Left");
-            teamRed.onClick.AddListener(() =>Debug.LogError("equipe vermelha escolhida"));
+            teamRed.onClick.AddListener(() =>Debug.Log("equipe vermelha escolhida"));
 
             // Obtém a referência ao GameManager na cena
             gameManager = FindObjectOfType<GameManager>();
             if (gameManager == null)
             {
-                Debug.LogError("GameManager não foi encontrado na cena!");
+                Debug.Log("GameManager não foi encontrado na cena!");
             }
         }
 

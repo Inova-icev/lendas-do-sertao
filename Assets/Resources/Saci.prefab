@@ -18,9 +18,9 @@ GameObject:
   - component: {fileID: 821817477388837575}
   - component: {fileID: -4009853936557538225}
   - component: {fileID: 70125111534482567}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Saci
-  m_TagString: Untagged
+  m_TagString: Left
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

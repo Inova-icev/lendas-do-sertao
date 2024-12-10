@@ -22,10 +22,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-
-        nexusBlue.tag = "Right";
-        nexusRed.tag = "Left";
-
         panelManager = FindAnyObjectByType<PanelManager>();
         if (panelManager.teamChoiceTag == "Right")
         {
@@ -65,12 +61,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void OnEnable()
     {
-        Vida_Player.OnPlayerDeath += HandlePlayerDeath; // Subscrição no evento
+        Vida_Player.OnPlayerDeath += HandlePlayerDeath; // Subscriï¿½ï¿½o no evento
     }
 
     private void OnDisable()
     {
-        Vida_Player.OnPlayerDeath -= HandlePlayerDeath; // Desinscrição no evento
+        Vida_Player.OnPlayerDeath -= HandlePlayerDeath; // Desinscriï¿½ï¿½o no evento
     }
 
     private void HandlePlayerDeath(GameObject player)
