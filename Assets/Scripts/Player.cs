@@ -46,6 +46,10 @@ public class Player : MonoBehaviour
 
     private PanelManager panelManager;
 
+    public GameObject cameraPrefab; // Prefab da câmera que será instanciada para este jogador
+
+    private CameraFollow cameraFollow; // Referência ao script da câmera
+
     void Start()
     {
         panelManager = FindAnyObjectByType<PanelManager>();
@@ -59,8 +63,29 @@ public class Player : MonoBehaviour
         }
         vida = GetComponent<Vida_Player>();
         rb = GetComponent<Rigidbody2D>();
-
+        SetupCamera();
         Vida_Player.OnPlayerDeath += HandleDeath;
+    }
+        private void SetupCamera()
+    {
+        if (cameraPrefab != null)
+        {
+            // Instanciar o prefab da câmera
+            GameObject cameraInstance = Instantiate(cameraPrefab);
+
+            // Obter o componente CameraFollow do prefab
+            cameraFollow = cameraInstance.GetComponent<CameraFollow>();
+
+            if (cameraFollow != null)
+            {
+                // Atribuir este jogador como o alvo da câmera
+                cameraFollow.AssignPlayer(transform);
+            }
+        }
+        else
+        {
+            Debug.LogError("Prefab de câmera não está configurado no script do Player.");
+        }
     }
 
     void OnDestroy()
