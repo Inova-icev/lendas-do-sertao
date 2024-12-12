@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ui/commom.uss?fileID=7433441132597879392&amp;guid=9cef33ba4f84282e68eb4f1f9371ab84&amp;type=3#commom" />
+    <Style src="project://database/Assets/Ui/MainMenu.uss?fileID=7433441132597879392&amp;guid=c21d3ccdd72180b0abb890575d5a3f31&amp;type=3#MainMenu" />
+    <ui:VisualElement class="main-menu-root" name="main-menu">
+        <ui:VisualElement class="background-image" />
+        <ui:VisualElement class="content-container">
+            <ui:VisualElement class="panel main-menu-panel" style="background-color: rgba(0, 0, 0, 0.82);">
+                <ui:VisualElement class="form-group">
+                    <ui:Label text="Seu Nome:" class="label" />
+                    <ui:TextField name="player-name-input" class="input-field" />
+                </ui:VisualElement>
+                <ui:Button text="Iniciar Jogo" class="button start-game-button" />
+                <ui:VisualElement class="divider-line" />
+                <ui:VisualElement class="bottom-options-container">
+                    <ui:VisualElement class="volume-container form-group">
+                        <ui:Label text="Volume da Música:" class="label" />
+                        <ui:Slider name="music-volume-slider" low-value="0" high-value="1" value="0.5" class="slider small-slider" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="offline-container checkbox-container" style="flex-direction: column;">
+                        <ui:Label text="Modo Offline" class="checkbox-label" />
+                        <ui:Toggle name="offline-mode-toggle" class="small-toggle" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

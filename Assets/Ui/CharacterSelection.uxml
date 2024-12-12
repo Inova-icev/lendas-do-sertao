@@ -1,0 +1,57 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ui/CharacterSelection.uss?fileID=7433441132597879392&amp;guid=85e77fc156ab8e22a8fab2e3b9ab9c9a&amp;type=3#CharacterSelection" />
+    <ui:VisualElement class="character-selection-root" style="background-image: url(&quot;project://database/Assets/Media/Images/backgroundMenu.png?fileID=2800000&amp;guid=bc734d07967a7ca72ac2505592137887&amp;type=3#backgroundMenu&quot;); opacity: 1;">
+        <ui:VisualElement class="top-bar" style="background-color: rgba(0, 0, 0, 0.82);">
+            <ui:VisualElement class="team-selection-container">
+                <ui:Button text="Left" name="blueTeamButton" class="team-button blue-team-button" />
+                <ui:Button text="Right" name="redTeamButton" class="team-button red-team-button" />
+            </ui:VisualElement>
+            <ui:Button text="Voltar" name="backToMenuButton" class="back-button" />
+        </ui:VisualElement>
+        <ui:VisualElement class="left-team-list" style="background-color: rgba(0, 0, 0, 0.82); top: 200px;">
+            <ui:VisualElement class="player-entry">
+                <ui:Image name="bluePlayer1Icon" class="player-icon" />
+                <ui:Label text="Jogador A" class="player-name" />
+            </ui:VisualElement>
+            <ui:VisualElement class="player-entry">
+                <ui:Image name="bluePlayer2Icon" class="player-icon" />
+                <ui:Label text="Jogador B" class="player-name" />
+            </ui:VisualElement>
+            <ui:VisualElement class="player-entry">
+                <ui:Image name="bluePlayer3Icon" class="player-icon" />
+                <ui:Label text="Jogador C" class="player-name" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="right-team-list" style="background-color: rgba(0, 0, 0, 0.82); justify-content: flex-start; align-self: center; align-items: flex-end; top: 200px;">
+            <ui:VisualElement class="player-entry">
+                <ui:Label text="Jogador X" class="player-name" />
+                <ui:Image name="redPlayer1Icon" class="player-icon" />
+            </ui:VisualElement>
+            <ui:VisualElement class="player-entry">
+                <ui:Label text="Jogador Y" class="player-name" />
+                <ui:Image name="redPlayer2Icon" class="player-icon" />
+            </ui:VisualElement>
+            <ui:VisualElement class="player-entry">
+                <ui:Label text="Jogador Z" class="player-name" />
+                <ui:Image name="redPlayer3Icon" class="player-icon" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="center-characters-container" style="top: 220px; left: 0; position: relative;">
+            <ui:VisualElement name="charOption1" class="selectable-character" style="background-color: rgba(255, 255, 255, 0.82);">
+                <ui:Image name="char1Image" class="character-image" />
+            </ui:VisualElement>
+            <ui:VisualElement name="charOption2" class="selectable-character" style="background-color: rgba(255, 255, 255, 0.82);">
+                <ui:Image name="char2Image" class="character-image" />
+            </ui:VisualElement>
+            <ui:VisualElement name="charOption3" class="selectable-character" style="background-color: rgba(255, 255, 255, 0.82);">
+                <ui:Image name="char3Image" class="character-image" />
+            </ui:VisualElement>
+            <ui:VisualElement name="charOption4" class="selectable-character" style="background-color: rgba(255, 255, 255, 0.82);">
+                <ui:Image name="char3Image" class="character-image" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="bottom-bar" style="background-color: rgba(0, 0, 0, 0.82); justify-content: center;">
+            <ui:Button text="Confirmar" name="confirmCharacterButton" class="confirm-button" style="justify-content: center;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

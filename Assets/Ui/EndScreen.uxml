@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ui/commom.uss?fileID=7433441132597879392&amp;guid=9cef33ba4f84282e68eb4f1f9371ab84&amp;type=3#commom" />
+    <ui:VisualElement style="flex-grow: 1; color: rgb(0, 0, 0); -unity-font-style: bold;">
+        <ui:VisualElement class="panel" style="flex-grow: 1; height: 71px;">
+            <ui:Label tabindex="-1" text="Você foi&#10;Derrotado" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 68px; color: rgb(255, 255, 255); -unity-text-align: upper-center; -unity-font-style: bold;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; align-self: center; justify-content: center;">
+            <ui:Button text="Fechar" parse-escape-sequences="true" display-tooltip-when-elided="true" class="button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

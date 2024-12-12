@@ -1,0 +1,74 @@
+/* Estilos genéricos reutilizáveis */
+
+/* Títulos grandes */
+.title {
+    font-size: 32px;
+    color: white;
+    unity-font-style: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Painel central ou genérico para agrupar elementos */
+.panel {
+    background-color: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 10px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botões padrão */
+.button {
+    width: 150px;
+    height: 40px;
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    unity-text-align: middle-center;
+    border-radius: 5px;
+    font-size: 14px;
+    unity-font-style: bold;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+/* Inputs padrão (TextField, Slider, Checkbox label) */
+.input-field {
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.label {
+    font-size: 14px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+/* Para agrupar label+input */
+.form-group {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+/* Estilo para sliders */
+.slider {
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+/* Checkbox Container */
+.checkbox-container {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.checkbox-label {
+    font-size: 14px;
+    color: white;
+    margin-left: 5px;
+}

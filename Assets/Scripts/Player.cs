@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using ManagmentScripts;
+using Photon.Pun;
 
 public class Player : MonoBehaviour
 {
@@ -66,27 +67,40 @@ public class Player : MonoBehaviour
         SetupCamera();
         Vida_Player.OnPlayerDeath += HandleDeath;
     }
-        private void SetupCamera()
+    private void SetupCamera()
     {
-        if (cameraPrefab != null)
+        PhotonView photonView = GetComponent<PhotonView>();
+
+        // Certifique-se de que a câmera só seja criada para o jogador local
+        if (photonView.IsMine)
         {
-            // Instanciar o prefab da câmera
-            GameObject cameraInstance = Instantiate(cameraPrefab);
-
-            // Obter o componente CameraFollow do prefab
-            cameraFollow = cameraInstance.GetComponent<CameraFollow>();
-
-            if (cameraFollow != null)
+            if (cameraPrefab != null)
             {
-                // Atribuir este jogador como o alvo da câmera
-                cameraFollow.AssignPlayer(transform);
+                GameObject cameraInstance = Instantiate(cameraPrefab);
+                cameraFollow = cameraInstance.GetComponent<CameraFollow>();
+
+                if (cameraFollow != null)
+                {
+                    // Atribui este jogador como alvo da câmera
+                    cameraFollow.AssignPlayer(transform);
+                    Debug.Log($"Câmera criada para o jogador local: {gameObject.name}");
+                }
+                else
+                {
+                    Debug.LogError("O prefab da câmera não possui o script CameraFollow.");
+                }
+            }
+            else
+            {
+                Debug.LogError("Prefab de câmera não está configurado no script do Player.");
             }
         }
         else
         {
-            Debug.LogError("Prefab de câmera não está configurado no script do Player.");
+            Debug.Log($"Câmera não criada para {gameObject.name}, pois não pertence ao jogador local.");
         }
     }
+
 
     void OnDestroy()
     {
@@ -106,10 +120,17 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        // Verifica se este objeto pertence ao jogador local
+        PhotonView photonView = GetComponent<PhotonView>();
+        if (!photonView.IsMine)
+        {
+            return; // Ignora inputs para jogadores que não são locais
+        }
+
         if (controlEnabled)
         {
-            // Substituí a chamada direta para Move pela lógica integrada no próprio Update
-            float moveX = Input.GetAxisRaw("Horizontal"); // Obtém entrada de movimento horizontal
+            // Lógica de movimento
+            float moveX = Input.GetAxisRaw("Horizontal"); // Entrada de movimento horizontal
             float targetSpeed = moveX * speed;
 
             // Aceleração e desaceleração suaves
@@ -156,6 +177,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+
 
 
     void Move()

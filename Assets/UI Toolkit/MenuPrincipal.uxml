@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/MenuPrincipal.uss?fileID=7433441132597879392&amp;guid=2d319b8ad32c2334e8cf35cfe6f10057&amp;type=3#MenuPrincipal" />
+    <Style src="project://database/Assets/UI%20Toolkit/commom.uss?fileID=7433441132597879392&amp;guid=2c2f435f5c0bc8042bea77a8706c74e2&amp;type=3#commom" />
+    <ui:VisualElement name="main-menu" class="main-menu-root">
+        <ui:VisualElement class="background-image" style="background-image: url(&quot;project://database/Assets/UI%20Toolkit/Media/WhatsApp%20Image%202024-12-10%20at%2007.03.33%20(1).jpeg?fileID=2800000&amp;guid=e72fd4e2e4bde664fa411bc31b92c826&amp;type=3#WhatsApp Image 2024-12-10 at 07.03.33 (1)&quot;);" />
+        <ui:VisualElement class="content-container">
+            <ui:VisualElement class="panel main-menu-panel" style="background-color: rgba(0, 0, 0, 0.82);">
+                <ui:VisualElement class="form-group">
+                    <ui:Label text="Seu Nome:" class="label" />
+                    <ui:TextField name="player-name-input" class="input-field" />
+                </ui:VisualElement>
+                <ui:Button text="Iniciar Jogo" class="button start-game-button" />
+                <ui:VisualElement class="divider-line" />
+                <ui:VisualElement class="bottom-options-container">
+                    <ui:VisualElement class="volume-container form-group">
+                        <ui:Label text="Volume da Música:" class="label" />
+                        <ui:Slider name="music-volume-slider" low-value="0" high-value="1" value="0.5" class="slider small-slider" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="offline-container checkbox-container" style="flex-direction: column;">
+                        <ui:Label text="Modo Offline" class="checkbox-label" />
+                        <ui:Toggle name="offline-mode-toggle" class="small-toggle" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

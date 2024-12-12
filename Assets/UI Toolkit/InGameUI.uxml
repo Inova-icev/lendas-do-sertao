@@ -1,0 +1,75 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ui/GameUI.uss?fileID=7433441132597879392&amp;guid=3d23f4a94f43bf5f4950c87aa93bac54&amp;type=3#GameUI" />
+    <Style src="project://database/Assets/UI%20Toolkit/commom.uss?fileID=7433441132597879392&amp;guid=2c2f435f5c0bc8042bea77a8706c74e2&amp;type=3#commom" />
+    <ui:VisualElement class="root-container">
+        <ui:VisualElement class="top-bar">
+            <ui:VisualElement class="score-container">
+                <ui:Label text="Team A 0 - 0 Team B" class="score-label" />
+            </ui:VisualElement>
+            <ui:Button text="☰" class="settings-button" />
+        </ui:VisualElement>
+        <ui:VisualElement class="allies-list-container">
+            <ui:VisualElement class="ally-container">
+                <ui:VisualElement class="ally-status-circle alive" />
+                <ui:Label text="Aliado 1" class="ally-name" />
+            </ui:VisualElement>
+            <ui:VisualElement class="ally-container">
+                <ui:VisualElement class="ally-status-circle dead" />
+                <ui:Label text="Aliado 2" class="ally-name" />
+            </ui:VisualElement>
+            <ui:VisualElement class="ally-container">
+                <ui:VisualElement class="ally-status-circle alive" />
+                <ui:Label text="Aliado 3" class="ally-name" />
+            </ui:VisualElement>
+            <ui:VisualElement class="ally-container">
+                <ui:VisualElement class="ally-status-circle alive" />
+                <ui:Label text="Aliado 4" class="ally-name" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="bottom-bar" style="align-self: center; align-items: center;">
+            <ui:VisualElement class="bottom-left-section" style="flex-direction: row; position: relative; justify-content: space-between; align-self: center;">
+                <ui:VisualElement style="flex-grow: 1; align-self: center; justify-content: center;">
+                    <ui:VisualElement class="items-grid">
+                        <ui:Image class="item-icon" />
+                        <ui:Image class="item-icon" />
+                        <ui:Image class="item-icon" />
+                        <ui:Image class="item-icon" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="currency-container">
+                        <ui:Image class="coin-icon" />
+                        <ui:Label text="999" class="coin-count" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="stats-grid" style="justify-content: flex-start; align-self: center;">
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                        <ui:VisualElement class="stat-entry">
+                            <ui:Label text="Vida" class="stat-label" />
+                            <ui:Label text="1000" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-entry">
+                            <ui:Label text="Ataque" class="stat-label" />
+                            <ui:Label text="50" class="stat-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                        <ui:VisualElement class="stat-entry">
+                            <ui:Label text="Velocidade" class="stat-label" />
+                            <ui:Label text="10" class="stat-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-entry">
+                            <ui:Label text="Escudo" class="stat-label" />
+                            <ui:Label text="200" class="stat-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="abilities-container">
+                <ui:Image class="ability-icon" />
+                <ui:Image class="ability-icon" />
+                <ui:Image class="ability-icon" />
+                <ui:Image class="ability-icon" />
+            </ui:VisualElement>
+            <ui:Button text="Loja" class="open-shop-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

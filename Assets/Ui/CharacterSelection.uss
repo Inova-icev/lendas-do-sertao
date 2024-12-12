@@ -1,0 +1,166 @@
+.character-selection-root {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    position: relative;
+}
+
+/* Barra superior */
+.top-bar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 40px;
+    background-color: rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container central dos botões de seleção de time */
+.team-selection-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.team-button {
+    margin: 0 10px;
+    width: 100px;
+    height: 30px;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    unity-text-align: middle-center;
+    border-radius: 5px;
+}
+
+.blue-team-button {
+    border: 2px solid blue;
+}
+
+.red-team-button {
+    border: 2px solid red;
+}
+
+/* Botão de voltar ao menu no canto direito da top-bar */
+.back-button {
+    position: absolute;
+    right: 10px;
+    width: 80px;
+    height: 30px;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    border-radius: 5px;
+    unity-text-align: middle-center;
+}
+
+/* Listagem do time azul no canto esquerdo */
+.left-team-list {
+    position: absolute;
+    left: 0;
+    top: 50px;
+    background-color: rgba(0,0,0,0.2);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 150px;
+}
+
+.right-team-list {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background-color: rgba(0,0,0,0.2);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 150px;
+}
+
+.player-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.player-icon {
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255,255,255,0.1);
+    margin-right: 5px;
+    border-radius: 3px;
+    background-size: cover;
+    background-position: center;
+}
+
+.player-name {
+    font-size: 12px;
+    color: white;
+}
+
+/* Centro da tela com personagens selecionáveis */
+.center-characters-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.selectable-character {
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255,255,255,0.1);
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+}
+
+.selectable-character:hover {
+    border-color: yellow;
+}
+
+.selectable-character.selected {
+    border-color: green;
+}
+
+.character-image {
+    width: 80px;
+    height: 80px;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Barra inferior */
+.bottom-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    background-color: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
+
+.confirm-button {
+    width: 100px;
+    height: 30px;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    border-radius: 5px;
+    unity-text-align: middle-center;
+}
+    
