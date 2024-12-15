@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 9250081}
   - component: {fileID: 9250080}
   m_Layer: 5
-  m_Name: TextoRight
+  m_Name: TextoLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -409,6 +409,8 @@ GameObject:
   - component: {fileID: 83276338}
   - component: {fileID: 83276339}
   - component: {fileID: 83276340}
+  - component: {fileID: 83276342}
+  - component: {fileID: 83276341}
   m_Layer: 0
   m_Name: Mandacaru
   m_TagString: Untagged
@@ -926,6 +928,45 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 32, y: 9}
   m_EdgeRadius: 0
+--- !u!114 &83276341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83276332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &83276342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83276332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 83276341}
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &107972966
 GameObject:
   m_ObjectHideFlags: 0
@@ -6823,7 +6864,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7700347452910699143, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
       propertyPath: m_fontSize
-      value: 65.35
+      value: 72
       objectReference: {fileID: 0}
     - target: {fileID: 7700347452910699143, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
       propertyPath: m_enableAutoSizing
@@ -8692,7 +8733,7 @@ GameObject:
   - component: {fileID: 922103010}
   - component: {fileID: 922103009}
   m_Layer: 5
-  m_Name: TextoLeft
+  m_Name: TextoRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15461,7 +15502,7 @@ GameObject:
   - component: {fileID: 1789484892}
   - component: {fileID: 1789484893}
   m_Layer: 5
-  m_Name: 'TeamLeftProgressBar '
+  m_Name: 'TeamRightProgressBar '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15486,7 +15527,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1400, y: -688.88}
+  m_AnchoredPosition: {x: 340, y: -688.88}
   m_SizeDelta: {x: 40, y: 160}
   m_Pivot: {x: -13.017086, y: -3.8054569}
 --- !u!114 &1789484893
@@ -16557,7 +16598,7 @@ GameObject:
   - component: {fileID: 1964655161}
   - component: {fileID: 1964655162}
   m_Layer: 5
-  m_Name: TeamRightProgressBar
+  m_Name: TeamLeftProgressBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16582,7 +16623,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 340, y: -572.81}
+  m_AnchoredPosition: {x: -1400, y: -572.81}
   m_SizeDelta: {x: 40, y: 160}
   m_Pivot: {x: -12.766515, y: -3.0800369}
 --- !u!114 &1964655162
