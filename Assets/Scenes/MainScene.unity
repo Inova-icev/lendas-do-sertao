@@ -5796,6 +5796,17 @@ Transform:
   - {fileID: 174697397}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &650472825 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 516414824838065041, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+  m_PrefabInstance: {fileID: 749758049}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &651651974
 GameObject:
   m_ObjectHideFlags: 0
@@ -12404,6 +12415,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1408339918 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7869158302833839354, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+  m_PrefabInstance: {fileID: 749758049}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1419959368 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4076109373686495728, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
@@ -16267,12 +16289,15 @@ MonoBehaviour:
   overrideRoomDefaultRules: 0
   teamBlue: {fileID: 1114437666}
   teamRed: {fileID: 1307001737}
+  curupira: {fileID: 1408339918}
+  saci: {fileID: 650472825}
   minionSpawners:
   - {fileID: 1307104401}
   - {fileID: 325007350}
   - {fileID: 1465159550}
   - {fileID: 770396367}
   teamChoiceTag: 
+  characterChoice: 
 --- !u!114 &1892375765
 MonoBehaviour:
   m_ObjectHideFlags: 0
