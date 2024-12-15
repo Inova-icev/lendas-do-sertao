@@ -76,8 +76,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: 100
+  maxHealth: 100
   healthBar: {fileID: 7510567606748172066}
   healthBarObject: {fileID: 5845656013560727213}
+  healthBarPrefab: {fileID: 0}
+  regeneracaoVida: 0
+  armadura: 0
+  defesaMagica: 0
 --- !u!50 &5087155858713603900
 Rigidbody2D:
   serializedVersion: 4
