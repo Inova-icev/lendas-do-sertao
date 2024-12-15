@@ -27,10 +27,10 @@ public class RespawnManager : MonoBehaviour
 
         // Escolhe um ponto aleatório entre os pontos de respawn selecionados
         int randomIndex = Random.Range(0, selectedSpawnPoints.Length);
+        Transform selectedPoint = selectedSpawnPoints[randomIndex];
 
-        // Atualiza a posição e rotação do jogador
-        Vector3 respawnPosition = selectedSpawnPoints[randomIndex].position;
-        Quaternion respawnRotation = selectedSpawnPoints[randomIndex].rotation;
+        Vector3 respawnPosition = selectedPoint.position;
+        Quaternion respawnRotation = selectedPoint.rotation;
 
         // Sincroniza o respawn com Photon
         if (PhotonNetwork.IsConnected)
@@ -46,6 +46,7 @@ public class RespawnManager : MonoBehaviour
             // Atualiza diretamente no modo offline
             player.transform.position = respawnPosition;
             player.transform.rotation = respawnRotation;
+            Debug.Log($"Player {player.name} respawnado em {respawnPosition}");
         }
     }
 
@@ -55,5 +56,7 @@ public class RespawnManager : MonoBehaviour
         // Atualiza a posição e rotação do jogador
         transform.position = position;
         transform.rotation = rotation;
+        Debug.Log($"SyncRespawn: Posição sincronizada para {position}");
     }
+
 }

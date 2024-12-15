@@ -392,10 +392,7 @@ public class Player : MonoBehaviour
         {
             lastAttackTime = Time.time; // Atualiza o tempo do último ataque
 
-            int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
-            Debug.Log($"Dano causado: {damageToDeal}");
-
-            // Encontrar e atacar o inimigo mais próximo (ou qualquer lógica de ataque que você tenha)
+            // Realiza a lógica de encontrar o alvo e atacar
             FindTargetAndAttack();
         }
         else
@@ -403,6 +400,7 @@ public class Player : MonoBehaviour
             Debug.Log("Aguardando recarga do ataque...");
         }
     }
+
 
     private void FindTargetAndAttack()
     {
@@ -412,6 +410,7 @@ public class Player : MonoBehaviour
 
         foreach (Collider2D potentialTarget in potentialTargets)
         {
+            // Verifica se é um alvo válido (time oposto)
             if ((CompareTag("Left") && potentialTarget.CompareTag("Right")) ||
                 (CompareTag("Right") && potentialTarget.CompareTag("Left")))
             {
@@ -430,14 +429,26 @@ public class Player : MonoBehaviour
 
         if (closestTarget != null)
         {
-            // Aplica o dano no alvo
-            Vida targetVida = closestTarget.GetComponent<Vida>();
-            if (targetVida != null)
+            // Ataca o alvo mais próximo
+            PhotonView targetPhotonView = closestTarget.GetComponent<PhotonView>();
+            if (targetPhotonView != null)
             {
                 int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
-                targetVida.TakeDamage(damageToDeal, 1);
+
+                // Envia o RPC para o cliente dono do alvo processar o dano
+                targetPhotonView.RPC("TakeDamageRPC", RpcTarget.All, damageToDeal, 1);
                 Debug.Log($"{gameObject.name} atacou {closestTarget.name} causando {damageToDeal} de dano");
             }
         }
+    }
+
+    [PunRPC]
+    private void SyncRespawn(Vector3 position, Quaternion rotation)
+    {
+        // Reposiciona e redefine a rotação do jogador
+        transform.position = position;
+        transform.rotation = rotation;
+
+        Debug.Log($"Player {gameObject.name} foi respawnado em {position}");
     }
 }

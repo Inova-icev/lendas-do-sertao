@@ -31,7 +31,7 @@ public class Vida : MonoBehaviour
         }
 
         healthBarScale = healthBar.localScale;
-        healthPercent = 1f; // Começa com 100% de vida
+        healthPercent = 1f;
         currentHealth = maxHealth;
         UpdateHealthBar();
 
@@ -61,33 +61,57 @@ public class Vida : MonoBehaviour
         currentHealth -= danoFinal;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        UpdateHealthBar();
+        // Sincroniza a vida com todos os clientes
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonView photonView = GetComponent<PhotonView>();
+            if (photonView != null && photonView.IsMine)
+            {
+                photonView.RPC("SyncHealth", RpcTarget.All, currentHealth);
+            }
+        }
+        else
+        {
+            UpdateHealthBar(); // Atualiza localmente no modo offline
+        }
 
+        // Verifica se o personagem morreu
         if (currentHealth <= 0)
         {
             Player playerComponent = GetComponent<Player>();
             if (playerComponent != null)
             {
-                StartCoroutine(HandleRespawn()); // Respawn para jogadores
+                StartCoroutine(HandleRespawn());
             }
             else
             {
-                Die(); // Destruição para outros objetos
+                Die();
             }
         }
 
         Debug.Log($"Dano recebido: {danoFinal} (Tipo: {(tipoDano == 0 ? "Físico" : "Mágico")})");
     }
-
     private void RegenerarAtributos()
     {
         if (currentHealth < maxHealth)
         {
             currentHealth += regeneracaoVida * Time.deltaTime;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        }
 
-        UpdateHealthBar();
+            // Sincroniza a vida regenerada
+            if (PhotonNetwork.IsConnected)
+            {
+                PhotonView photonView = GetComponent<PhotonView>();
+                if (photonView != null && photonView.IsMine)
+                {
+                    photonView.RPC("SyncHealth", RpcTarget.All, currentHealth);
+                }
+            }
+            else
+            {
+                UpdateHealthBar(); // Atualiza localmente no modo offline
+            }
+        }
     }
 
     void UpdateHealthBar()
@@ -97,7 +121,8 @@ public class Vida : MonoBehaviour
             healthPercent = currentHealth / maxHealth;
             healthPercent = Mathf.Clamp01(healthPercent);
 
-            healthBar.localScale = new Vector3(healthPercent, healthBarScale.y, healthBarScale.z);
+            // Define a escala somente no eixo X
+            healthBar.localScale = new Vector3(healthPercent, 1, 1);
         }
     }
 
@@ -121,21 +146,128 @@ public class Vida : MonoBehaviour
         Destroy(healthBarObject);
         Destroy(gameObject);
     }
+    private void DisablePlayer()
+    {
+        // Sincroniza com Photon (RPC)
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonView photonView = GetComponent<PhotonView>();
+            if (photonView != null && photonView.IsMine)
+            {
+                photonView.RPC("SyncDisablePlayer", RpcTarget.AllBuffered);
+            }
+        }
+        else
+        {
+            SyncDisablePlayer();
+        }
+    }
+
+    private void EnablePlayer()
+    {
+        // Sincroniza com Photon (RPC)
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonView photonView = GetComponent<PhotonView>();
+            if (photonView != null && photonView.IsMine)
+            {
+                photonView.RPC("SyncEnablePlayer", RpcTarget.AllBuffered);
+            }
+        }
+        else
+        {
+            SyncEnablePlayer();
+        }
+    }
+    [PunRPC]
+    private void SyncDisablePlayer()
+    {
+        // Desativa o SpriteRenderer (personagem desaparece visualmente)
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = false;
+        }
+
+        // Desativa a colisão (impede interações físicas)
+        Collider2D collider = GetComponent<Collider2D>();
+        if (collider != null)
+        {
+            collider.enabled = false;
+        }
+
+        // Trava a movimentação do personagem
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero; // Zera velocidade
+            rb.constraints = RigidbodyConstraints2D.FreezeAll; // Congela posição e rotação
+        }
+
+        // Desativa scripts de controle do jogador
+        Player playerController = GetComponent<Player>();
+        if (playerController != null)
+        {
+            playerController.enabled = false;
+        }
+
+        // Esconde a barra de vida
+        if (healthBarObject != null)
+        {
+            healthBarObject.SetActive(false);
+        }
+    }
+
+    [PunRPC]
+    private void SyncEnablePlayer()
+    {
+        // Reativa o SpriteRenderer (personagem reaparece visualmente)
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = true;
+        }
+
+        // Reativa a colisão
+        Collider2D collider = GetComponent<Collider2D>();
+        if (collider != null)
+        {
+            collider.enabled = true;
+        }
+
+        // Libera movimentação do personagem
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.constraints = RigidbodyConstraints2D.None; // Libera movimentação
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Apenas trava rotação
+        }
+
+        // Reativa scripts de controle do jogador
+        Player playerController = GetComponent<Player>();
+        if (playerController != null)
+        {
+            playerController.enabled = true;
+        }
+
+        // Reexibe a barra de vida
+        if (healthBarObject != null)
+        {
+            healthBarObject.SetActive(true);
+        }
+    }
 
     private System.Collections.IEnumerator HandleRespawn()
     {
         Debug.Log($"{gameObject.name} morreu e será respawnado em 5 segundos.");
 
         // Desativa o jogador
-        gameObject.SetActive(false);
+        DisablePlayer();
 
-        // Espera 5 segundos antes do respawn
+        // Espera 5 segundos
         yield return new WaitForSeconds(5);
 
-        // Restaura a vida e reposiciona o jogador
-        currentHealth = maxHealth;
-        UpdateHealthBar();
-
+        // Chama o RespawnManager para escolher o ponto de respawn
         if (respawnManager != null)
         {
             respawnManager.RespawnPlayer(gameObject);
@@ -145,9 +277,25 @@ public class Vida : MonoBehaviour
             Debug.LogError("RespawnManager não configurado.");
         }
 
+        // Restaura a vida máxima e sincroniza
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonView photonView = GetComponent<PhotonView>();
+            if (photonView != null && photonView.IsMine)
+            {
+                photonView.RPC("SyncMaxHealth", RpcTarget.All, maxHealth); // Sincroniza a vida máxima
+            }
+        }
+        else
+        {
+            currentHealth = maxHealth; // Atualiza localmente no modo offline
+            UpdateHealthBar();
+        }
+
         // Reativa o jogador
-        gameObject.SetActive(true);
+        EnablePlayer();
     }
+
 
     private void SetupHealthBar()
     {
@@ -167,14 +315,49 @@ public class Vida : MonoBehaviour
         {
             if (healthBarPrefab != null)
             {
-                healthBarObject = Instantiate(healthBarPrefab, transform.position + new Vector3(0, 2, 0), Quaternion.identity);
-                healthBarObject.transform.SetParent(transform); // Faz a barra de vida seguir o objeto
-                healthBar = healthBarObject.transform.Find("Verde"); // Acha a barra de preenchimento
+                // Instancia o prefab
+                healthBarObject = Instantiate(healthBarPrefab, transform.position, Quaternion.identity);
+
+                // Define o pai e ajusta a escala
+                healthBarObject.transform.SetParent(transform);
+                healthBarObject.transform.localScale = new Vector3(0.4f, 0.4f, 1f); // Ajusta o tamanho do pai
+
+                // Ajusta a posição da barra em relação ao personagem
+                healthBarObject.transform.localPosition = new Vector3(-0.25f, 0.3f, 0); // 1.5 unidades acima
+
+                // Localiza as barras de vida (verde e vermelho)
+                healthBar = healthBarObject.transform.Find("Verde");
+                Transform redBar = healthBarObject.transform.Find("Vermelho");
+
+                // Configura escala padrão dos filhos, caso necessário (deixe em 1 para herdar do pai)
+                if (healthBar != null)
+                {
+                    healthBar.localScale = Vector3.one;
+                }
+
+                if (redBar != null)
+                {
+                    redBar.localScale = Vector3.one;
+                }
             }
             else
             {
                 Debug.LogError("Prefab de barra de vida não configurado!", this);
             }
         }
+    }
+    [PunRPC]
+    private void SyncHealth(float newHealth)
+    {
+        currentHealth = newHealth;
+        UpdateHealthBar();
+    }
+
+    [PunRPC]
+    private void SyncMaxHealth(float maxHealth)
+    {
+        this.maxHealth = maxHealth;
+        this.currentHealth = maxHealth; // Restaura a vida ao máximo
+        UpdateHealthBar();
     }
 }
