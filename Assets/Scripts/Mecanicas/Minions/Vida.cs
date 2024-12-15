@@ -21,6 +21,7 @@ public class Vida : MonoBehaviour
     public float regeneracaoVida;
     public float armadura;
     public float defesaMagica;
+    
 
     void Start()
     {
@@ -54,6 +55,11 @@ public class Vida : MonoBehaviour
         return dano / (1 + mitigacao / 100f);
     }
 
+    [PunRPC]
+    public void TakeDamageRPC(int damage, int damageType)
+    {
+        TakeDamage(damage, damageType); // Aplica o dano no cliente dono do alvo
+    }
     public void TakeDamage(float dano, int tipoDano = 0)
     {
         float danoFinal = tipoDano == 0 ? Mitigacao(dano, armadura) : Mitigacao(dano, defesaMagica);

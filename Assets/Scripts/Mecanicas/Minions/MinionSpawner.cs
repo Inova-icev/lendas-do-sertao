@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using Photon.Pun;
 
-public class MinionSpawner : MonoBehaviour
+public class MinionSpawner : MonoBehaviourPunCallbacks
 {
     public GameObject minionPrefab; // Prefab do minion
     public float spawnInterval = 30f; // Intervalo entre waves (30 segundos)
@@ -13,7 +14,10 @@ public class MinionSpawner : MonoBehaviour
 
     void Start()
     {
- 
+        if (PhotonNetwork.IsMasterClient) // Apenas o MasterClient inicia o spawn
+        {
+            StartCoroutine(SpawnWave());
+        }
     }
 
     public IEnumerator SpawnWave()
@@ -42,19 +46,21 @@ public class MinionSpawner : MonoBehaviour
             yield return new WaitForSeconds(spawnInterval);
         }
     }
+
     public void SpawnMinion()
     {
-        // Instancia o minion na posição de spawn com a rotação padrão
-        GameObject minion = Instantiate(minionPrefab, spawnPoint.position, Quaternion.identity);
-        Minions minionScript = minion.GetComponent<Minions>();
+        // Instancia o minion com PhotonNetwork.Instantiate
+        GameObject minion = PhotonNetwork.Instantiate(minionPrefab.name, spawnPoint.position, Quaternion.identity);
 
+        // Configurações adicionais no minion
+        Minions minionScript = minion.GetComponent<Minions>();
         if (minionScript != null)
         {
             minionScript.enemyTag = enemyTag; // Define o inimigo diretamente no spawner
-
-            // Define a tag do minion com base na configuração do spawner
-            minion.tag = spawnTag;
         }
+
+        // Define a tag do minion com base na configuração do spawner
+        minion.tag = spawnTag;
     }
 
     bool IsSpawnPointOccupied()

@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 public class Minions : MonoBehaviour
@@ -80,61 +81,76 @@ public class Minions : MonoBehaviour
 
     void Update()
     {
-        // Atualiza temporizador de ataque
-        if (attackTimer > 0)
+        if (PhotonNetwork.IsMasterClient) // Apenas o MasterClient controla o movimento e lógica
         {
-            attackTimer -= Time.deltaTime;
-        }
-
-        // Verifica se está no chão
-        isGrounded = IsGroundBelow();
-        if (!isGrounded)
-        {
-            // Aplica gravidade se estiver no ar
-            rb.velocity = new Vector2(rb.velocity.x, -fallSpeed);
-            return; // Evita movimentação horizontal enquanto está no ar
-        }
-        // Se não houver um alvo, procure um
-        if (target == null)
-        {
-            FindTarget();
-            if (waypoint != null)
+            // Atualiza temporizador de ataque
+            if (attackTimer > 0)
             {
-                MoveTowardsWaypoint();
+                attackTimer -= Time.deltaTime;
             }
-        }
-        else
-        {
-            // Se o alvo estiver fora do alcance, mova-se em direção a ele
-            if (Vector2.Distance(transform.position, target.position) > attackRange)
+
+            // Verifica se está no chão
+            isGrounded = IsGroundBelow();
+            if (!isGrounded)
             {
-                MoveTowardsTarget();
+                // Aplica gravidade se estiver no ar
+                rb.velocity = new Vector2(rb.velocity.x, -fallSpeed);
+                return; // Evita movimentação horizontal enquanto está no ar
+            }
+
+            // Se não houver um alvo, procure um
+            if (target == null)
+            {
+                FindTarget();
+                if (waypoint != null)
+                {
+                    MoveTowardsWaypoint();
+                }
             }
             else
             {
-                rb.velocity = Vector2.zero;
-                Attack();
+                // Se o alvo estiver fora do alcance, mova-se em direção a ele
+                if (Vector2.Distance(transform.position, target.position) > attackRange)
+                {
+                    MoveTowardsTarget();
+                }
+                else
+                {
+                    rb.velocity = Vector2.zero;
+                    Attack();
+                }
             }
-        }
 
-        if (!isClimbing) // Não realizar movimento padrão enquanto está subindo
-        {
-            MoveForward();
-
-            // Checa se há um obstáculo para subir
-            if (IsObstacleAhead() && CanClimb())
+            if (!isClimbing) // Não realizar movimento padrão enquanto está subindo
             {
-                StartCoroutine(Climb());
+                MoveForward();
+
+                // Checa se há um obstáculo para subir
+                if (IsObstacleAhead() && CanClimb())
+                {
+                    StartCoroutine(Climb());
+                }
             }
+            PhotonView photonView = GetComponent<PhotonView>();
+            // Envia a posição sincronizada para os outros clientes
+            photonView.RPC("SyncPosition", RpcTarget.Others, transform.position, rb.velocity);
+        }
+    }
+[PunRPC]
+    public void SyncPosition(Vector3 position, Vector2 velocity)
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            transform.position = position;
+            rb.velocity = velocity;
         }
     }
 
     void MoveForward()
     {
         float directionMultiplier = CompareTag("Right") ? -1 : 1; 
-        rb.velocity = new Vector2(speed * directionMultiplier, rb.velocity.y);
+        rb.AddForce(new Vector2(speed * directionMultiplier, 0), ForceMode2D.Force);
     }
-
 
     void MoveTowardsWaypoint()
     {
@@ -313,9 +329,8 @@ public class Minions : MonoBehaviour
         return hitCenter.collider != null || hitForward.collider != null;
     }
 
-
-    // Função para receber dano
-    public void TakeDamage(int damage)
+    [PunRPC]
+    public void TakeDamageRPC(int damage)
     {
         if (vidaComponent != null)
         {
@@ -323,31 +338,35 @@ public class Minions : MonoBehaviour
         }
         rb.velocity = new Vector2(0, rb.velocity.y);
     }
+    // Função para receber danopublic void TakeDamage(int damage)
+    public void TakeDamage(int damage)
+    {
+        PhotonView photonView = GetComponent<PhotonView>();
+        if (photonView != null && photonView.IsMine)
+        {
+            photonView.RPC("TakeDamageRPC", RpcTarget.All, damage);
+        }
+    }
 
     public void OnDeath()
     {
-        // Encontre todos os jogadores inimigos em um raio
-        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, goldRewardRadius);
-        foreach (Collider2D enemy in enemiesInRange)
+        if (PhotonNetwork.IsMasterClient) // Apenas o MasterClient remove os minions
         {
-            // Verifica se o objeto é um jogador inimigo
-            Player player = enemy.GetComponent<Player>();
-            if (player != null && enemy.CompareTag(enemyTag))
+            // Encontre todos os jogadores inimigos em um raio
+            Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, goldRewardRadius);
+            foreach (Collider2D enemy in enemiesInRange)
             {
-                player.GainGold(goldReward); // Distribui ouro ao jogador inimigo
-                Debug.Log($"Jogador {player.name} ganhou {goldReward} de ouro pela morte do {gameObject.name}.");
+                // Verifica se o objeto é um jogador inimigo
+                Player player = enemy.GetComponent<Player>();
+                if (player != null && enemy.CompareTag(enemyTag))
+                {
+                    player.GainGold(goldReward); // Distribui ouro ao jogador inimigo
+                    Debug.Log($"Jogador {player.name} ganhou {goldReward} de ouro pela morte do {gameObject.name}.");
+                }
             }
+
+            // Destrói o minion em todos os clientes
+            PhotonNetwork.Destroy(gameObject);
         }
-
-        // Destroi o minion
-        Destroy(gameObject);
-    }
-    void OnDrawGizmosSelected()
-    {
-        // Define a cor do gizmo
-        Gizmos.color = Color.red;
-
-        // Desenha um círculo ao redor do minion com base no alcance de ataque
-        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }
