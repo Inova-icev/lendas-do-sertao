@@ -49,6 +49,9 @@ MonoBehaviour:
   - SyncHealth
   - SyncMaxHealth
   - HandleCapture
+  - NotifyPlayerEntered
+  - NotifyPlayerExited
+  - TakeDamageRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

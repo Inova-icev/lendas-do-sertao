@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Photon.Pun;
 
 public class MinionSpawner : MonoBehaviour
 {
@@ -13,7 +14,10 @@ public class MinionSpawner : MonoBehaviour
 
     void Start()
     {
- 
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(SpawnWave());
+        }
     }
 
     public IEnumerator SpawnWave()
@@ -45,7 +49,7 @@ public class MinionSpawner : MonoBehaviour
     public void SpawnMinion()
     {
         // Instancia o minion na posição de spawn com a rotação padrão
-        GameObject minion = Instantiate(minionPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject minion = PhotonNetwork.Instantiate(minionPrefab.name, spawnPoint.position, Quaternion.identity);
         Minions minionScript = minion.GetComponent<Minions>();
 
         if (minionScript != null)

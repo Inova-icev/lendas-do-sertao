@@ -148,36 +148,64 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Player playerComponent = other.GetComponent<Player>();
-        if (playerComponent != null)
+        if (!other.CompareTag(teamLeftTag) && !other.CompareTag(teamRightTag)) return;
+
+        PhotonView pv = other.GetComponent<PhotonView>();
+        if (pv != null && pv.IsMine)
         {
-            if (other.CompareTag(teamLeftTag) && !leftTeamInZone.Contains(other.gameObject))
-            {
-                leftTeamInZone.Add(other.gameObject);
-                Debug.Log($"{other.gameObject.name} entrou na zona. Time: Left");
-            }
-            else if (other.CompareTag(teamRightTag) && !rightTeamInZone.Contains(other.gameObject))
-            {
-                rightTeamInZone.Add(other.gameObject);
-                Debug.Log($"{other.gameObject.name} entrou na zona. Time: Right");
-            }
+            // Informa ao MasterClient que um jogador entrou na zona
+            photonView.RPC("NotifyPlayerEntered", RpcTarget.MasterClient, pv.ViewID, other.CompareTag(teamLeftTag));
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        Player playerComponent = other.GetComponent<Player>();
-        if (playerComponent != null)
+        if (!other.CompareTag(teamLeftTag) && !other.CompareTag(teamRightTag)) return;
+
+        PhotonView pv = other.GetComponent<PhotonView>();
+        if (pv != null && pv.IsMine)
         {
-            if (other.CompareTag(teamLeftTag) && leftTeamInZone.Contains(other.gameObject))
+            // Informa ao MasterClient que um jogador saiu da zona
+            photonView.RPC("NotifyPlayerExited", RpcTarget.MasterClient, pv.ViewID, other.CompareTag(teamLeftTag));
+        }
+    }
+
+    [PunRPC]
+    private void NotifyPlayerEntered(int viewID, bool isLeftTeam)
+    {
+        GameObject player = PhotonView.Find(viewID)?.gameObject;
+
+        if (player != null)
+        {
+            if (isLeftTeam && !leftTeamInZone.Contains(player))
             {
-                leftTeamInZone.Remove(other.gameObject);
-                Debug.Log($"{other.gameObject.name} saiu da zona. Time: Left");
+                leftTeamInZone.Add(player);
+                Debug.Log($"{player.name} entrou na zona (Time Left)");
             }
-            else if (other.CompareTag(teamRightTag) && rightTeamInZone.Contains(other.gameObject))
+            else if (!isLeftTeam && !rightTeamInZone.Contains(player))
             {
-                rightTeamInZone.Remove(other.gameObject);
-                Debug.Log($"{other.gameObject.name} saiu da zona. Time: Right");
+                rightTeamInZone.Add(player);
+                Debug.Log($"{player.name} entrou na zona (Time Right)");
+            }
+        }
+    }
+
+    [PunRPC]
+    private void NotifyPlayerExited(int viewID, bool isLeftTeam)
+    {
+        GameObject player = PhotonView.Find(viewID)?.gameObject;
+
+        if (player != null)
+        {
+            if (isLeftTeam && leftTeamInZone.Contains(player))
+            {
+                leftTeamInZone.Remove(player);
+                Debug.Log($"{player.name} saiu da zona (Time Left)");
+            }
+            else if (!isLeftTeam && rightTeamInZone.Contains(player))
+            {
+                rightTeamInZone.Remove(player);
+                Debug.Log($"{player.name} saiu da zona (Time Right)");
             }
         }
     }

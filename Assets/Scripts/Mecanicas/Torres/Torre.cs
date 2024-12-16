@@ -97,16 +97,10 @@ public class Torre : MonoBehaviour
         if (target != null)
         {
             Vida vida = target.GetComponent<Vida>();
-            Vida_Player vidaPlayer = target.GetComponent<Vida_Player>();
 
             if (vida != null)
             {
                 vida.TakeDamage(damage); // Aplica o dano ao componente Vida
-                Debug.Log($"{gameObject.name} atacou {target.name} e causou {damage} de dano.");
-            }
-            else if (vidaPlayer != null)
-            {
-                vidaPlayer.TakeDamageP(damage); // Aplica o dano ao componente Vida_Player
                 Debug.Log($"{gameObject.name} atacou {target.name} e causou {damage} de dano.");
             }
             else
