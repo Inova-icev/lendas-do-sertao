@@ -36,7 +36,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     }
     private void Awake()
-    {
+    {  
+        PhotonNetwork.SendRate = 30; // Pacotes enviados 30 vezes por segundo
+        PhotonNetwork.SerializationRate = 30; // Objetos sincronizados 30 vezes por segundo
         // Ensure only one instance of the GameManager exists
         if (Instance == null)
         {

@@ -18,7 +18,7 @@ public class CaptureUIManager : MonoBehaviour
 
         if (mandacaruZone == null)
         {
-            Debug.LogError("MandacaruZone não foi encontrado na cena!");
+            return;
         }
     }
 
@@ -26,14 +26,12 @@ public class CaptureUIManager : MonoBehaviour
     {
         if (mandacaruZone != null)
         {
-            // Atualiza os sliders com base no progresso atual
             float leftProgress = mandacaruZone.GetTeamLeftProgress();
             float rightProgress = mandacaruZone.GetTeamRightProgress();
 
             teamLeftProgressBar.value = leftProgress / 100f;
             teamRightProgressBar.value = rightProgress / 100f;
 
-            // Atualiza os textos com a porcentagem
             teamLeftPercentageText.text = Mathf.FloorToInt(leftProgress) + "%";
             teamRightPercentageText.text = Mathf.FloorToInt(rightProgress) + "%";
         }
