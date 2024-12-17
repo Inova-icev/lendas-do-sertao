@@ -43,11 +43,31 @@ public class Vida : MonoBehaviour
             Debug.LogError("RespawnManager não foi encontrado na cena!");
         }
     }
-
     private void Update()
     {
         RegenerarAtributos();
+
+        if (currentHealth <= 0 && !isDead)
+        {
+            PhotonView photonView = GetComponent<PhotonView>();
+
+            if (PhotonNetwork.IsMasterClient) // Somente o MasterClient gerencia a morte
+            {
+                if (GetComponent<Player>() != null) // Se o objeto for um Player
+                {
+                    isDead = true; // Evita chamadas repetidas
+                    StartCoroutine(HandleRespawn());
+                }
+                else // Minions e Torres
+                {
+                    isDead = true;
+                    photonView.RPC("DieRPC", RpcTarget.AllBuffered);
+                }
+            }
+        }
     }
+
+
 
     private float Mitigacao(float dano, float mitigacao)
     {
@@ -59,31 +79,26 @@ public class Vida : MonoBehaviour
     {
         if (!PhotonNetwork.IsMasterClient) return; // Apenas o MasterClient processa o dano
 
-        TakeDamage(damage, damageType); // Aplica o dano no servidor
+        TakeDamage(damage, damageType);
 
-        // Sincroniza a nova vida com todos os clientes
         PhotonView photonView = GetComponent<PhotonView>();
         photonView.RPC("SyncHealth", RpcTarget.All, currentHealth);
 
-        // Verificação de morte em todas as fontes de dano
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isDead)
         {
-            if (!isDead) // Evita múltiplas execuções
-            {
-                isDead = true; // Marca como morto
-                Player playerComponent = GetComponent<Player>();
+            isDead = true;
 
-                if (playerComponent != null)
-                {
-                    StartCoroutine(HandleRespawn()); // Respawn para players
-                }
-                else
-                {
-                    photonView.RPC("DieRPC", RpcTarget.AllBuffered); // Chama Die para minions/torres
-                }
+            if (GetComponent<Player>() != null) // Para Players
+            {
+                StartCoroutine(HandleRespawn());
+            }
+            else // Para Minions e Torres
+            {
+                photonView.RPC("DieRPC", RpcTarget.AllBuffered);
             }
         }
     }
+
 
     [PunRPC]
     private void DieRPC()
@@ -91,14 +106,32 @@ public class Vida : MonoBehaviour
         Die(); 
     }
 
-    public void TakeDamage(float dano, int tipoDano = 0)
+    public void TakeDamage(float dano, int tipoDano = 0, bool respawnPlayer = false)
     {
         float danoFinal = tipoDano == 0 ? Mitigacao(dano, armadura) : Mitigacao(dano, defesaMagica);
 
         currentHealth -= danoFinal;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        UpdateHealthBar(); // Atualiza a barra localmente no MasterClient
+        UpdateHealthBar();
+
+        if (currentHealth <= 0)
+        {
+            if (respawnPlayer)
+            {
+                // Para Players
+                StartCoroutine(HandleRespawn());
+            }
+            else
+            {
+                // Para Minions e Torres
+                PhotonView photonView = GetComponent<PhotonView>();
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    photonView.RPC("DieRPC", RpcTarget.AllBuffered);
+                }
+            }
+        }
     }
     private void RegenerarAtributos()
     {
@@ -137,6 +170,13 @@ public class Vida : MonoBehaviour
 
     void Die()
     {
+        if (GetComponent<Player>() != null)
+        {
+            Debug.LogError("Die foi chamado para um Player, isso não deve acontecer!");
+            StartCoroutine(HandleRespawn());
+            return;
+        }
+
         Debug.Log($"{gameObject.name} morreu e foi destruído.");
 
         Minions minionComponent = GetComponent<Minions>();
@@ -155,6 +195,7 @@ public class Vida : MonoBehaviour
         Destroy(healthBarObject);
         Destroy(gameObject);
     }
+
     private void DisablePlayer()
     {
         // Sincroniza com Photon (RPC)
@@ -268,43 +309,24 @@ public class Vida : MonoBehaviour
 
     private System.Collections.IEnumerator HandleRespawn()
     {
-        Debug.Log($"{gameObject.name} morreu e será respawnado em 5 segundos.");
+        Debug.Log($"HandleRespawn chamado para {gameObject.name}. Desativando o jogador...");
 
         // Desativa o jogador
         DisablePlayer();
 
-        // Espera 5 segundos
+        Debug.Log("Jogador desativado. Aguardando 5 segundos...");
         yield return new WaitForSeconds(5);
 
-        // Chama o RespawnManager para escolher o ponto de respawn
         if (respawnManager != null)
         {
+            Debug.Log("Chamando RespawnManager para reposicionar o jogador...");
             respawnManager.RespawnPlayer(gameObject);
         }
         else
         {
-            Debug.LogError("RespawnManager não configurado.");
+            Debug.LogError("RespawnManager não configurado!");
         }
-
-        // Restaura a vida máxima e sincroniza
-        if (PhotonNetwork.IsConnected)
-        {
-            PhotonView photonView = GetComponent<PhotonView>();
-            if (photonView != null && photonView.IsMine)
-            {
-                photonView.RPC("SyncMaxHealth", RpcTarget.All, maxHealth); // Sincroniza a vida máxima
-            }
-        }
-        else
-        {
-            currentHealth = maxHealth; // Atualiza localmente no modo offline
-            UpdateHealthBar();
-        }
-
-        // Reativa o jogador
-        EnablePlayer();
     }
-
 
     private void SetupHealthBar()
     {
@@ -356,7 +378,7 @@ public class Vida : MonoBehaviour
         }
     }
     [PunRPC]
-    private void SyncHealth(float newHealth)
+    public void SyncHealth(float newHealth)
     {
         currentHealth = newHealth;
         UpdateHealthBar();
@@ -368,5 +390,17 @@ public class Vida : MonoBehaviour
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth; 
         UpdateHealthBar();
+    }
+    [PunRPC]
+    public void SyncRespawn(Vector3 position)
+    {
+        Debug.Log($"{gameObject.name} recebeu o SyncRespawn. Nova posição: {position}");
+
+        transform.position = position; // Reposiciona o jogador
+        currentHealth = maxHealth;     // Restaura a vida
+        UpdateHealthBar();
+
+        Debug.Log("Vida restaurada. Reativando o jogador...");
+        SyncEnablePlayer(); // Reativa o jogador
     }
 }

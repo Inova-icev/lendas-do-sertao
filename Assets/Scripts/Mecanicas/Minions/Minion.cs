@@ -83,7 +83,7 @@ public class Minions : MonoBehaviourPun
         FindTarget(); // Encontra o alvo inicial ao começar
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (isDead) return;
         // Atualiza temporizador de ataque
@@ -306,7 +306,7 @@ public class Minions : MonoBehaviourPun
     private bool IsGroundBelow()
     {
         Vector2 origin = transform.position;
-        float extendedGroundCheckDistance = 5f; // Define o comprimento do raio
+        float extendedGroundCheckDistance = 2f; // Define o comprimento do raio
         RaycastHit2D hitCenter = Physics2D.Raycast(origin, Vector2.down, extendedGroundCheckDistance, groundLayer);
 
         Vector2 forwardOrigin = origin + new Vector2(CompareTag("Left") ? 0.5f : -0.5f, 0); // Ponto à frente
@@ -318,12 +318,13 @@ public class Minions : MonoBehaviourPun
         // Retorna true se qualquer um dos Raycasts detectar o chão
         return hitCenter.collider != null || hitForward.collider != null;
     }
-
+    [PunRPC]
     public void TakeDamage(int damage)
     {
-        if (isDead) return; // Se já está morto, não faz nada
+        if (!PhotonNetwork.IsMasterClient) return; // Apenas o MasterClient processa o dano
+        if (isDead) return;
 
-        // Aplica o dano diretamente na vida do componente Vida
+        // Aplica o dano
         if (vidaComponent != null)
         {
             vidaComponent.TakeDamage(damage);
@@ -332,42 +333,19 @@ public class Minions : MonoBehaviourPun
             if (vidaComponent.currentHealth <= 0)
             {
                 isDead = true;
-                OnDeath(); // Chama o método de morte local
+                photonView.RPC("SyncDeath", RpcTarget.All); // Sincroniza a morte
             }
             else
             {
-                // Atualiza a barra de vida local
-                vidaComponent.UpdateHealthBar();
+                // Sincroniza a vida atualizada para os clientes
+                photonView.RPC("SyncHealthMinion", RpcTarget.All, vidaComponent.currentHealth);
             }
         }
     }
 
     [PunRPC]
-    public void TakeDamageRPC(int damage)
+    void SyncHealthMinion(float newHealth)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
-
-        // Aplica o dano apenas no MasterClient
-        if (isDead) return; // Evita aplicar dano repetidamente
-        vidaComponent?.TakeDamage(damage);
-
-        // Verifica se morreu e sincroniza com todos
-        if (vidaComponent.currentHealth <= 0)
-        {
-            isDead = true; // Define a flag de morte
-            photonView.RPC("SyncDeath", RpcTarget.All);
-        }
-        else
-        {
-            // Sincroniza a vida apenas se não morreu
-            photonView.RPC("SyncHealth", RpcTarget.All, vidaComponent.currentHealth);
-        }
-    }
-
-    [PunRPC]
-    void SyncHealth(float newHealth)
-    {
-        // Atualiza a vida para todos os clientes
         if (vidaComponent != null)
         {
             vidaComponent.currentHealth = newHealth;
@@ -378,11 +356,10 @@ public class Minions : MonoBehaviourPun
     [PunRPC]
     void SyncDeath()
     {
-        // Executa a lógica de morte sincronizada
-        if (isDead) return; // Evita chamadas duplicadas
+        if (isDead) return;
         isDead = true;
 
-        // Distribui ouro e destroi o minion
+        // Lógica para distribuir ouro e destruir o objeto
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, goldRewardRadius);
         foreach (Collider2D collider in colliders)
         {
@@ -393,7 +370,11 @@ public class Minions : MonoBehaviourPun
                 Debug.Log($"{player.name} ganhou {goldReward} de ouro pela morte de {gameObject.name}");
             }
         }
-        Destroy(gameObject);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.Destroy(gameObject); // Destruição sincronizada
+        }
     }
 
     public void OnDeath()

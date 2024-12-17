@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        Debug.Log(Application.persistentDataPath);
         panelManager = FindAnyObjectByType<PanelManager>();
         if (panelManager.teamChoiceTag == "Right")
         {
