@@ -25,10 +25,8 @@ namespace ManagmentScripts
         private bool overrideRoomDefaultRules = false; // Não sendo utilizado ainda
 
         [SerializeField]
-        private Button teamBlue, teamRed;
-
-        private Button curupira, saci;
-
+        private Button teamBlue, teamRed, curupira, saci;
+        
         [SerializeField]
         private MinionSpawner[] minionSpawners; // Array para os spawners de minions (esquerda e direita)
 

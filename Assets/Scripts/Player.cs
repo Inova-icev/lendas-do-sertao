@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using ManagmentScripts;
+using Photon.Pun;
 
 public class Player : MonoBehaviour
 {
@@ -15,8 +16,6 @@ public class Player : MonoBehaviour
     private bool isGrounded;
 
     public int gold = 0;
-
-    private Vida_Player vida;
 
     private bool controlEnabled = true;
 
@@ -49,67 +48,80 @@ public class Player : MonoBehaviour
     public GameObject cameraPrefab; // Prefab da câmera que será instanciada para este jogador
 
     private CameraFollow cameraFollow; // Referência ao script da câmera
+    private PhotonView photonView;
+    private Vida vidaComponent;
 
     void Start()
     {
         panelManager = FindAnyObjectByType<PanelManager>();
-        gameObject.tag = panelManager.teamChoiceTag;
-        if(panelManager.teamChoiceTag=="Right"){
+        vidaComponent = GetComponent<Vida>();
+        rb = GetComponent<Rigidbody2D>();
+        photonView = GetComponent<PhotonView>(); 
+        SetupCamera();
+        if (photonView.IsMine)
+        {
+            string teamTag = GameManager.Instance.GetTeamTag();
+            photonView.RPC("SyncTagRPC", RpcTarget.AllBuffered, teamTag);
+        }
+    }
+    [PunRPC]
+    private void SyncTagRPC(string teamTag)
+    {
+        gameObject.tag = teamTag;
+        if (teamTag == "Right"){
             gameObject.layer = 9;
         }
         else{
             gameObject.layer = 8;
-
         }
-        vida = GetComponent<Vida_Player>();
-        rb = GetComponent<Rigidbody2D>();
-        SetupCamera();
-        Vida_Player.OnPlayerDeath += HandleDeath;
+        Debug.Log($"Tag sincronizada para {teamTag} em {gameObject.name}");
     }
-        private void SetupCamera()
+    private void SetupCamera()
     {
-        if (cameraPrefab != null)
+        PhotonView photonView = GetComponent<PhotonView>();
+
+        // Certifique-se de que a câmera só seja criada para o jogador local
+        if (photonView.IsMine)
         {
-            // Instanciar o prefab da câmera
-            GameObject cameraInstance = Instantiate(cameraPrefab);
-
-            // Obter o componente CameraFollow do prefab
-            cameraFollow = cameraInstance.GetComponent<CameraFollow>();
-
-            if (cameraFollow != null)
+            if (cameraPrefab != null)
             {
-                // Atribuir este jogador como o alvo da câmera
-                cameraFollow.AssignPlayer(transform);
+                GameObject cameraInstance = Instantiate(cameraPrefab);
+                cameraFollow = cameraInstance.GetComponent<CameraFollow>();
+
+                if (cameraFollow != null)
+                {
+                    // Atribui este jogador como alvo da câmera
+                    cameraFollow.AssignPlayer(transform);
+                    Debug.Log($"Câmera criada para o jogador local: {gameObject.name}");
+                }
+                else
+                {
+                    Debug.LogError("O prefab da câmera não possui o script CameraFollow.");
+                }
+            }
+            else
+            {
+                Debug.LogError("Prefab de câmera não está configurado no script do Player.");
             }
         }
         else
         {
-            Debug.LogError("Prefab de câmera não está configurado no script do Player.");
-        }
-    }
-
-    void OnDestroy()
-    {
-        // Remove a inscrição no evento para evitar erros
-        Vida_Player.OnPlayerDeath -= HandleDeath;
-    }
-
-    private void HandleDeath(GameObject deadPlayer)
-    {
-        // Verifica se o evento é para este jogador
-        if (deadPlayer == gameObject)
-        {
-            Debug.Log($"{gameObject.name} foi derrotado!");
-            controlEnabled = false; // Desativa os controles do jogador
+            Debug.Log($"Câmera não criada para {gameObject.name}, pois não pertence ao jogador local.");
         }
     }
 
     void Update()
     {
+        // Verifica se este objeto pertence ao jogador local
+        PhotonView photonView = GetComponent<PhotonView>();
+        if (!photonView.IsMine)
+        {
+            return; // Ignora inputs para jogadores que não são locais
+        }
+
         if (controlEnabled)
         {
-            // Substituí a chamada direta para Move pela lógica integrada no próprio Update
-            float moveX = Input.GetAxisRaw("Horizontal"); // Obtém entrada de movimento horizontal
+            float moveX = Input.GetAxisRaw("Horizontal");
             float targetSpeed = moveX * speed;
 
             // Aceleração e desaceleração suaves
@@ -156,6 +168,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+
 
 
     void Move()
@@ -265,67 +278,85 @@ public class Player : MonoBehaviour
     {
         GetComponent<Collider2D>().enabled = true;
     }
-    // Método para calcular o dano causado com o buff
-
-    public void ApplyBuff(float multiplier)
+    [PunRPC]
+    public void ApplyBuffRPC(float multiplier)
     {
-        Debug.Log($"Tentando aplicar buff: Atualmente Buffed = {isSpeedBuffed}");
         if (!isSpeedBuffed)
         {
             currentSpeed = speed * multiplier;
             isSpeedBuffed = true;
             buffStartTimeSpeed = Time.time;
-            Debug.Log($"Buff aplicado com sucesso: Velocidade Atual = {currentSpeed}");
-        }
-        else
-        {
-            Debug.Log("Buff não aplicado porque já está buffed.");
+            Debug.Log($"Buff de velocidade aplicado a {gameObject.name}. Velocidade: {currentSpeed}");
         }
     }
 
-    public void RemoveBuff()
+    [PunRPC]
+    public void RemoveBuffRPC()
     {
-        Debug.Log($"Tentando remover buff: Atualmente Buffed = {isSpeedBuffed}");
         if (isSpeedBuffed)
         {
             currentSpeed = speed;
             isSpeedBuffed = false;
-            Debug.Log("Buff removido com sucesso.");
-        }
-        else
-        {
-            Debug.Log("Buff não removido porque não estava buffed.");
+            Debug.Log($"Buff de velocidade removido de {gameObject.name}. Velocidade: {currentSpeed}");
         }
     }
+    public void ApplyBuff(float multiplier)
+    {
+        photonView.RPC("ApplyBuffRPC", RpcTarget.All, multiplier);
+    }
 
-    public void ApplyDamageBuff(float multiplier)
+    public void RemoveBuff()
+    {
+        photonView.RPC("RemoveBuffRPC", RpcTarget.All);
+    }
+    [PunRPC]
+    public void ApplyDamageBuffRPC(float multiplier)
     {
         if (!isDamageBuffed)
         {
             damageMultiplier *= multiplier;
             isDamageBuffed = true;
             buffStartTimeDamage = Time.time;
-            Debug.Log($"Buff de dano aplicado! Multiplicador de dano atual: {damageMultiplier}");
+            Debug.Log($"Buff de dano aplicado a {gameObject.name}. Multiplicador de dano: {damageMultiplier}");
         }
     }
 
-    public void RemoveDamageBuff(float multiplier)
+    [PunRPC]
+    public void RemoveDamageBuffRPC(float multiplier)
     {
         if (isDamageBuffed)
         {
             damageMultiplier /= multiplier;
             isDamageBuffed = false;
-            Debug.Log($"Buff de dano removido. Multiplicador de dano de volta ao normal: {damageMultiplier}");
+            Debug.Log($"Buff de dano removido de {gameObject.name}. Multiplicador de dano: {damageMultiplier}");
+        }
+    }
+    public void ApplyDamageBuff(float multiplier)
+    {
+        photonView.RPC("ApplyDamageBuffRPC", RpcTarget.All, multiplier);
+    }
+
+    public void RemoveDamageBuff(float multiplier)
+    {
+        photonView.RPC("RemoveDamageBuffRPC", RpcTarget.All, multiplier);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        Debug.Log($"{gameObject.name} recebeu {damage} de dano. AAAAAAAAAA");
+        photonView.RPC("TakeDamageRPC", RpcTarget.All, damage);
+    }
+
+    [PunRPC]
+    public void TakeDamageRPC(int damage)
+    {
+        Debug.Log($"{gameObject.name} recebeu {damage} de dano.");
+        if (vidaComponent != null)
+        {
+            vidaComponent.TakeDamage(damage, 0, true); 
         }
     }
 
-    public void TakeDamage(int damageAmount)
-    {
-        if (vida != null)
-        {
-            vida.TakeDamageP(damageAmount); // Passa o dano para o componente Vida
-        }
-    }
 
     public void GainGold(int amount)
     {
@@ -370,10 +401,7 @@ public class Player : MonoBehaviour
         {
             lastAttackTime = Time.time; // Atualiza o tempo do último ataque
 
-            int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
-            Debug.Log($"Dano causado: {damageToDeal}");
-
-            // Encontrar e atacar o inimigo mais próximo (ou qualquer lógica de ataque que você tenha)
+            // Realiza a lógica de encontrar o alvo e atacar
             FindTargetAndAttack();
         }
         else
@@ -381,6 +409,7 @@ public class Player : MonoBehaviour
             Debug.Log("Aguardando recarga do ataque...");
         }
     }
+
 
     private void FindTargetAndAttack()
     {
@@ -393,6 +422,7 @@ public class Player : MonoBehaviour
             if ((CompareTag("Left") && potentialTarget.CompareTag("Right")) ||
                 (CompareTag("Right") && potentialTarget.CompareTag("Left")))
             {
+                Debug.Log($"Analisando alvo: {potentialTarget.name}, Tag: {potentialTarget.tag}");
                 Vida vidaComponent = potentialTarget.GetComponent<Vida>();
                 if (vidaComponent != null)
                 {
@@ -408,14 +438,27 @@ public class Player : MonoBehaviour
 
         if (closestTarget != null)
         {
-            // Aplica o dano no alvo
-            Vida targetVida = closestTarget.GetComponent<Vida>();
-            if (targetVida != null)
+            PhotonView targetPhotonView = closestTarget.GetComponent<PhotonView>();
+            if (targetPhotonView == null)
+            {
+                Debug.LogWarning($"O alvo {closestTarget.name} não possui um PhotonView!");
+            }
+            if (targetPhotonView != null)
             {
                 int damageToDeal = Mathf.RoundToInt(baseDamage * damageMultiplier);
-                targetVida.TakeDamage(damageToDeal, 1);
+                targetPhotonView.RPC("TakeDamageRPC", RpcTarget.All, damageToDeal, 1);
                 Debug.Log($"{gameObject.name} atacou {closestTarget.name} causando {damageToDeal} de dano");
             }
         }
+    }
+
+    [PunRPC]
+    private void SyncRespawn(Vector3 position, Quaternion rotation)
+    {
+        // Reposiciona e redefine a rotação do jogador
+        transform.position = position;
+        transform.rotation = rotation;
+
+        Debug.Log($"Player {gameObject.name} foi respawnado em {position}");
     }
 }
