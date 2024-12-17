@@ -1,7 +1,6 @@
-using Photon.Pun;
 using UnityEngine;
 
-public class Minions : MonoBehaviourPun
+public class Minions : MonoBehaviour
 {
     public float speed = 2f; // Velocidade de movimento do minion
     public float fallSpeed = 2f; // Velocidade para descer caso não haja chão
@@ -25,13 +24,9 @@ public class Minions : MonoBehaviourPun
     private bool isClimbing; // Indica se o minion está subindo um obstáculo
     public float climbHeight = 1f; // Altura que o minion deve alcançar ao subir
     public float climbSpeed = 5f; // Velocidade para subir
-    private bool isDead = false;
+
     void Start()
     {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            return; // Clientes que não são Master não precisam configurar lógica de vida
-        }
         rb = GetComponent<Rigidbody2D>();
         vidaComponent = GetComponent<Vida>();
 
@@ -83,9 +78,8 @@ public class Minions : MonoBehaviourPun
         FindTarget(); // Encontra o alvo inicial ao começar
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        if (isDead) return;
         // Atualiza temporizador de ataque
         if (attackTimer > 0)
         {
@@ -306,7 +300,7 @@ public class Minions : MonoBehaviourPun
     private bool IsGroundBelow()
     {
         Vector2 origin = transform.position;
-        float extendedGroundCheckDistance = 2f; // Define o comprimento do raio
+        float extendedGroundCheckDistance = 5f; // Define o comprimento do raio
         RaycastHit2D hitCenter = Physics2D.Raycast(origin, Vector2.down, extendedGroundCheckDistance, groundLayer);
 
         Vector2 forwardOrigin = origin + new Vector2(CompareTag("Left") ? 0.5f : -0.5f, 0); // Ponto à frente
@@ -318,80 +312,42 @@ public class Minions : MonoBehaviourPun
         // Retorna true se qualquer um dos Raycasts detectar o chão
         return hitCenter.collider != null || hitForward.collider != null;
     }
-    [PunRPC]
+
+
+    // Função para receber dano
     public void TakeDamage(int damage)
     {
-        if (!PhotonNetwork.IsMasterClient) return; // Apenas o MasterClient processa o dano
-        if (isDead) return;
-
-        // Aplica o dano
         if (vidaComponent != null)
         {
             vidaComponent.TakeDamage(damage);
-
-            // Verifica se a vida chegou a zero
-            if (vidaComponent.currentHealth <= 0)
-            {
-                isDead = true;
-                photonView.RPC("SyncDeath", RpcTarget.All); // Sincroniza a morte
-            }
-            else
-            {
-                // Sincroniza a vida atualizada para os clientes
-                photonView.RPC("SyncHealthMinion", RpcTarget.All, vidaComponent.currentHealth);
-            }
         }
-    }
-
-    [PunRPC]
-    void SyncHealthMinion(float newHealth)
-    {
-        if (vidaComponent != null)
-        {
-            vidaComponent.currentHealth = newHealth;
-            vidaComponent.UpdateHealthBar();
-        }
-    }
-
-    [PunRPC]
-    void SyncDeath()
-    {
-        if (isDead) return;
-        isDead = true;
-
-        // Lógica para distribuir ouro e destruir o objeto
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, goldRewardRadius);
-        foreach (Collider2D collider in colliders)
-        {
-            Player player = collider.GetComponent<Player>();
-            if (player != null && collider.CompareTag(enemyTag))
-            {
-                player.GainGold(goldReward);
-                Debug.Log($"{player.name} ganhou {goldReward} de ouro pela morte de {gameObject.name}");
-            }
-        }
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.Destroy(gameObject); // Destruição sincronizada
-        }
+        rb.velocity = new Vector2(0, rb.velocity.y);
     }
 
     public void OnDeath()
     {
-        if (isDead) return;
-        isDead = true;
-        
-        PhotonView photonView = GetComponent<PhotonView>();
-        if (photonView != null && photonView.IsMine)
+        // Encontre todos os jogadores inimigos em um raio
+        Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(transform.position, goldRewardRadius);
+        foreach (Collider2D enemy in enemiesInRange)
         {
-            photonView.RPC("SyncDeath", RpcTarget.All);
+            // Verifica se o objeto é um jogador inimigo
+            Player player = enemy.GetComponent<Player>();
+            if (player != null && enemy.CompareTag(enemyTag))
+            {
+                player.GainGold(goldReward); // Distribui ouro ao jogador inimigo
+                Debug.Log($"Jogador {player.name} ganhou {goldReward} de ouro pela morte do {gameObject.name}.");
+            }
         }
+
+        // Destroi o minion
+        Destroy(gameObject);
     }
     void OnDrawGizmosSelected()
     {
         // Define a cor do gizmo
         Gizmos.color = Color.red;
+
+        // Desenha um círculo ao redor do minion com base no alcance de ataque
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

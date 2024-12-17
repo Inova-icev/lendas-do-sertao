@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using UnityEngine;
 
 public class Torre : MonoBehaviour
@@ -70,21 +69,17 @@ public class Torre : MonoBehaviour
     // Método para detectar o inimigo mais próximo dentro do alcance
     Collider2D DetectEnemyInRange()
     {
+        // Detecta todos os objetos em um círculo de colisão ao redor da torre
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, range);
         float closestDistance = Mathf.Infinity;
         Collider2D closestEnemy = null;
 
         foreach (Collider2D hit in hits)
         {
-            if (hit.CompareTag(gameObject.tag)) 
+            // Filtra os inimigos pela tag com base na tag da torre
+            if ((CompareTag("Left") && hit.CompareTag("Right")) || (CompareTag("Right") && hit.CompareTag("Left")))
             {
-                continue; 
-            }
-
-            // Verifica se o objeto possui o componente Vida
-            Vida vidaComponent = hit.GetComponent<Vida>();
-            if (vidaComponent != null)
-            {
+                // Calcula a distância do inimigo até a torre
                 float distance = Vector2.Distance(transform.position, hit.transform.position);
                 if (distance < closestDistance)
                 {
@@ -93,19 +88,26 @@ public class Torre : MonoBehaviour
                 }
             }
         }
-
-        return closestEnemy; 
+        return closestEnemy; // Retorna o inimigo mais próximo no alcance
     }
+
+    // Método de ataque que causa dano ao inimigo
     void Attack()
     {
         if (target != null)
         {
             Vida vida = target.GetComponent<Vida>();
+            Vida_Player vidaPlayer = target.GetComponent<Vida_Player>();
 
             if (vida != null)
             {
                 vida.TakeDamage(damage); // Aplica o dano ao componente Vida
-                Debug.Log($"{gameObject.name} | {target.tag} atacou {target.name} | {target.tag} e causou {damage} de dano.");
+                Debug.Log($"{gameObject.name} atacou {target.name} e causou {damage} de dano.");
+            }
+            else if (vidaPlayer != null)
+            {
+                vidaPlayer.TakeDamageP(damage); // Aplica o dano ao componente Vida_Player
+                Debug.Log($"{gameObject.name} atacou {target.name} e causou {damage} de dano.");
             }
             else
             {

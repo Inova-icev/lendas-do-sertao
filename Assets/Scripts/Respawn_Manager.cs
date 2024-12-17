@@ -8,11 +8,9 @@ public class RespawnManager : MonoBehaviour
 
     public void RespawnPlayer(GameObject player)
     {
-        Debug.Log("RespawnManager: Tentando reposicionar o jogador...");
-
         Transform[] selectedSpawnPoints;
 
-        // Determina o ponto de respawn baseado na tag do jogador
+        // Verifica a tag do jogador e seleciona os pontos de respawn adequados
         if (player.CompareTag("Left"))
         {
             selectedSpawnPoints = respawnPointsTeamLeft;
@@ -23,27 +21,39 @@ public class RespawnManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Tag do jogador não reconhecida!");
+            Debug.LogError("Player tag not recognized!");
             return;
         }
 
-        // Seleciona um ponto de respawn aleatório
+        // Escolhe um ponto aleatório entre os pontos de respawn selecionados
         int randomIndex = Random.Range(0, selectedSpawnPoints.Length);
-        Transform spawnPoint = selectedSpawnPoints[randomIndex];
 
-        Debug.Log($"RespawnManager: Ponto de respawn selecionado: {spawnPoint.position}");
+        // Atualiza a posição e rotação do jogador
+        Vector3 respawnPosition = selectedSpawnPoints[randomIndex].position;
+        Quaternion respawnRotation = selectedSpawnPoints[randomIndex].rotation;
 
-        // Sincroniza o reposicionamento usando RPC
-        PhotonView photonView = player.GetComponent<PhotonView>();
-        if (photonView != null && photonView.IsMine)
+        // Sincroniza o respawn com Photon
+        if (PhotonNetwork.IsConnected)
         {
-            Debug.Log("RespawnManager: Chamando SyncRespawn via RPC...");
-            photonView.RPC("SyncRespawn", RpcTarget.AllBuffered, spawnPoint.position);
+            PhotonView photonView = player.GetComponent<PhotonView>();
+            if (photonView != null && photonView.IsMine)
+            {
+                photonView.RPC("SyncRespawn", RpcTarget.All, respawnPosition, respawnRotation);
+            }
         }
         else
         {
-            Debug.LogWarning("PhotonView inválido ou o Player não é meu.");
-            player.transform.position = spawnPoint.position; // Offline fallback
+            // Atualiza diretamente no modo offline
+            player.transform.position = respawnPosition;
+            player.transform.rotation = respawnRotation;
         }
+    }
+
+    [PunRPC]
+    private void SyncRespawn(Vector3 position, Quaternion rotation)
+    {
+        // Atualiza a posição e rotação do jogador
+        transform.position = position;
+        transform.rotation = rotation;
     }
 }

@@ -36,8 +36,6 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
 
     private void UpdateCaptureProgress()
     {
-        if (!PhotonNetwork.IsMasterClient) return; // Apenas o MasterClient pode atualizar o progresso
-
         // Verifica se a zona está contestada
         if (leftTeamInZone.Count > 0 && rightTeamInZone.Count > 0)
         {
@@ -45,17 +43,31 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
             return; // Pausa o progresso
         }
 
-        // Atualiza progresso para o time Left
+        // Verifica se apenas o Time Left está na zona
         if (leftTeamInZone.Count > 0 && rightTeamInZone.Count == 0)
         {
-            teamLeftProgress += captureSpeed * Time.deltaTime;
-            teamRightProgress = Mathf.Max(0, teamRightProgress - decaySpeed * Time.deltaTime);
+            foreach (GameObject player in leftTeamInZone)
+            {
+                if (player.CompareTag("Left"))
+                {
+                    teamLeftProgress += captureSpeed * Time.deltaTime;
+                    teamRightProgress = Mathf.Max(0, teamRightProgress - decaySpeed * Time.deltaTime);
+                    break;
+                }
+            }
         }
-        // Atualiza progresso para o time Right
+        // Verifica se apenas o Time Right está na zona
         else if (rightTeamInZone.Count > 0 && leftTeamInZone.Count == 0)
         {
-            teamRightProgress += captureSpeed * Time.deltaTime;
-            teamLeftProgress = Mathf.Max(0, teamLeftProgress - decaySpeed * Time.deltaTime);
+            foreach (GameObject player in rightTeamInZone)
+            {
+                if (player.CompareTag("Right"))
+                {
+                    teamRightProgress += captureSpeed * Time.deltaTime;
+                    teamLeftProgress = Mathf.Max(0, teamLeftProgress - decaySpeed * Time.deltaTime);
+                    break;
+                }
+            }
         }
         // Decadência para ambos os times se ninguém estiver na zona
         else if (leftTeamInZone.Count == 0 && rightTeamInZone.Count == 0)
@@ -68,52 +80,40 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
         teamLeftProgress = Mathf.Clamp(teamLeftProgress, 0f, 100f);
         teamRightProgress = Mathf.Clamp(teamRightProgress, 0f, 100f);
 
-        // Sincroniza o progresso para todos os clientes
-        photonView.RPC("SyncProgress", RpcTarget.All, teamLeftProgress, teamRightProgress);
-    }
+        // Verifica e registra o progresso inteiro
+        int currentLeftProgress = Mathf.FloorToInt(teamLeftProgress);
+        int currentRightProgress = Mathf.FloorToInt(teamRightProgress);
 
+        if (currentLeftProgress != lastLeftProgressLog)
+        {
+            Debug.Log($"Progresso Left: {currentLeftProgress}%");
+            lastLeftProgressLog = currentLeftProgress;
+        }
+
+        if (currentRightProgress != lastRightProgressLog)
+        {
+            Debug.Log($"Progresso Right: {currentRightProgress}%");
+            lastRightProgressLog = currentRightProgress;
+        }
+    }
 
     private void CheckForCapture()
     {
-        if (!PhotonNetwork.IsMasterClient) return; // Apenas o MasterClient verifica a captura
-
         if (teamLeftProgress >= 100f)
         {
             isCaptured = true;
             Debug.Log("Time Left capturou o objetivo!");
-            photonView.RPC("HandleCapture", RpcTarget.All, teamLeftTag); // Sincroniza a captura
+            GrantBuffToTeam(teamLeftTag);
+            StartCoroutine(ResetAfterCapture(resetTime)); // Usando a variável resetTime
         }
         else if (teamRightProgress >= 100f)
         {
             isCaptured = true;
             Debug.Log("Time Right capturou o objetivo!");
-            photonView.RPC("HandleCapture", RpcTarget.All, teamRightTag); // Sincroniza a captura
+            GrantBuffToTeam(teamRightTag);
+            StartCoroutine(ResetAfterCapture(resetTime)); // Usando a variável resetTime
         }
     }
-    [PunRPC]
-    private void HandleCapture(string capturingTeamTag)
-    {
-        isCaptured = true;
-        Debug.Log($"Time {capturingTeamTag} capturou o Mandacaru!");
-
-        if (capturingTeamTag == teamLeftTag)
-        {
-            teamLeftProgress = 100f;
-            teamRightProgress = 0f;
-        }
-        else if (capturingTeamTag == teamRightTag)
-        {
-            teamRightProgress = 100f;
-            teamLeftProgress = 0f;
-        }
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GrantBuffToTeam(capturingTeamTag);
-            StartCoroutine(ResetAfterCapture(resetTime));
-        }
-    }
-
 
     private void GrantBuffToTeam(string teamTag)
     {
@@ -148,64 +148,36 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag(teamLeftTag) && !other.CompareTag(teamRightTag)) return;
-
-        PhotonView pv = other.GetComponent<PhotonView>();
-        if (pv != null && pv.IsMine)
+        Player playerComponent = other.GetComponent<Player>();
+        if (playerComponent != null)
         {
-            // Informa ao MasterClient que um jogador entrou na zona
-            photonView.RPC("NotifyPlayerEntered", RpcTarget.MasterClient, pv.ViewID, other.CompareTag(teamLeftTag));
+            if (other.CompareTag(teamLeftTag) && !leftTeamInZone.Contains(other.gameObject))
+            {
+                leftTeamInZone.Add(other.gameObject);
+                Debug.Log($"{other.gameObject.name} entrou na zona. Time: Left");
+            }
+            else if (other.CompareTag(teamRightTag) && !rightTeamInZone.Contains(other.gameObject))
+            {
+                rightTeamInZone.Add(other.gameObject);
+                Debug.Log($"{other.gameObject.name} entrou na zona. Time: Right");
+            }
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (!other.CompareTag(teamLeftTag) && !other.CompareTag(teamRightTag)) return;
-
-        PhotonView pv = other.GetComponent<PhotonView>();
-        if (pv != null && pv.IsMine)
+        Player playerComponent = other.GetComponent<Player>();
+        if (playerComponent != null)
         {
-            // Informa ao MasterClient que um jogador saiu da zona
-            photonView.RPC("NotifyPlayerExited", RpcTarget.MasterClient, pv.ViewID, other.CompareTag(teamLeftTag));
-        }
-    }
-
-    [PunRPC]
-    private void NotifyPlayerEntered(int viewID, bool isLeftTeam)
-    {
-        GameObject player = PhotonView.Find(viewID)?.gameObject;
-
-        if (player != null)
-        {
-            if (isLeftTeam && !leftTeamInZone.Contains(player))
+            if (other.CompareTag(teamLeftTag) && leftTeamInZone.Contains(other.gameObject))
             {
-                leftTeamInZone.Add(player);
-                Debug.Log($"{player.name} entrou na zona (Time Left)");
+                leftTeamInZone.Remove(other.gameObject);
+                Debug.Log($"{other.gameObject.name} saiu da zona. Time: Left");
             }
-            else if (!isLeftTeam && !rightTeamInZone.Contains(player))
+            else if (other.CompareTag(teamRightTag) && rightTeamInZone.Contains(other.gameObject))
             {
-                rightTeamInZone.Add(player);
-                Debug.Log($"{player.name} entrou na zona (Time Right)");
-            }
-        }
-    }
-
-    [PunRPC]
-    private void NotifyPlayerExited(int viewID, bool isLeftTeam)
-    {
-        GameObject player = PhotonView.Find(viewID)?.gameObject;
-
-        if (player != null)
-        {
-            if (isLeftTeam && leftTeamInZone.Contains(player))
-            {
-                leftTeamInZone.Remove(player);
-                Debug.Log($"{player.name} saiu da zona (Time Left)");
-            }
-            else if (!isLeftTeam && rightTeamInZone.Contains(player))
-            {
-                rightTeamInZone.Remove(player);
-                Debug.Log($"{player.name} saiu da zona (Time Right)");
+                rightTeamInZone.Remove(other.gameObject);
+                Debug.Log($"{other.gameObject.name} saiu da zona. Time: Right");
             }
         }
     }
@@ -232,11 +204,10 @@ public class MandacaruZone : MonoBehaviourPunCallbacks
     {
         return teamRightProgress;
     }
-
     [PunRPC]
     private void SyncProgress(float leftProgress, float rightProgress)
     {
         teamLeftProgress = leftProgress;
         teamRightProgress = rightProgress;
-    }
+    }   
 }

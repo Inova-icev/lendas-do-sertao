@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        Debug.Log(Application.persistentDataPath);
         panelManager = FindAnyObjectByType<PanelManager>();
         if (panelManager.teamChoiceTag == "Right")
         {
@@ -48,8 +47,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             Destroy(gameObject); // Destroy any additional instances
         }
-        PhotonNetwork.SendRate = 20; // Pacotes por segundo
-        PhotonNetwork.SerializationRate = 20; // Dados de sincronização por segundo
     }
 
     public void SpawnPlayer(string team, string seletedCharacter)
@@ -119,9 +116,5 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             photonView.RPC("EndGame", RpcTarget.All, teamName);
         }
-    }
-    public string GetTeamTag()
-    {
-        return panelManager.teamChoiceTag;
     }
 }

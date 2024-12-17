@@ -268,11 +268,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd3cd9fcfa1e56a4b8a9343bbd88e9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 300
+  currentHealth: 100
   maxHealth: 300
   healthBar: {fileID: 0}
   healthBarObject: {fileID: 0}
   healthBarPrefab: {fileID: 5980718916856335108, guid: fac75ce04d2a2b94f8251acf7cf3127b, type: 3}
-  regeneracaoVida: 10
+  regeneracaoVida: 0
   armadura: 0
   defesaMagica: 0

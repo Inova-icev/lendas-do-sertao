@@ -21,7 +21,7 @@ public class Vida : MonoBehaviour
     public float regeneracaoVida;
     public float armadura;
     public float defesaMagica;
-    private bool isDead = false;
+
     void Start()
     {
         // Detecta ou instancia a barra de vida
@@ -31,7 +31,7 @@ public class Vida : MonoBehaviour
         }
 
         healthBarScale = healthBar.localScale;
-        healthPercent = 1f;
+        healthPercent = 1f; // Começa com 100% de vida
         currentHealth = maxHealth;
         UpdateHealthBar();
 
@@ -43,70 +43,18 @@ public class Vida : MonoBehaviour
             Debug.LogError("RespawnManager não foi encontrado na cena!");
         }
     }
+
     private void Update()
     {
         RegenerarAtributos();
-
-        if (currentHealth <= 0 && !isDead)
-        {
-            PhotonView photonView = GetComponent<PhotonView>();
-
-            if (PhotonNetwork.IsMasterClient) // Somente o MasterClient gerencia a morte
-            {
-                if (GetComponent<Player>() != null) // Se o objeto for um Player
-                {
-                    isDead = true; // Evita chamadas repetidas
-                    StartCoroutine(HandleRespawn());
-                }
-                else // Minions e Torres
-                {
-                    isDead = true;
-                    photonView.RPC("DieRPC", RpcTarget.AllBuffered);
-                }
-            }
-        }
     }
-
-
 
     private float Mitigacao(float dano, float mitigacao)
     {
         return dano / (1 + mitigacao / 100f);
     }
 
-    [PunRPC]
-    public void TakeDamageRPC(int damage, int damageType)
-    {
-        if (!PhotonNetwork.IsMasterClient) return; // Apenas o MasterClient processa o dano
-
-        TakeDamage(damage, damageType);
-
-        PhotonView photonView = GetComponent<PhotonView>();
-        photonView.RPC("SyncHealth", RpcTarget.All, currentHealth);
-
-        if (currentHealth <= 0 && !isDead)
-        {
-            isDead = true;
-
-            if (GetComponent<Player>() != null) // Para Players
-            {
-                StartCoroutine(HandleRespawn());
-            }
-            else // Para Minions e Torres
-            {
-                photonView.RPC("DieRPC", RpcTarget.AllBuffered);
-            }
-        }
-    }
-
-
-    [PunRPC]
-    private void DieRPC()
-    {
-        Die(); 
-    }
-
-    public void TakeDamage(float dano, int tipoDano = 0, bool respawnPlayer = false)
+    public void TakeDamage(float dano, int tipoDano = 0)
     {
         float danoFinal = tipoDano == 0 ? Mitigacao(dano, armadura) : Mitigacao(dano, defesaMagica);
 
@@ -117,66 +65,44 @@ public class Vida : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            if (respawnPlayer)
+            Player playerComponent = GetComponent<Player>();
+            if (playerComponent != null)
             {
-                // Para Players
-                StartCoroutine(HandleRespawn());
+                StartCoroutine(HandleRespawn()); // Respawn para jogadores
             }
             else
             {
-                // Para Minions e Torres
-                PhotonView photonView = GetComponent<PhotonView>();
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    photonView.RPC("DieRPC", RpcTarget.AllBuffered);
-                }
+                Die(); // Destruição para outros objetos
             }
         }
+
+        Debug.Log($"Dano recebido: {danoFinal} (Tipo: {(tipoDano == 0 ? "Físico" : "Mágico")})");
     }
+
     private void RegenerarAtributos()
     {
         if (currentHealth < maxHealth)
         {
             currentHealth += regeneracaoVida * Time.deltaTime;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
-            // Sincroniza a vida regenerada
-            if (PhotonNetwork.IsConnected)
-            {
-                PhotonView photonView = GetComponent<PhotonView>();
-                if (photonView != null && photonView.IsMine)
-                {
-                    photonView.RPC("SyncHealth", RpcTarget.All, currentHealth);
-                }
-            }
-            else
-            {
-                UpdateHealthBar(); // Atualiza localmente no modo offline
-            }
         }
+
+        UpdateHealthBar();
     }
 
-    public void UpdateHealthBar()
+    void UpdateHealthBar()
     {
         if (healthBar != null && maxHealth > 0)
         {
             healthPercent = currentHealth / maxHealth;
             healthPercent = Mathf.Clamp01(healthPercent);
 
-            // Define a escala somente no eixo X
-            healthBar.localScale = new Vector3(healthPercent, 1, 1);
+            healthBar.localScale = new Vector3(healthPercent, healthBarScale.y, healthBarScale.z);
         }
     }
 
     void Die()
     {
-        if (GetComponent<Player>() != null)
-        {
-            Debug.LogError("Die foi chamado para um Player, isso não deve acontecer!");
-            StartCoroutine(HandleRespawn());
-            return;
-        }
-
         Debug.Log($"{gameObject.name} morreu e foi destruído.");
 
         Minions minionComponent = GetComponent<Minions>();
@@ -196,136 +122,31 @@ public class Vida : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void DisablePlayer()
-    {
-        // Sincroniza com Photon (RPC)
-        if (PhotonNetwork.IsConnected)
-        {
-            PhotonView photonView = GetComponent<PhotonView>();
-            if (photonView != null && photonView.IsMine)
-            {
-                photonView.RPC("SyncDisablePlayer", RpcTarget.AllBuffered);
-            }
-        }
-        else
-        {
-            SyncDisablePlayer();
-        }
-    }
-
-    private void EnablePlayer()
-    {
-        // Sincroniza com Photon (RPC)
-        if (PhotonNetwork.IsConnected)
-        {
-            PhotonView photonView = GetComponent<PhotonView>();
-            if (photonView != null && photonView.IsMine)
-            {
-                photonView.RPC("SyncEnablePlayer", RpcTarget.AllBuffered);
-            }
-        }
-        else
-        {
-            SyncEnablePlayer();
-        }
-    }
-    [PunRPC]
-    private void SyncDisablePlayer()
-    {
-        // Desativa o SpriteRenderer (personagem desaparece visualmente)
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.enabled = false;
-        }
-
-        // Desativa a colisão (impede interações físicas)
-        Collider2D collider = GetComponent<Collider2D>();
-        if (collider != null)
-        {
-            collider.enabled = false;
-        }
-
-        // Trava a movimentação do personagem
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        if (rb != null)
-        {
-            rb.velocity = Vector2.zero; // Zera velocidade
-            rb.constraints = RigidbodyConstraints2D.FreezeAll; // Congela posição e rotação
-        }
-
-        // Desativa scripts de controle do jogador
-        Player playerController = GetComponent<Player>();
-        if (playerController != null)
-        {
-            playerController.enabled = false;
-        }
-
-        // Esconde a barra de vida
-        if (healthBarObject != null)
-        {
-            healthBarObject.SetActive(false);
-        }
-    }
-
-    [PunRPC]
-    private void SyncEnablePlayer()
-    {
-        // Reativa o SpriteRenderer (personagem reaparece visualmente)
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.enabled = true;
-        }
-
-        // Reativa a colisão
-        Collider2D collider = GetComponent<Collider2D>();
-        if (collider != null)
-        {
-            collider.enabled = true;
-        }
-
-        // Libera movimentação do personagem
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        if (rb != null)
-        {
-            rb.constraints = RigidbodyConstraints2D.None; // Libera movimentação
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Apenas trava rotação
-        }
-
-        // Reativa scripts de controle do jogador
-        Player playerController = GetComponent<Player>();
-        if (playerController != null)
-        {
-            playerController.enabled = true;
-        }
-
-        // Reexibe a barra de vida
-        if (healthBarObject != null)
-        {
-            healthBarObject.SetActive(true);
-        }
-    }
-
     private System.Collections.IEnumerator HandleRespawn()
     {
-        Debug.Log($"HandleRespawn chamado para {gameObject.name}. Desativando o jogador...");
+        Debug.Log($"{gameObject.name} morreu e será respawnado em 5 segundos.");
 
         // Desativa o jogador
-        DisablePlayer();
+        gameObject.SetActive(false);
 
-        Debug.Log("Jogador desativado. Aguardando 5 segundos...");
+        // Espera 5 segundos antes do respawn
         yield return new WaitForSeconds(5);
+
+        // Restaura a vida e reposiciona o jogador
+        currentHealth = maxHealth;
+        UpdateHealthBar();
 
         if (respawnManager != null)
         {
-            Debug.Log("Chamando RespawnManager para reposicionar o jogador...");
             respawnManager.RespawnPlayer(gameObject);
         }
         else
         {
-            Debug.LogError("RespawnManager não configurado!");
+            Debug.LogError("RespawnManager não configurado.");
         }
+
+        // Reativa o jogador
+        gameObject.SetActive(true);
     }
 
     private void SetupHealthBar()
@@ -346,61 +167,14 @@ public class Vida : MonoBehaviour
         {
             if (healthBarPrefab != null)
             {
-                // Instancia o prefab
-                healthBarObject = Instantiate(healthBarPrefab, transform.position, Quaternion.identity);
-
-                // Define o pai e ajusta a escala
-                healthBarObject.transform.SetParent(transform);
-                healthBarObject.transform.localScale = new Vector3(0.4f, 0.4f, 1f); // Ajusta o tamanho do pai
-
-                // Ajusta a posição da barra em relação ao personagem
-                healthBarObject.transform.localPosition = new Vector3(-0.25f, 0.3f, 0); // 1.5 unidades acima
-
-                // Localiza as barras de vida (verde e vermelho)
-                healthBar = healthBarObject.transform.Find("Verde");
-                Transform redBar = healthBarObject.transform.Find("Vermelho");
-
-                // Configura escala padrão dos filhos, caso necessário (deixe em 1 para herdar do pai)
-                if (healthBar != null)
-                {
-                    healthBar.localScale = Vector3.one;
-                }
-
-                if (redBar != null)
-                {
-                    redBar.localScale = Vector3.one;
-                }
+                healthBarObject = Instantiate(healthBarPrefab, transform.position + new Vector3(0, 2, 0), Quaternion.identity);
+                healthBarObject.transform.SetParent(transform); // Faz a barra de vida seguir o objeto
+                healthBar = healthBarObject.transform.Find("Verde"); // Acha a barra de preenchimento
             }
             else
             {
                 Debug.LogError("Prefab de barra de vida não configurado!", this);
             }
         }
-    }
-    [PunRPC]
-    public void SyncHealth(float newHealth)
-    {
-        currentHealth = newHealth;
-        UpdateHealthBar();
-    }
-
-    [PunRPC]
-    private void SyncMaxHealth(float maxHealth)
-    {
-        this.maxHealth = maxHealth;
-        this.currentHealth = maxHealth; 
-        UpdateHealthBar();
-    }
-    [PunRPC]
-    public void SyncRespawn(Vector3 position)
-    {
-        Debug.Log($"{gameObject.name} recebeu o SyncRespawn. Nova posição: {position}");
-
-        transform.position = position; // Reposiciona o jogador
-        currentHealth = maxHealth;     // Restaura a vida
-        UpdateHealthBar();
-
-        Debug.Log("Vida restaurada. Reativando o jogador...");
-        SyncEnablePlayer(); // Reativa o jogador
     }
 }

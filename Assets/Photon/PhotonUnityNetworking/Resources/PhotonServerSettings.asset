@@ -44,26 +44,6 @@ MonoBehaviour:
   - SyncProgress
   - HandleGameEnd
   - SyncRespawn
-  - SyncDisablePlayer
-  - SyncEnablePlayer
-  - SyncHealth
-  - SyncMaxHealth
-  - HandleCapture
-  - NotifyPlayerEntered
-  - NotifyPlayerExited
-  - TakeDamageRPC
-  - DealDamage
-  - DistributeGoldAndDestroy
-  - SyncDeath
-  - DieRPC
-  - TakeDamage
-  - SyncHealthMinion
-  - ApplyBuffRPC
-  - ApplyDamageBuffRPC
-  - RemoveBuffRPC
-  - RemoveDamageBuffRPC
-  - SetTagRPC
-  - SyncTagRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
