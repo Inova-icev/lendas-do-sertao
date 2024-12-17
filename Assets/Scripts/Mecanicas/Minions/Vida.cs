@@ -21,7 +21,7 @@ public class Vida : MonoBehaviour
     public float regeneracaoVida;
     public float armadura;
     public float defesaMagica;
-
+    private bool isDead = false;
     void Start()
     {
         // Detecta ou instancia a barra de vida
@@ -54,6 +54,43 @@ public class Vida : MonoBehaviour
         return dano / (1 + mitigacao / 100f);
     }
 
+    [PunRPC]
+    public void TakeDamageRPC(int damage, int damageType)
+    {
+        if (!PhotonNetwork.IsMasterClient) return; // Apenas o MasterClient processa o dano
+
+        TakeDamage(damage, damageType); // Aplica o dano no servidor
+
+        // Sincroniza a nova vida com todos os clientes
+        PhotonView photonView = GetComponent<PhotonView>();
+        photonView.RPC("SyncHealth", RpcTarget.All, currentHealth);
+
+        // Verificação de morte em todas as fontes de dano
+        if (currentHealth <= 0)
+        {
+            if (!isDead) // Evita múltiplas execuções
+            {
+                isDead = true; // Marca como morto
+                Player playerComponent = GetComponent<Player>();
+
+                if (playerComponent != null)
+                {
+                    StartCoroutine(HandleRespawn()); // Respawn para players
+                }
+                else
+                {
+                    photonView.RPC("DieRPC", RpcTarget.AllBuffered); // Chama Die para minions/torres
+                }
+            }
+        }
+    }
+
+    [PunRPC]
+    private void DieRPC()
+    {
+        Die(); 
+    }
+
     public void TakeDamage(float dano, int tipoDano = 0)
     {
         float danoFinal = tipoDano == 0 ? Mitigacao(dano, armadura) : Mitigacao(dano, defesaMagica);
@@ -61,35 +98,7 @@ public class Vida : MonoBehaviour
         currentHealth -= danoFinal;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        // Sincroniza a vida com todos os clientes
-        if (PhotonNetwork.IsConnected)
-        {
-            PhotonView photonView = GetComponent<PhotonView>();
-            if (photonView != null && photonView.IsMine)
-            {
-                photonView.RPC("SyncHealth", RpcTarget.All, currentHealth);
-            }
-        }
-        else
-        {
-            UpdateHealthBar(); // Atualiza localmente no modo offline
-        }
-
-        // Verifica se o personagem morreu
-        if (currentHealth <= 0)
-        {
-            Player playerComponent = GetComponent<Player>();
-            if (playerComponent != null)
-            {
-                StartCoroutine(HandleRespawn());
-            }
-            else
-            {
-                Die();
-            }
-        }
-
-        Debug.Log($"Dano recebido: {danoFinal} (Tipo: {(tipoDano == 0 ? "Físico" : "Mágico")})");
+        UpdateHealthBar(); // Atualiza a barra localmente no MasterClient
     }
     private void RegenerarAtributos()
     {
@@ -114,7 +123,7 @@ public class Vida : MonoBehaviour
         }
     }
 
-    void UpdateHealthBar()
+    public void UpdateHealthBar()
     {
         if (healthBar != null && maxHealth > 0)
         {
@@ -357,7 +366,7 @@ public class Vida : MonoBehaviour
     private void SyncMaxHealth(float maxHealth)
     {
         this.maxHealth = maxHealth;
-        this.currentHealth = maxHealth; // Restaura a vida ao máximo
+        this.currentHealth = maxHealth; 
         UpdateHealthBar();
     }
 }

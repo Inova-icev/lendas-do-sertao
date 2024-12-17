@@ -7,7 +7,7 @@ public class MinionSpawner : MonoBehaviour
     public GameObject minionPrefab; // Prefab do minion
     public float spawnInterval = 30f; // Intervalo entre waves (30 segundos)
     public Transform spawnPoint; // Ponto de spawn dos minions
-    public int minionsPerWave = 3; // Número de minions por wave
+    public int minionsPerWave = 1; // Número de minions por wave
     public string spawnTag; // Tag que este spawner aplica aos minions (ex: "Left" ou "Right")
     public string enemyTag; // Tag dos inimigos que os minions deste spawner devem atacar
     public float minionSpacing = 1f; // Raio de verificação para evitar sobreposição
@@ -18,12 +18,23 @@ public class MinionSpawner : MonoBehaviour
         {
             StartCoroutine(SpawnWave());
         }
+        else
+        {
+            Debug.Log($"[{gameObject.name}] Não sou o MasterClient. Apenas observando os spawns.");
+        }
     }
 
     public IEnumerator SpawnWave()
     {
         while (true)
         {
+            // Garante que apenas o MasterClient continua a executar o loop
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogWarning($"[{gameObject.name}] Não sou mais o MasterClient. Parando spawns.");
+                yield break;
+            }
+
             int minionsSpawned = 0;
 
             while (minionsSpawned < minionsPerWave)
@@ -46,8 +57,16 @@ public class MinionSpawner : MonoBehaviour
             yield return new WaitForSeconds(spawnInterval);
         }
     }
+
     public void SpawnMinion()
     {
+        // Garantia adicional: impede que outros clientes chamem esta função
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            Debug.LogWarning($"[{gameObject.name}] Tentativa de invocar minion por cliente que não é MasterClient.");
+            return;
+        }
+
         // Instancia o minion na posição de spawn com a rotação padrão
         GameObject minion = PhotonNetwork.Instantiate(minionPrefab.name, spawnPoint.position, Quaternion.identity);
         Minions minionScript = minion.GetComponent<Minions>();
@@ -58,6 +77,8 @@ public class MinionSpawner : MonoBehaviour
 
             // Define a tag do minion com base na configuração do spawner
             minion.tag = spawnTag;
+
+            Debug.Log($"[{gameObject.name}] Minion {minion.name} invocado com tag {spawnTag}.");
         }
     }
 

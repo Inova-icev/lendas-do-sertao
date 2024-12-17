@@ -52,6 +52,10 @@ MonoBehaviour:
   - NotifyPlayerEntered
   - NotifyPlayerExited
   - TakeDamageRPC
+  - DealDamage
+  - DistributeGoldAndDestroy
+  - SyncDeath
+  - DieRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
