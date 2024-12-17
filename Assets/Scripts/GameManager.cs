@@ -120,4 +120,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             photonView.RPC("EndGame", RpcTarget.All, teamName);
         }
     }
+    public string GetTeamTag()
+    {
+        return panelManager.teamChoiceTag;
+    }
 }

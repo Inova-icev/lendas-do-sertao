@@ -54,28 +54,27 @@ public class Player : MonoBehaviour
     void Start()
     {
         panelManager = FindAnyObjectByType<PanelManager>();
-        gameObject.tag = panelManager.teamChoiceTag;
-        if(panelManager.teamChoiceTag=="Right"){
-            gameObject.layer = 9;
-        }
-        else{
-            gameObject.layer = 8;
-
-        }
         vidaComponent = GetComponent<Vida>();
         rb = GetComponent<Rigidbody2D>();
         photonView = GetComponent<PhotonView>(); 
         SetupCamera();
         if (photonView.IsMine)
         {
-            photonView.RPC("SetTagRPC", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.CustomProperties["team"]);
+            string teamTag = GameManager.Instance.GetTeamTag();
+            photonView.RPC("SyncTagRPC", RpcTarget.AllBuffered, teamTag);
         }
     }
     [PunRPC]
-    public void SetTagRPC(string tagName)
+    private void SyncTagRPC(string teamTag)
     {
-        this.gameObject.tag = tagName;
-        Debug.Log($"Tag sincronizada para: {tagName}");
+        gameObject.tag = teamTag;
+        if (teamTag == "Right"){
+            gameObject.layer = 9;
+        }
+        else{
+            gameObject.layer = 8;
+        }
+        Debug.Log($"Tag sincronizada para {teamTag} em {gameObject.name}");
     }
     private void SetupCamera()
     {
@@ -122,8 +121,7 @@ public class Player : MonoBehaviour
 
         if (controlEnabled)
         {
-            // Lógica de movimento
-            float moveX = Input.GetAxisRaw("Horizontal"); // Entrada de movimento horizontal
+            float moveX = Input.GetAxisRaw("Horizontal");
             float targetSpeed = moveX * speed;
 
             // Aceleração e desaceleração suaves
