@@ -159,7 +159,7 @@ MonoBehaviour:
   platformLayer:
     serializedVersion: 2
     m_Bits: 64
-  gold: 5000
+  gold: 0
   baseDamage: 20
   items: []
   attackRange: 5

@@ -278,6 +278,7 @@ public class Player : MonoBehaviour
     {
         GetComponent<Collider2D>().enabled = true;
     }
+
     [PunRPC]
     public void ApplyBuffRPC(float multiplier)
     {
@@ -370,28 +371,12 @@ public class Player : MonoBehaviour
         {
             gold -= item.price;
             items.Add(item);
-            ApplyItemEffect(item);
+            ApplyPermanentEffect(item);
             Debug.Log($"Você comprou {item.name}! Ouro restante: {gold}");
         }
         else
         {
             Debug.Log("Você não tem ouro suficiente para comprar este item.");
-        }
-    }
-
-    public void ApplyItemEffect(Item item)
-    {
-        switch (item.type)
-        {
-            case ItemType.SpeedBuff:
-                ApplyBuff(item.effectValue);
-                break;
-            case ItemType.DamageBuff:
-                ApplyDamageBuff(item.effectValue);
-                break;
-            default:
-                Debug.Log("Item sem efeito aplicável.");
-                break;
         }
     }
 
@@ -460,5 +445,46 @@ public class Player : MonoBehaviour
         transform.rotation = rotation;
 
         Debug.Log($"Player {gameObject.name} foi respawnado em {position}");
+    }
+    public void ApplyPermanentEffect(Item item)
+    {
+        switch (item.type)
+        {
+            case ItemType.SpeedBuff:
+                ApplyPermanentSpeedBoost(item.effectValue);
+                break;
+            case ItemType.DamageBuff:
+                ApplyPermanentDamageBoost(item.effectValue);
+                break;
+            case ItemType.HealthBuff:
+                ApplyPermanentHealthBoost(item.effectValue);
+                break;
+            default:
+                Debug.LogWarning("Tipo de item desconhecido.");
+                break;
+        }
+    }
+
+    // Aumenta permanentemente a velocidade
+    private void ApplyPermanentSpeedBoost(float value)
+    {
+        speed += value;
+        currentSpeed = speed; // Atualiza o valor atual da velocidade
+        Debug.Log($"Velocidade permanentemente aumentada para: {speed}");
+    }
+
+    // Aumenta permanentemente o dano
+    private void ApplyPermanentDamageBoost(float value)
+    {
+        damageMultiplier += value;
+        Debug.Log($"Dano permanentemente aumentado para: {damageMultiplier}");
+    }
+
+    // Aumenta permanentemente a vida máxima e restaura a vida atual
+    private void ApplyPermanentHealthBoost(float value)
+    {
+        vidaComponent.maxHealth += value;
+        vidaComponent.currentHealth = Mathf.Clamp(vidaComponent.currentHealth + value, 0, vidaComponent.maxHealth);
+        Debug.Log($"Vida permanentemente aumentada para: {vidaComponent.maxHealth}. Vida atual: {vidaComponent.currentHealth}");
     }
 }

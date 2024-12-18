@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public enum ItemType
 {
     SpeedBuff,
@@ -10,10 +8,10 @@ public enum ItemType
 [System.Serializable]
 public class Item
 {
-    public string name;        
-    public ItemType type;     
-    public float effectValue; 
-    public int price;         
+    public string name;        // Nome do item
+    public ItemType type;      // Tipo do item
+    public float effectValue;  // Valor do efeito aplicado
+    public int price;          // Preço do item
 
     public Item(string name, ItemType type, float effectValue, int price)
     {
@@ -22,5 +20,4 @@ public class Item
         this.effectValue = effectValue;
         this.price = price;
     }
-
 }

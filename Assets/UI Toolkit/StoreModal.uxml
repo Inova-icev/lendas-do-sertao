@@ -2,35 +2,34 @@
     <Style src="project://database/Assets/Ui/StoreModal.uss?fileID=7433441132597879392&amp;guid=714b2c6286f198df6ac5bdd1fe7c19a4&amp;type=3#StoreModal" />
     <Style src="project://database/Assets/Ui/commom.uss?fileID=7433441132597879392&amp;guid=9cef33ba4f84282e68eb4f1f9371ab84&amp;type=3#commom" />
     <ui:VisualElement class="store-modal-overlay">
-        <ui:VisualElement class="store-modal-container" style="background-color: rgba(0, 0, 0, 0.82);">
-            <ui:Button text="X" name="closeStoreButton" class="close-button" />
+        <ui:VisualElement class="store-modal-container" style="background-color: rgba(0, 0, 0, 0.82); width: 600px;">
             <ui:Label text="Loja" class="store-title" />
             <ui:ScrollView class="items-list">
                 <ui:VisualElement class="item-entry">
                     <ui:Image name="item1Image" class="item-image" />
                     <ui:VisualElement class="item-info">
-                        <ui:Label text="Espada Lendária" class="item-description" />
-                        <ui:Button text="Comprar" name="buyItem1Button" class="buy-button" />
+                        <ui:Label text="Espada Lendária - ganhe 20 de força por 120 moedas" enable-rich-text="true" name="Label" style="margin: 5px; color: rgb(255, 255, 255); font-size: 13px;" />
+                        <ui:Button name="buyButton1" text="Comprar" style="margin-bottom: 10px;" />
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement class="item-entry">
                     <ui:Image name="item2Image" class="item-image" />
                     <ui:VisualElement class="item-info">
-                        <ui:Label text="Arco Longo" class="item-description" />
-                        <ui:Button text="Comprar" name="buyItem2Button" class="buy-button" />
+                        <ui:Label text="Botas Mágicas - ganhe 10 de velocidade por 80 moedas" class="item-description" style="font-size: 13px;" />
+                        <ui:Button name="buyButton2" text="Comprar" style="margin-bottom: 10px;" />
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement class="item-entry">
                     <ui:Image name="item3Image" class="item-image" />
                     <ui:VisualElement class="item-info">
-                        <ui:Label text="Poção de Vida" class="item-description" />
-                        <ui:Button text="Comprar" name="buyItem3Button" class="buy-button" />
+                        <ui:Label text="Elixir de Vida - ganhe 30 de vida máxima por 100 moedas" parse-escape-sequences="false" class="item-description" style="font-size: 13px;" />
+                        <ui:Button name="buyButton3" text="Comprar" style="margin-bottom: 10px;" />
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:ScrollView>
             <ui:VisualElement class="currency-display" style="position: relative; left: 0; bottom: 0;">
                 <ui:Image class="coin-icon" style="background-color: rgba(255, 255, 255, 0);" />
-                <ui:Label text="999" class="coin-count" />
+                <ui:Label name="coin-count" text="999" class="coin-count" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
