@@ -156,27 +156,25 @@ namespace ManagmentScripts
                 }
             }
         }
-        public void ShowEndGamePanel(string nexusTag, string playerTag)
+    public void ShowEndGamePanel(string nexusTag, string playerTag)
+    {
+        if (playerTag == nexusTag)
         {
-            if (playerTag == nexusTag)
-            {
-                // Jogador perdeu
-                panelDerrota.SetActive(true);
-                Debug.Log("Derrota para o jogador com tag: " + playerTag);
-            }
-            else
-            {
-                // Jogador venceu
-                panelVitoria.SetActive(true);
-                Debug.Log("Vitória para o jogador com tag: " + playerTag);
-            }
-
-            // Opcional: Desativa a HUD do jogo
-            if (GameHUDCanvas != null)
-            {
-                GameHUDCanvas.SetActive(false);
-            }
+            panelDerrota.SetActive(true);
+            panelVitoria.SetActive(false);
+            Debug.Log("Derrota para o jogador com tag: " + playerTag);
         }
+        else
+        {
+            panelVitoria.SetActive(true);
+            panelDerrota.SetActive(false);
+            Debug.Log("Vitória para o jogador com tag: " + playerTag);
+        }
+        if (GameHUDCanvas != null)
+        {
+            GameHUDCanvas.SetActive(false);
+        }
+    }
          public void SetTag(string newTag)
         {
             gameObject.tag = newTag;

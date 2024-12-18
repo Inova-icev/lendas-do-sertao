@@ -170,6 +170,22 @@ public class Vida : MonoBehaviour
 
     void Die()
     {
+        // Verifica se o objeto é um Nexus
+        Nexus nexusComponent = GetComponent<Nexus>();
+        PhotonView photonView = GetComponent<PhotonView>();
+        if (nexusComponent != null)
+        {
+            Debug.Log($"{gameObject.name} (Nexus) foi destruído!");
+
+            if (PhotonNetwork.IsMasterClient && photonView != null)
+            {
+                photonView.RPC("HandleGameEndRPC", RpcTarget.AllBuffered, nexusComponent.nexusTag);
+            }
+
+            return; // Evita continuar com a lógica comum de morte
+        }
+
+        // Lógica existente para Players, Minions ou Torres
         if (GetComponent<Player>() != null)
         {
             Debug.LogError("Die foi chamado para um Player, isso não deve acontecer!");
