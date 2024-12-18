@@ -55,10 +55,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void SpawnPlayer(string team, string seletedCharacter)
     {
         if(team=="Left"){
-        PhotonNetwork.Instantiate(seletedCharacter, new Vector3(-155.3f, 46.75f, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate(seletedCharacter, new Vector3(-180f, 42, 0), Quaternion.identity);
         }
         else{
-        PhotonNetwork.Instantiate(seletedCharacter, new Vector3(-8.97f, 41.38f, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate(seletedCharacter, new Vector3(-10f, 42f, 0), Quaternion.identity);
         }
     }
 
