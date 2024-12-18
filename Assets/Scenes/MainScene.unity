@@ -1679,6 +1679,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2917429580936932687, guid: 17d74014914c7bd46aa7c23c62cec696, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3102338863665131051, guid: 17d74014914c7bd46aa7c23c62cec696, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3475505866183801000, guid: 17d74014914c7bd46aa7c23c62cec696, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.69600004
@@ -5502,6 +5510,10 @@ PrefabInstance:
       propertyPath: m_ChildAlignment
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 1880598278453547690, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+      propertyPath: m_ConstraintCount
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2779129798247766291, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -5863,10 +5875,36 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4197492163342436571, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+    - {fileID: 25614295193431980, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+    - {fileID: 7797417628509086841, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+    - {fileID: 1543718651712516129, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+--- !u!114 &749758050 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5505043204885403582, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+  m_PrefabInstance: {fileID: 749758049}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &749758051 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 684404319340376860, guid: 5a593085f93754044bd31c7181a5ab19, type: 3}
+  m_PrefabInstance: {fileID: 749758049}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &761967677
 GameObject:
   m_ObjectHideFlags: 0
@@ -53975,6 +54013,8 @@ MonoBehaviour:
   teamRed: {fileID: 1307001737}
   curupira: {fileID: 1408339918}
   saci: {fileID: 650472825}
+  nsp: {fileID: 749758051}
+  corposeco: {fileID: 749758050}
   minionSpawners:
   - {fileID: 1307104401}
   - {fileID: 325007350}
@@ -55587,6 +55627,18 @@ PrefabInstance:
     - target: {fileID: 4474606784146509075, guid: 2be5c1aa15598e74297d5defb4f6ea59, type: 3}
       propertyPath: m_enableAutoSizing
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635187751183107935, guid: 2be5c1aa15598e74297d5defb4f6ea59, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635187751183107935, guid: 2be5c1aa15598e74297d5defb4f6ea59, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635187751183107935, guid: 2be5c1aa15598e74297d5defb4f6ea59, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5722468370334502905, guid: 2be5c1aa15598e74297d5defb4f6ea59, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
